@@ -12,36 +12,19 @@
 **10% of the final grade**
 
 ### Dataset
-We retrieved our main dataset using the [Spotify API](https://developer.spotify.com/documentation/web-api/). The dataset contains information about artists’ popularity in cities of the world. In particular it shows the top 50 cities in which people listen to the artist as well as the number of listeners. We would like to visualize this data on a map. To that end we have collected data about the coordinates of the cities in the main dataset ([World Cities Database](https://simplemaps.com/data/world-cities)). Additionally, we have collected the [information](https://public.opendatasoft.com/explore/dataset/worldcitiespop/information/?disjunctive.country&sort=population&q=Newtownabbey&location=22,51,4.13333&basemap=jawg.streets)  about the population of each city in order to be able to normalize listener counts. We don’t expect any errors in the main dataset collected from Spotify. The data about the location and the population count may contain some inaccuracies but the quality should be sufficient for the purposes of our visualizations. The entity-relationship diagram of our database is illustrated below:
 
-<img src="images/er_diagram_2.png" alt="ER Diagram" width="500"/>
+We retrieved our main dataset using the [Spotify API](https://developer.spotify.com/documentation/web-api/). The dataset contains information about artists’ popularity in the cities of the world. In particular, it shows the top-50 cities in which people listen to the given artist as well as the number of listeners. We would like to visualize this data on a map. To that end, for each city in the main dataset, we retrieved geographical coordinates from the [World Cities Database](https://simplemaps.com/data/world-cities). Additionally, we collected the population information of each city from the [World Cities Population dataset](https://public.opendatasoft.com/explore/dataset/worldcitiespop/information/?disjunctive.country&sort=population&q=Newtownabbey&location=22,51,4.13333&basemap=jawg.streets) in order to be able to normalize the listener counts. We don’t expect any errors in the main dataset collected from Spotify. The data about the location and the population count may contain some inaccuracies but the quality should be sufficient for the purposes of our visualizations. The entity-relationship diagram of our database is illustrated below
+
+<img src="images/er_diagram.png" alt="ER Diagram" width="600"/>
 
 Most of the data-cleaning was handled during the database construction phase. Currently we have a large number (see [Exploratory Data Analysis](#exploratory-data-analysis)) of various music genres in the dataset. We plan to reduce them to a reasonable amount employing clusterization or some other approaches. Additionally, we will need to come up with a metric to measure similarity between the cities based on prevailing music genres and popular artists. This should be a relatively easy task to handle.
 
 
 ### Problematic
 
-The modern world offers us almost unlimited oppotrunities to choose products,
-services, and way of life. Apparently, this abundance of alternatives may lead to
-detrimental consequences to our psychological and emotional well-being [(Schwartz, 2004)](#Schwartz-2004). Frequent situation causing many of us to struggle occurs
-when we try to pick a new travel destination. Luckily, according to the researchers,
-narrowing the variety of options can remarkably relieve stress and axiety
-imposed by choice overload [(Schwartz, 2004)](#Schwartz-2004).
+Modern means of communication and transportation have made traveling so much easier. More and more people relocate abroad for work, relationships, or other reasons, reaching an impressive number of [almost 300 million](https://publications.iom.int/system/files/pdf/wmr_2020.pdf). With many cities turning into melting pots, cultural, social and personal motives [drive people’s curiosity](https://comms.theculturetrip.com/wp-content/uploads/2019/05/Culture-Trip-Beyond-Borders-May-2019-Final.pdf) to explore how diverse backgrounds and experiences of different corners of the world intertwine and blur geographical borders. As [music plays a central role in cultural identity](https://doi.org/10.1007/s10824-018-9320-x), our project strives to provide these insights by looking into musical preferences of people around the globe.
 
-While there are many factors influencing attractiveness of travel destinations for
-tourists [(Sirgy, 2000)](#Sirgy-2000), we are confident that _music_ can effectively
-mediate people's experience of a particular city or area of interest. Many of us have
-subtle musical preferences, which closely relate to our personalities [(Greenberg, 2016)](#Greenberg-2016). Curiously, it is also possible to apply the concept of
-personality to a place or city [(Demirbag, 2010)](#Demirbag-2010). The greater it
-corresponds to our own personal traits, the more likely we develop a positive attitude
-towards the desination [(Sirgy, 2000)](#Sirgy-2000). By building music profiles of
-various cities based on their population's preferences we can provide a tool for
-music-lovers to target their exploration of numerous vacation spots to presumably
-more favorable options.
-
-In a nutshell, the ideas above bring us to the following problem statement:
-
-> Music-lovers puzzling over choices for their next vacation destination need a way to guide their search based on music profiles of the cities because musical preferences are linked to personality and when the destination personality matches our own, we are more likely to enjoy the visit.
+We would like to explore multiple ways in which this can be achieved. First, we plan to overlay the geographical map with color-coded information about music genre popularity. Another part of the project concerns visualizing genre profiles for each city. To develop this idea further, we can create a lower-dimensional embedding space for city profiles to cluster cities with similar musical preferences. Finally, to bring the interactivity of our visualization to the next level, we consider querying Spotify about the user's favorite artists and showing the cities aligning with their musical tastes.
 
 
 ### Exploratory Data Analysis
@@ -49,36 +32,24 @@ In a nutshell, the ideas above bring us to the following problem statement:
 
 ### Related work
 - What others have already done with the data?
-  - We collected the dataset by ourselves, so it is unique in this sense. Since the data
-mostly come from Spotify, service developers might have used it for related projects. We
-didn't find any interactive visualizations authored by Spotify team and addressing the
-same user needs as indicated in [Problematic section](#problematic). The only somewhat
-related visualization from Spotify is listed below as a source of inspiration.
+  - We collected the dataset by ourselves, so it is unique in this sense. Since the data mostly come from Spotify, service developers might have used it for related projects. We didn't find any interactive visualizations authored by Spotify team and addressing the same ideas as indicated in [Problematic section](#problematic). The only somewhat related visualization from Spotify is listed below as a source of inspiration.
 
 
 - Why is your approach original?
-  - Even though several attempts to visualize music profiles of cities were discussed
-in literature [[(Hauger, 2016)](#Hauger-2016), [(Mellander, 2018)](#Mellander-2018)], to the
-best of our knowledge no working solution exists. More importantly, nobody has ever
-considered this problem from the perspective of the traveller searching for a new
-vacation spot. We consider it to be a crusial factor for consideration in order to
-design useful and easy to use application.
+  - Most importantly, originality of our approach results from the way how we collected the dataset. Some previous works analysed people's musical prefernces based on [location-based BitTorrent traffic](https://time.com/37332/music-preference-maps/), [geo-tagged listening events mined from Twitter](https://doi.org/10.1109/CBMI.2016.7500277), and [listening events of Last.fm](http://link.springer.com/10.1007/s13735-017-0118-y), a music recommender service. Given that in 2019 [Spotify ranked number 1](https://www.fipp.com/news/insightnews/chart-week-world-most-popular-music-streaming-services) in the list of most popular music streaming service in the world, we expect Spotify's data to be the most insightful and representative.
+  - Even though several research works investigated music profiles of [cities](https://doi.org/10.1109/CBMI.2016.7500277), [georaphical regions](https://doi.org/10.1007/s10824-018-9320-x), and [countries](http://link.springer.com/10.1007/s13735-017-0118-y), to the best of our knowledge no working online visualization of this phenomenon exists. Moreover, none of the offline prototypes that we saw (e.g. [Music Tweet Map](http://www.cp.jku.at/projects/MusicTweetMap/)) represents city profiles with such granularity as we aim to, neither provides easily interpretable by the users search and naviation panel.
 
 
 - What source of inspiration do you take?
   - Inspiration for visualization:
-    - <a name="Hauger-2016"></a> Hauger, D., Schedl, M., 2016. Music Tweet Map: A browsing interface to explore the microblogosphere of music, in: 2016 14th International Workshop on Content-Based Multimedia Indexing (CBMI). Presented at the 2016 14th International Workshop on Content-Based Multimedia Indexing (CBMI), IEEE, Bucharest, Romania, pp. 1–4. https://doi.org/10.1109/CBMI.2016.7500277
+    - [Hauger et. al, 2016](https://doi.org/10.1109/CBMI.2016.7500277). Music Tweet Map: A browsing interface to explore the microblogosphere of music.
+    - [Schedl, 2017](https://link.springer.com/article/10.1007%2Fs13735-017-0118-y). Investigating country-specific music preferences and music recommendation algorithms with the LFM-1b dataset.
+    - [Mellander et. al, 2018](https://doi.org/10.1007/s10824-018-9320-x). The geography of music preferences.
     - [Music Tweet Map](http://www.cp.jku.at/projects/MusicTweetMap/)
     - [The one million tweet map](https://onemilliontweetmap.com/)
     - [What Type of Music Is Your City Most Passionate About?](https://time.com/37332/music-preference-maps/)
     - [Hoodmaps](https://hoodmaps.com/)
-    - <a name="Mellander-2018"></a> Mellander, C., Florida, R., Rentfrow, P.J., Potter, J., 2018. The geography of music preferences. J Cult Econ 42, 593–618. https://doi.org/10.1007/s10824-018-9320-x
-  - Other resources and references:
     - [Every Noise at Once](http://everynoise.com/)
-    - <a name="Schwartz-2004"></a> Schwartz, B., 2004, January. The paradox of choice: Why more is less. New York: Ecco.
-    - <a name="Sirgy-2000"></a> Sirgy, M.J., Su, C., 2000. Destination Image, Self-Congruity, and Travel Behavior: Toward an Integrative Model. Journal of Travel Research 38, 340–352. https://doi.org/10.1177/004728750003800402
-    - <a name="Greenberg-2016"></a> Greenberg, D.M., Kosinski, M., Stillwell, D.J., Monteiro, B.L., Levitin, D.J., Rentfrow, P.J., 2016. The Song Is You: Preferences for Musical Attribute Dimensions Reflect Personality. Social Psychological and Personality Science 7, 597–605. https://doi.org/10.1177/1948550616641473
-    - <a name="Demirbag-2010"></a> Demirbag, K.M., Yurt, O., Guneri, B., Kurtulus, K., 2010. Branding places: applying brand personality concept to cities. European Journal of Marketing 44, 1286–1304. https://doi.org/10.1108/03090561011062844
 
 
 - This is the first project for which we use our dataset.
