@@ -1,4 +1,4 @@
-,city,region,country,human_region,human_country,population,coord
+id,city,region,country,human_region,human_country,population,coord
 1,Grand Prairie,TX,US,Texas,United States,193837,SRID=4326;Point(-97.0209 32.687)
 2,Columbus,GA,US,Georgia,United States,259160,SRID=4326;Point(-84.8771 32.51)
 3,Tarija,T,BO,Tarija,"Bolivia, Plurinational State of",159269,SRID=4326;Point(-64.75 -21.5167)
