@@ -10,7 +10,9 @@ defmodule SpotifyTracker.Repo.Migrations.Initial do
       add :bio,         :text
       add :popularity,  :integer, null: false
       add :followers,   :integer, null: false
+      add :monthly_listeners, :integer
     end
+    create unique_index(:artists, :spotify_id)
 
     create table("images") do
       add :path, :string, null: false

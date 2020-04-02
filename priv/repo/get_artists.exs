@@ -66,7 +66,7 @@ Path.wildcard(import_dir <> "/cities/**/*.json")
   |> MonEx.flat_map(fn artist ->
     artist_id = Path.basename(file, ".json")
     with [{_, cached}] <- :ets.lookup(artists, artist_id) do
-      ok(Map.merge(cached, %{"bio" => artist["bio"], "id" => id}))
+      ok(Map.merge(cached, %{"monthly_listeners" => artist["artistInsights"]["monthly_listeners"], "bio" => artist["bio"], "id" => id}))
     else
       _ ->
         IO.inspect(["This one didn't match", artist_id])
