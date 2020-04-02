@@ -12,21 +12,11 @@
 **10% of the final grade**
 
 ### Dataset
-We retrieved our main dataset using the free public [Spotify API](https://developer.spotify.com/documentation/web-api/) and joined it with
-[World Cities Database](https://simplemaps.com/data/world-cities) and ??TODO?? to
-fetch geographic and demographic information for different cities.
-We estimate the quality our data as high since we were in control of constructing
-the dataset. The entity-relationship diagram of our database is illustrated below:
+We retrieved our main dataset using the Spotify API. The dataset contains information about artists’ popularity in cities of the world. In particular it shows the top 50 cities in which people listen to the artist as well as the number of listeners. We would like to visualize this data on a map. To that end we have collected data about the coordinates of the cities in the main dataset ([World Cities Database](https://simplemaps.com/data/world-cities)). Additionally, we have collected the [information](https://public.opendatasoft.com/explore/dataset/worldcitiespop/information/?disjunctive.country&sort=population&q=Newtownabbey&location=22,51,4.13333&basemap=jawg.streets)  about the population of each city in order to be able to normalize listener counts. We don’t expect any errors in the main dataset collected from Spotify. The data about the location and the population count may contain some inaccuracies but the quality should be sufficient for the purposes of our visualizations. The entity-relationship diagram of our database is illustrated below:
 
 <img src="images/er_diagram_2.png" alt="ER Diagram" width="500"/>
 
-Most of the data-cleaning was handled during the database construction phase.
-Currently we have a huge number (see [Exploratory Data Analysis](#exploratory-data-analysis))
-of various mucis genres in the dataset. We plan to reduce them to a reasonable
-amount employing clusterization or some other approaches. Additionally, we
-will need to come up with a metric to measure similarity between the cities
-based on prevailing music genres and popular artists. This should be a relatively
-easy task to handle.
+Most of the data-cleaning was handled during the database construction phase. Currently we have a large number (see [Exploratory Data Analysis](#exploratory-data-analysis)) of various music genres in the dataset. We plan to reduce them to a reasonable amount employing clusterization or some other approaches. Additionally, we will need to come up with a metric to measure similarity between the cities based on prevailing music genres and popular artists. This should be a relatively easy task to handle.
 
 
 ### Problematic
