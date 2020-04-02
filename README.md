@@ -32,7 +32,7 @@ We would like to explore multiple ways in which this can be achieved. First, we 
 
 Cities by Spotify usage:
 
-`
+```
 SELECT city,
        Sum(listeners) AS total_listeners
 FROM   artist_cities
@@ -41,10 +41,10 @@ FROM   artist_cities
 GROUP  BY city
 ORDER  BY total_listeners DESC
 LIMIT  20;  
-`
+```
 
       city      | total_listeners
-----------------+-----------------
+----------------|-----------------
  Mexico City    |       477295795
  Santiago       |       435246290
  São Paulo      |       387313610
@@ -69,7 +69,7 @@ LIMIT  20;
 
 Cities by Spotify usage normalized by population:
 
-`
+```
  SELECT   city,
          Sum(listeners)/population AS total_listeners
 FROM     artist_cities
@@ -78,9 +78,9 @@ ON       cities.id=artist_cities.city_id
 GROUP BY city,
          population
 ORDER BY total_listener s DESC limit 20; 
-`
+```
      city      | total_listeners
----------------+-----------------
+---------------|-----------------
  Puebla        |            7534
  San Miguel    |            4960
  San Juan      |            3602
@@ -103,7 +103,7 @@ ORDER BY total_listener s DESC limit 20;
  Münster       |             121
 
 Cities that most often appear in top 50 for artists:
-`
+```
 SELECT city,
        Count(*) AS in_top_50
 FROM   artist_cities
@@ -112,9 +112,9 @@ FROM   artist_cities
 GROUP  BY city
 ORDER  BY in_top_50 DESC
 LIMIT  20;  
-`
+```
      city      | in_top_50
----------------+-----------
+---------------|-----------
  Los Angeles   |     24129
  Chicago       |     23686
  Sydney        |     23021
@@ -137,7 +137,7 @@ LIMIT  20;
  Berlin        |     16919
 
 Artists with most listeners in their top 50 cities (proxy for most popular artists):
-`
+```
 SELECT name,
        Sum(listeners) AS total_listeners
 FROM   artist_cities
@@ -146,10 +146,10 @@ FROM   artist_cities
 GROUP  BY name
 ORDER  BY total_listeners DESC
 LIMIT  20;  
-`
+```
 
       name      | total_listeners
-----------------+-----------------
+----------------|-----------------
  J Balvin       |        24792577
  Justin Bieber  |        23257678
  Bad Bunny      |        22819988
@@ -172,7 +172,7 @@ LIMIT  20;
  Halsey         |        15631702
 
 Proxy for most popular genres:
-`
+```
  SELECT   genres.NAME,
          Sum(listeners) AS total_listeners
 FROM     artist_cities
@@ -184,9 +184,9 @@ JOIN     genres
 ON       genres.id=genre_id
 GROUP BY genres.NAME
 ORDER BY total_listeners DESC limit 30; 
-`
+```
         name        | total_listeners
---------------------+-----------------
+--------------------|-----------------
  pop                |      1833385358
  dance pop          |      1191221938
  latin              |       992892784
@@ -220,7 +220,7 @@ ORDER BY total_listeners DESC limit 30;
 
 Proxy for most popular genres in Lausanne:
 
-`
+```
  SELECT   genres.NAME,
          Sum(listeners) AS total_listeners
 FROM     artist_cities
@@ -234,10 +234,10 @@ ON       genres.id=genre_id
 WHERE    city='Lausanne'
 GROUP BY genres.NAME
 ORDER BY total_listeners DESC limit 30; 
-`
+```
 
             name            | total_listeners
-----------------------------+-----------------
+----------------------------|-----------------
  french hip hop             |         1640878
  pop urbaine                |         1417919
  rap francais               |          890962
