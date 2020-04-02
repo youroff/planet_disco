@@ -18,7 +18,7 @@ fetch geographic and demographic information for different cities.
 We estimate the quality our data as high since we were in control of constructing
 the dataset. The entity-relationship diagram of our database is illustrated below:
 
-<img src="images/er_diagram.png" alt="ER Diagram" width="500"/>
+<img src="images/er_diagram_2.png" alt="ER Diagram" width="500"/>
 
 Most of the data-cleaning was handled during the database construction phase.
 Currently we have a huge number (see [Exploratory Data Analysis](#exploratory-data-analysis))
