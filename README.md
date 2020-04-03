@@ -28,7 +28,12 @@ We would like to explore multiple ways in which this can be achieved. First, we 
 
 
 ### Exploratory Data Analysis
-**TODO**
+Simple statistics about the data:
+
+| artists | cities | genres | 
+|---------|--------|--------| 
+| 32923   | 3277   | 3823   | 
+
 
 Cities by Spotify usage:
 
@@ -170,6 +175,7 @@ LIMIT  20;
 | Tones And I    |        16382249|
 | KAROL G        |        16247916|
 | Halsey         |        15631702|
+
 
 Proxy for most popular genres:
 ```
