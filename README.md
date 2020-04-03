@@ -75,37 +75,27 @@ LIMIT  20;
 Cities by Spotify usage normalized by population:
 
 ```
- SELECT   city,
-         Sum(listeners)/population AS total_listeners
+SELECT   city,
+         Sum(listeners)/population AS normalized_listeners, population
 FROM     artist_cities
 JOIN     cities
 ON       cities.id=artist_cities.city_id
 GROUP BY city,
          population
-ORDER BY total_listener s DESC limit 20; 
+ORDER BY normalized_listeners DESC limit 10;
 ```
-|     city      | total_listeners|
-|---------------|----------------|
-| Puebla        |            7534|
-| San Miguel    |            4960|
-| San Juan      |            3602|
-| Quezon        |            2944|
-| Tlalnepantla  |            1938|
-| Frederiksberg |             788|
-| Santa Rosa    |             549|
-| Elkridge      |             449|
-| Gehrden       |             237|
-| Bulacan       |             202|
-| Amsterdam     |             194|
-| Adlaon        |             156|
-| Oslo          |             155|
-| Calamba       |             149|
-| Anaheim       |             146|
-| Arlington     |             144|
-| Zurich        |             134|
-| Saint-Max     |             132|
-| Stockholm     |             124|
-| Münster       |             121|
+|     city      | normalized_listeners | population|
+|---------------|----------------------|-----------|
+| Frederiksberg |                  645 |       3142|
+| San Juan      |                  415 |      15416|
+| Elkridge      |                  386 |      19367|
+| Quezon        |                  297 |      18451|
+| Gehrden       |                  217 |      15139|
+| Bulacan       |                  178 |       4518|
+| Amsterdam     |                  166 |    1031000|
+| Adlaon        |                  140 |       3647|
+| San Miguel    |                  133 |      65661|
+| Oslo          |                  130 |     835000|
 
 Cities that most often appear in top 50 for artists:
 ```
