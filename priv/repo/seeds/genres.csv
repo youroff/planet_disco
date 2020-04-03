@@ -41,8 +41,8 @@ id,name
 40,jazz mexicano
 41,musica potosina
 42,folktronica
-43,karadeniz halk muzigi
-44,brill building pop
+43,brill building pop
+44,karadeniz halk muzigi
 45,vogue
 46,british children's music
 47,corrosion
@@ -84,8 +84,8 @@ id,name
 83,japanese progressive house
 84,greek black metal
 85,danish techno
-86,pop romantico
-87,ambient techno
+86,ambient techno
+87,pop romantico
 88,singaporean electronic
 89,salsa international
 90,warm drone
@@ -650,8 +650,8 @@ id,name
 649,new french touch
 650,nordic soundtrack
 651,funky tech house
-652,neo-kraut
-653,ranchera
+652,ranchera
+653,neo-kraut
 654,freak folk
 655,afghan pop
 656,black metal
@@ -940,8 +940,8 @@ id,name
 939,thrash core
 940,hip pop
 941,pipa
-942,south african hip hop
-943,oceania soundtrack
+942,oceania soundtrack
+943,south african hip hop
 944,rock gospel brasileiro
 945,deep indie rock
 946,guatemalan pop
@@ -1003,8 +1003,8 @@ id,name
 1002,firenze indie
 1003,christmas product
 1004,cantautor catala
-1005,reggaeton flow
-1006,canadian garage rock
+1005,canadian garage rock
+1006,reggaeton flow
 1007,afrobeat
 1008,nu gaze
 1009,haitian traditional
@@ -1036,15 +1036,15 @@ id,name
 1035,delta blues
 1036,spanish rock
 1037,nz indie
-1038,post-hardcore
-1039,trap queen
+1038,trap queen
+1039,post-hardcore
 1040,canto popular uruguayo
 1041,oshare kei
 1042,punk rock italiano
 1043,cuatro venezolano
 1044,uk contemporary jazz
-1045,nu metal
-1046,small room
+1045,small room
+1046,nu metal
 1047,sleep
 1048,toronto rap
 1049,classic luk thung
@@ -1053,8 +1053,8 @@ id,name
 1052,canadian classical
 1053,macedonian folk
 1054,nerdcore
-1055,minneapolis indie
-1056,trap
+1055,trap
+1056,minneapolis indie
 1057,tibetan mantra
 1058,malaysian hip hop
 1059,carnaval limburg
@@ -1103,8 +1103,8 @@ id,name
 1102,dreamgaze
 1103,blaskapelle
 1104,belgian edm
-1105,disco
-1106,dirty south rap
+1105,dirty south rap
+1106,disco
 1107,free folk
 1108,polish rock
 1109,dance-punk
@@ -1375,8 +1375,8 @@ id,name
 1374,classify
 1375,neo-trad doom metal
 1376,disco house
-1377,swedish tropical house
-1378,welsh indie
+1377,welsh indie
+1378,swedish tropical house
 1379,queercore
 1380,turkish alternative rock
 1381,folk brasileiro
@@ -1388,8 +1388,8 @@ id,name
 1387,canadian soundtrack
 1388,anthem worship
 1389,scottish fiddle
-1390,experimental
-1391,tone
+1390,tone
+1391,experimental
 1392,gothic post-punk
 1393,jazz trombone
 1394,japanese psychedelic
@@ -1462,8 +1462,8 @@ id,name
 1461,unblack metal
 1462,kelowna bc indie
 1463,experimental jazz
-1464,sambass
-1465,bible
+1464,bible
+1465,sambass
 1466,son cubano
 1467,neurofunk
 1468,azeri pop
@@ -1476,8 +1476,8 @@ id,name
 1475,jugendchor
 1476,drone metal
 1477,uk drill
-1478,rap sardegna
-1479,chihuahua indie
+1478,chihuahua indie
+1479,rap sardegna
 1480,classical mezzo-soprano
 1481,memphis hip hop
 1482,spiritual jazz
@@ -1643,8 +1643,8 @@ id,name
 1642,rosario indie
 1643,icelandic hip hop
 1644,adelaide indie
-1645,indie curitibano
-1646,indonesian pop punk
+1645,indonesian pop punk
+1646,indie curitibano
 1647,jacksonville indie
 1648,jazz funk
 1649,philly indie
@@ -2672,8 +2672,8 @@ id,name
 2671,italian hip hop
 2672,post-black metal
 2673,icelandic indie
-2674,rap
-2675,finnish indie
+2674,finnish indie
+2675,rap
 2676,miami metal
 2677,mountain dulcimer
 2678,shanty
@@ -3798,8 +3798,8 @@ id,name
 3797,indonesian hardcore
 3798,modern dream pop
 3799,schranz
-3800,dansband
-3801,icelandic pop
+3800,icelandic pop
+3801,dansband
 3802,hawaiian punk
 3803,indonesian indie
 3804,hip hop cubano

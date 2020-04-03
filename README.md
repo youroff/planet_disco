@@ -45,32 +45,22 @@ FROM   artist_cities
          ON cities.id = artist_cities.city_id
 GROUP  BY city
 ORDER  BY total_listeners DESC
-LIMIT  20;  
+LIMIT  10;  
 ```
 
-|      city      | total_listeners|
-|----------------|----------------|
-| Mexico City    |       477295795|
-| Santiago       |       435246290|
-| São Paulo      |       387313610|
-| Chicago        |       326904875|
-| Los Angeles    |       317947775|
-| Dallas         |       268225888|
-| Sydney         |       265424569|
-| Houston        |       218524318|
-| Paris          |       217417758|
-| Buenos Aires   |       201818091|
-| Amsterdam      |       200299460|
-| Madrid         |       196943653|
-| Guadalajara    |       195691536|
-| Atlanta        |       195318586|
-| Jakarta        |       191214883|
-| Brisbane       |       185219075|
-| Toronto        |       181832911|
-| Melbourne      |       181786450|
-| Rio de Janeiro |       179854953|
-| London         |       174880641|
-(20 rows)
+|     city     | total_listeners|
+|--------------|----------------|
+| Mexico City  |       418013817|
+| Santiago     |       378280299|
+| São Paulo    |       340642646|
+| Chicago      |       278866062|
+| Los Angeles  |       270153240|
+| Dallas       |       228789729|
+| Sydney       |       228039225|
+| Houston      |       186436834|
+| Paris        |       183979818|
+| Buenos Aires |       175351209|
+
 
 Cities by Spotify usage normalized by population:
 
@@ -97,6 +87,10 @@ ORDER BY normalized_listeners DESC limit 10;
 | San Miguel    |                  133 |      65661|
 | Oslo          |                  130 |     835000|
 
+Note: we can see that some errors inevitably crept into out population data.
+(Frederiksberg's real population count is closer to 100'000)
+However, we don't expect this to be a major problem.
+
 Cities that most often appear in top 50 for artists:
 ```
 SELECT city,
@@ -106,30 +100,20 @@ FROM   artist_cities
          ON cities.id = artist_cities.city_id
 GROUP  BY city
 ORDER  BY in_top_50 DESC
-LIMIT  20;  
+LIMIT  10;  
 ```
 |     city      | in_top_50|
 |---------------|----------|
-| Los Angeles   |     24129|
-| Chicago       |     23686|
-| Sydney        |     23021|
-| Toronto       |     22793|
-| London        |     21501|
-| Dallas        |     21439|
-| Melbourne     |     21344|
-| Houston       |     21228|
-| San Francisco |     20436|
-| Brisbane      |     20239|
-| Montreal      |     20051|
-| Seattle       |     19909|
-| Amsterdam     |     19598|
-| Mexico City   |     19571|
-| Santiago      |     19524|
-| Atlanta       |     19391|
-| Brooklyn      |     19207|
-| Paris         |     18139|
-| Stockholm     |     17961|
-| Berlin        |     16919|
+| Los Angeles   |     17521|
+| Chicago       |     17180|
+| Sydney        |     16717|
+| Toronto       |     16537|
+| Dallas        |     15607|
+| London        |     15583|
+| Melbourne     |     15518|
+| Houston       |     15469|
+| San Francisco |     14768|
+| Brisbane      |     14748|
 
 Artists with most listeners in their top 50 cities (proxy for most popular artists):
 ```
@@ -140,36 +124,51 @@ FROM   artist_cities
          ON artist_cities.artist_id = artists.id
 GROUP  BY name
 ORDER  BY total_listeners DESC
-LIMIT  20;  
+LIMIT  10;
+```
+|     name      | total_listeners|
+|---------------|----------------|
+| J Balvin      |        24792577|
+| Justin Bieber |        23257678|
+| Bad Bunny     |        22819988|
+| The Weeknd    |        21361869|
+| Daddy Yankee  |        20311296|
+| Ed Sheeran    |        20210593|
+| Billie Eilish |        19962808|
+| Drake         |        19346899|
+| Dua Lipa      |        19264039|
+| Post Malone   |        18856668|
+
+Artists by monthly listeners:
+
+```
+SELECT name,
+       popularity,
+       monthly_listeners
+FROM   artists
+ORDER  BY popularity DESC
+LIMIT  10; 
 ```
 
-|      name      | total_listeners|
-|----------------|----------------|
-| J Balvin       |        24792577|
-| Justin Bieber  |        23257678|
-| Bad Bunny      |        22819988|
-| The Weeknd     |        21361869|
-| Daddy Yankee   |        20311296|
-| Ed Sheeran     |        20210593|
-| Billie Eilish  |        19962808|
-| Drake          |        19346899|
-| Dua Lipa       |        19264039|
-| Post Malone    |        18856668|
-| Khalid         |        18615167|
-| Nicki Minaj    |        18492683|
-| Camila Cabello |        17498151|
-| Anuel AA       |        17486063|
-| Ozuna          |        16991164|
-| Sech           |        16951666|
-| Maroon 5       |        16704370|
-| Tones And I    |        16382249|
-| KAROL G        |        16247916|
-| Halsey         |        15631702|
+|     name      | popularity | monthly_listeners|
+|---------------|------------|------------------|
+| Bad Bunny     |        100 |          44940166|
+| Lil Uzi Vert  |         96 |          25691736|
+| Justin Bieber |         96 |          63010229|
+| J Balvin      |         96 |          54760349|
+| Drake         |         96 |          48631727|
+| Post Malone   |         95 |          52179881|
+| Billie Eilish |         95 |          56725215|
+| The Weeknd    |         94 |          56971820|
+| BTS           |         94 |          20325658|
+| Juice WRLD    |         94 |          28604023|
 
+Note: we can see that the proxy that we used previously seems to provide a meaningful signal about artist popularity.
+Next we will use a similar proxy to find out the most popular genres.
 
 Proxy for most popular genres:
 ```
- SELECT   genres.NAME,
+SELECT   genres.NAME,
          Sum(listeners) AS total_listeners
 FROM     artist_cities
 JOIN     artists
@@ -179,7 +178,7 @@ ON       artist_genres.artist_id=art ists.id
 JOIN     genres
 ON       genres.id=genre_id
 GROUP BY genres.NAME
-ORDER BY total_listeners DESC limit 30; 
+ORDER BY total_listeners DESC limit 10; 
 ```
 |        name        | total_listeners|
 |--------------------|----------------|
@@ -193,31 +192,11 @@ ORDER BY total_listeners DESC limit 30;
 | reggaeton          |       585994405|
 | hip hop            |       561785934|
 | latin pop          |       516769383|
-| edm                |       510271573|
-| tropical house     |       500519887|
-| trap               |       488552642|
-| tropical           |       431984374|
-| pop rock           |       352137183|
-| modern rock        |       340109982|
-| southern hip hop   |       318662212|
-| electropop         |       316466779|
-| electro house      |       306481455|
-| reggaeton flow     |       286776651|
-| soft rock          |       280984603|
-| mellow gold        |       276945122|
-| classic rock       |       270106770|
-| funk carioca       |       266649907|
-| album rock         |       262541874|
-| r&b                |       258093407|
-| urban contemporary |       255939179|
-| latin hip hop      |       251545237|
-| rock en espanol    |       232762019|
-| indie pop          |       228521573|
 
 Proxy for most popular genres in Lausanne:
 
 ```
- SELECT   genres.NAME,
+SELECT   genres.NAME,
          Sum(listeners) AS total_listeners
 FROM     artist_cities
 JOIN     cities
@@ -229,9 +208,8 @@ JOIN     genres
 ON       genres.id=genre_id
 WHERE    city='Lausanne'
 GROUP BY genres.NAME
-ORDER BY total_listeners DESC limit 30; 
+ORDER BY total_listeners DESC limit 10; 
 ```
-
 |            name            | total_listeners|
 |----------------------------|----------------|
 | french hip hop             |         1640878|
@@ -244,27 +222,6 @@ ORDER BY total_listeners DESC limit 30;
 | chanson                    |          441105|
 | german pop                 |          311419|
 | nouvelle chanson francaise |          290924|
-| french indie pop           |          278462|
-| french rock                |          272639|
-| french indietronica        |          188641|
-| new french touch           |          179533|
-| rap calme                  |          160613|
-| rap marseille              |          155106|
-| deep german hip hop        |          120659|
-| variete francaise          |          115900|
-| belgian hip hop            |          109542|
-| french reggae              |          104419|
-| albanian hip hop           |          100913|
-| tropical house             |           96774|
-| german rock                |           89102|
-| partyschlager              |           82806|
-| german cloud rap           |           79011|
-| albanian pop               |           77087|
-| kosovan pop                |           64182|
-| turbo folk                 |           59789|
-| ye ye                      |           52769|
-| rap algerien               |           51715|
-
 
 ### Related work
 - What others have already done with the data?
