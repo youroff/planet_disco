@@ -174,7 +174,7 @@ FROM     artist_cities
 JOIN     artists
 ON       artist_cities.artist_id=artists.id
 JOIN     artist_genres
-ON       artist_genres.artist_id=art ists.id
+ON       artist_genres.artist_id=artists.id
 JOIN     genres
 ON       genres.id=genre_id
 GROUP BY genres.NAME
@@ -202,7 +202,8 @@ FROM     artist_cities
 JOIN     cities
 ON       cities.id=artist_cities.city_id
 JOIN     artists
-ON       artist_cities.artist_id=artists.id jo IN artist_genres
+ON       artist_cities.artist_id=artists.id
+JOIN 	 artist_genres
 ON       artist_genres.artist_id=artists.id
 JOIN     genres
 ON       genres.id=genre_id
