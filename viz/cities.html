@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap" rel="stylesheet">    
+<style> /* set the CSS */
+
+body {
+    background-color: rgb(34,37,45);
+}
+
+text {
+    paint-order: stroke;
+stroke: rgb(34,37,45);
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        font-weight: 600;
+        font-family: 'Open Sans', sans-serif;
+}
+
+label {
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    }
+
+</style>
+<body>
+<div>
+<label for="city">Search city:</label>
+<input type="text" id="city_name" name="city">
+<button type="button" id="search_city">Search</button>
+</div>
+<div>
+<svg id="citiesSVG">
+</svg>
+</div>
+
+<!-- load the d3.js library -->    	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 200, right: 100, bottom: 100, left: 300},
+    width = window.innerWidth,
+    height = window.innerHeight - 100;
+
+// set the ranges
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+var svg = d3.select("#citiesSVG")
+.attr("viewBox", [0, 0, width, height])
+
+//Container for the gradients
+var defs = svg.append("defs");
+
+//Filter for the outside glow
+var filter = defs.append("filter")
+.attr("id","glow");
+
+filter.append("feGaussianBlur")
+.attr("stdDeviation", 10)
+
+const gDotsBlur = svg.append("g");
+const gDots = svg.append("g");
+const gLabels = svg.append("g");
+const zoomExtent = [0.7, 32];
+const labelExtent = [1, 10];
+const baseFontSize = 15;
+const strokeWidth = 0;
+const labelOffsetX = -20;
+const labelOffsetY = -8;
+const initialScale = 0.7;
+
+function labelXOffset(d, k){
+    return - d.city.length * baseFontSize / 4 / k;
+}
+
+d3.csv("embedding_cities.csv").then(function(data){
+        document.body.onkeydown = function(e) {
+            if (e.keyCode == 13)
+                findCoords();
+        };
+
+        const labelScale = d3.scaleLinear().range(labelExtent).domain(d3.extent(data, (d) => +d.rank));
+        const ex = d3.extent(data, (d) => +d.population);
+        const populationRadius = d3.scaleLinear().domain(ex).range([3, 10]);
+
+        const zoom = d3.zoom()
+        .scaleExtent(zoomExtent)
+        .on("zoom", zoomed);
+
+        data.forEach(function(d){ 
+                d.population = +d.population;
+                d.radius = populationRadius(d.population);
+                d.rank = +d.rank;
+                d.x = +d.x;
+                d.y = +d.y;
+                d.geohash_norm = +d.geohash_norm;
+                d.scale = labelScale(d.rank);
+                });
+
+        // Scale the range of the data
+        x.domain(d3.extent(data, (d) => +d.x));
+        y.domain(d3.extent(data, (d) => +d.y));
+
+
+        function findCoords(){
+            const searchField = document.getElementById("city_name");
+            const name = searchField.value.toLowerCase();
+            var city = null;
+            for (d of data){
+                if (d.city.toLowerCase() === name){
+                    city = d;
+                    break;
+                }
+            }
+
+            if (city){
+                svg.transition().duration(750).call(
+                        zoom.transform,
+                        d3.zoomIdentity.translate(width / 2, height / 2).scale(10).translate(-x(city.x), -y(city.y))
+                        );
+            }
+        }
+
+        const search = document.getElementById("search_city")
+            search.onclick = findCoords;
+
+        const myColor = d3.scaleSequential().domain([0,1])
+            .interpolator(d3.interpolateSpectral);
+        // Add the scatterplot
+        gDots.selectAll("circle")
+            .data(data)
+            .join("circle")
+            .attr("r", (d) => d.radius)
+            .attr("fill", (d) => myColor(d.geohash_norm))
+            .attr("id", d => "n"+d.id)
+            .attr("cx", (d) => x(d.x))
+            .attr("cy", (d) => y(d.y));
+
+        // Add the scatterplot
+        gDotsBlur.selectAll("circle")
+            .data(data)
+            .join("circle")
+            .attr("r", (d) => d.radius)
+            .attr("fill", (d) => myColor(d.geohash_norm))
+            .attr("cx", (d) => x(d.x))
+            .attr("cy", (d) => y(d.y));
+            
+
+
+        gDotsBlur.attr("filter", "url(#glow)")
+
+            gDots.attr("stroke-width", strokeWidth).attr("font-size", baseFontSize).attr("fill", "white")
+            .selectAll("text")
+            .data(data)
+            .join("text")
+            .attr("x", d => x(d.x) + labelXOffset(d, initialScale)) //labelOffsetX)
+            .attr("y", d => y(d.y) + labelOffsetY)
+            .attr("text-rendering", "optimizeSpeed")
+            .attr("display", "none")
+            .text(d => d.city);
+        svg.call(zoom).call(zoom.transform, d3.zoomIdentity);
+        zoom.scaleTo(svg, initialScale);
+
+
+        function zoomed() {
+            const transform = d3.event.transform;
+            gDots.attr("transform", transform);
+            gDotsBlur.attr("transform", transform);
+            gDots.selectAll("circle")
+                .data(data)
+                .attr("r",  (d) => d.radius/ transform.k);
+            gDots.attr("font-size", Math.max(12 /transform.k, baseFontSize / (Math.pow(transform.k, 1.8))));
+            gDots.attr("stroke-width", strokeWidth/transform.k);
+            gDots.selectAll("text").data(data)
+                .attr("x", d => x(d.x)+ labelXOffset(d, transform.k)) 
+                .attr("y", d => y(d.y) + labelOffsetY / transform.k) 
+                .attr("display", 
+                        (d) => d.rank < 11 || d.scale <= transform.k ? "inline" : "none"
+                     )
+        }
+});
+
+
+</script>
+</body>
+
+
