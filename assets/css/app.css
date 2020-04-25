@@ -1,3 +1,20 @@
 /* This file is for your main application css. */
+body {
+  background-color: black;
+  margin: 0px;
+  overflow: hidden;
+}
 
-@import "./phoenix.css";
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.city-name-shown {
+  font-size: 5px;
+  fill: white;
+}
+.city-name-hidden {
+  display: none;
+}
