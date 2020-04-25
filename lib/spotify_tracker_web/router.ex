@@ -13,14 +13,21 @@ defmodule SpotifyTrackerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api" do
+    pipe_through :api
+
+    forward "/playground", Absinthe.Plug.GraphiQL,
+      schema: SpotifyTrackerWeb.Schema,
+      interface: :playground
+
+    forward "/", Absinthe.Plug,
+      socket: SpotifyTrackerWeb.UserSocket,
+      schema: SpotifyTrackerWeb.Schema
+  end
+
   scope "/", SpotifyTrackerWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/*path", PageController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", SpotifyTrackerWeb do
-  #   pipe_through :api
-  # end
 end
