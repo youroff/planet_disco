@@ -252,6 +252,10 @@ ORDER BY total_listeners DESC limit 10;
 
 **10% of the final grade**
 
+### Two A4 pages describing the project goal
+Our [report](https://github.com/com-480-data-visualization/com-480-project-datavvizards/blob/master/milestone2_report.pdf) is available in the root folder of this repository.
+
+### Functional project prototype review
 
 
 
