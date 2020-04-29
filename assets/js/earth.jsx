@@ -1,4 +1,5 @@
-import React, { useRef, useMemo, Suspense } from 'react'
+import React from 'react'
+import { useLoader } from 'react-three-fiber'
 import * as THREE from 'three/src/Three'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
@@ -19,11 +20,9 @@ export function Earth(props) {
   texture.magFilter = THREE.NearestFilter
 
   return (
-    <Suspense fallback={null}>
-      <mesh {...props}>
-        <sphereGeometry attach="geometry" args={[1, 32, 32]} />
-        <meshLambertMaterial attach="material" map={texture} />
-      </mesh>
-    </Suspense>
+    <mesh {...props}>
+      <sphereGeometry attach="geometry" args={[1, 32, 32]} />
+      <meshLambertMaterial attach="material" map={texture} />
+    </mesh>
   )
 }

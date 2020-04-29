@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, Suspense } from 'react'
 import { Canvas, extend, useThree } from 'react-three-fiber'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Earth } from './earth'
@@ -12,11 +12,11 @@ const Scene = () => {
   useEffect(() => {
     if (controls.current) {
       controls.current.addEventListener('change', (e) => {
-        console.log(e)
+        // Do stuff on camera move
+        // console.log(e)
       })
     }
-
-    // return () => selection.on(".zoom", null)
+    // return () => ___cleanup___
   }, [controls])
 
 
@@ -38,11 +38,11 @@ const Scene = () => {
         dampingFactor={0.5}
         zoomSpeed={1}
         args={[camera, gl.domElement]}
-        onChange={(e) => console.log(e)}
       />
       <Sky />
-      {/* <pointLight position={[10, 10, 10]} /> */}
-      <Earth position={[0, 0, 0]}/>
+      <Suspense fallback={null}>
+        <Earth position={[0, 0, 0]}/>
+      </Suspense>
     </>
   )
 }
