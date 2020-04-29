@@ -1,7 +1,9 @@
 /* This file is for your main application css. */
 body {
+  /* height: 100vw; */
+  /* width: 100vh; */
   background-color: black;
-  margin: 0px;
+  margin: 0;
   overflow: hidden;
 }
 
@@ -15,6 +17,7 @@ canvas {
   font-size: 5px;
   fill: white;
 }
+
 .city-name-hidden {
   display: none;
 }

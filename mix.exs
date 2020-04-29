@@ -43,6 +43,7 @@ defmodule SpotifyTracker.MixProject do
       {:base62, "~> 1.2"},
       {:csv, "~> 2.3"},
       {:ecto_sql, "~> 3.1"},
+      {:ecto_cursor, "~> 0.1"},
       {:geo_postgis, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},

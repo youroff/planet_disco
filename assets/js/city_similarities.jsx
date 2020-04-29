@@ -26,7 +26,7 @@ export function CitySimilarities() {
   return <svg ref={svgRef} viewBox="0 0 800 550" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <filter id="glow">
-        <feGaussianBlur stdDeviation={0.5 / k}></feGaussianBlur>
+        <feGaussianBlur stdDeviation={0.5 * k}></feGaussianBlur>
       </filter>
     </defs>
     <g filter="url(#glow)" transform={`translate(${x}, ${y}) scale(${k})`}>

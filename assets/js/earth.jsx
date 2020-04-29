@@ -8,6 +8,8 @@ export default function(props) {
   const url = "/images/8081_earthspec10k.gif"
   // console.log(new THREE.TextureLoader().load(url))
   const texture = useMemo(() => new THREE.TextureLoader().load(url), [url])
+  // const texture = useLoader()
+  
   texture.magFilter = THREE.NearestFilter
   // texture.magFilter = THREE.LinearFilter
 
@@ -23,18 +25,9 @@ export default function(props) {
   // 8081_earthspec10k.jpg
 
   return (
-    <mesh
-      {...props}
-      ref={mesh}
-      // scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      // onClick={e => setActive(!active)}
-      // onPointerOver={e => setHover(true)}
-      // onPointerOut={e => setHover(false)}
-    >
+    <mesh {...props} ref={mesh}>
       <sphereGeometry attach="geometry" args={[1, 32, 32]} />
-      {/* <boxBufferGeometry attach="geometry" args={[1, 1, 1]} /> */}
       <meshLambertMaterial attach="material" map={texture} />
-      {/* <meshStandardMaterial attach="material" color={new THREE.Color('blue')} /> */}
     </mesh>
   )
 }

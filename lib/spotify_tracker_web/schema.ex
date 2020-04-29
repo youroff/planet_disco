@@ -3,6 +3,9 @@ defmodule SpotifyTrackerWeb.Schema do
   import Absinthe.Resolution.Helpers
   alias SpotifyTracker.Context
   alias SpotifyTrackerWeb.Resolvers
+  import SpotifyTrackerWeb, only: [paginated: 1]
+
+  import_types SpotifyTrackerWeb.Types.Location
 
   object :artist do
     field :id, :id
@@ -18,19 +21,38 @@ defmodule SpotifyTrackerWeb.Schema do
     # has_many :images, Image
     field :genres, non_null(list_of(non_null(:genre))),  resolve: dataloader(Context)
   end
+  paginated(:artist)
 
   object :genre do
     field :id, :id
     field :name, non_null(:string)
   end
 
+  object :city do
+    field :city,          non_null(:string)
+    field :region,        :string
+    field :country,       non_null(:string)
+    field :human_region,  non_null(:string)
+    field :human_country, non_null(:string)
+    field :population,    non_null(:integer)
+    field :coord,         non_null(:location)
+
+    # many_to_many :artists, Artist, join_through: "artist_cities"
+  end
+  paginated(:city)
 
   query do
     @desc "Artists entry point, returns list of artists"
-    field :artists, list_of(:artist) do
-      # arg :event_ids, list_of(:id)
-      # arg :cursor, :cursor_input
+    field :artists, :paginated_artist do
+      arg :cursor, :string
+      arg :limit, :integer
       resolve &Resolvers.get_artists/3
+    end
+
+    field :cities, :paginated_city do
+      arg :cursor, :string
+      arg :limit, :integer
+      resolve &Resolvers.get_cities/3
     end
 
 

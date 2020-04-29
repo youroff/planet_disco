@@ -66,4 +66,14 @@ defmodule SpotifyTrackerWeb do
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end
+
+  defmacro paginated(model) do
+    name = :"paginated_#{model}"
+    quote do
+      object unquote(name) do
+        field :entries, non_null(list_of(non_null(unquote(model))))
+        field :cursor, :string
+      end
+    end
+  end
 end
