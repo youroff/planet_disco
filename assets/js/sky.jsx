@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo } from 'react'
 import * as THREE from 'three/src/Three'
 import { useFrame } from 'react-three-fiber'
 
-const radius = 5
+const radius = 10
 const particles = 10000
 
 const vertexShader = `
