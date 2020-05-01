@@ -1,19 +1,7 @@
 import _ from "../css/app.css"
 
-import ReactDOM from 'react-dom'
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import Dashboard from './Dashboard'
+import { render } from 'react-dom'
+import Router from './router'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <Switch>
-        <Route path="/">
-          <Dashboard />
-        </Route>
-      </Switch>
-    </Router>
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+render(<Router />, document.getElementById('root'))

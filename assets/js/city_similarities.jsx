@@ -12,8 +12,11 @@ export function CitySimilarities() {
   useEffect(() => {
     if (!svgRef.current) return
     const selection = d3.select(svgRef.current)
-    const zoom = d3.zoom().on("zoom", () => {      
-      setTransform(d3.event.transform)
+    const zoom = d3.zoom().on("zoom", () => { 
+      const data = d3.event.transform
+      requestAnimationFrame(() => {
+        setTransform(data)
+      })
     })
     selection.call(zoom).call(zoom.transform, d3.zoomIdentity.translate(400, 200).scale(15))
     return () => selection.on(".zoom", null)
