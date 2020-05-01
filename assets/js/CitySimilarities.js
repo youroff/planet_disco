@@ -1,6 +1,4 @@
 import Title from './Title';
-
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
 import CitySearch from './CitySearch'
@@ -266,7 +264,7 @@ class CitySimilarities extends React.Component {
 
     return (
       <React.Fragment>
-        <Title><a name="CityView">Embedding Map</a></Title>
+        <Title>Embedding Map</Title>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8} lg={8}>
             <Paper className={classes.cities}>

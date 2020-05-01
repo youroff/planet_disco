@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import { CitySimilarities } from './city_similarities'
+import Dashboard from './Dashboard'
 import PlanetDisco from './planet_disco'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
@@ -14,7 +14,7 @@ export default () => (
     <ApolloProvider client={client}>
       <Switch>
         <Route path="/cities">
-          <CitySimilarities />
+          <Dashboard />
         </Route>
         <Route path="/">
           <PlanetDisco />
