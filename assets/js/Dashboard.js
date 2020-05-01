@@ -10,7 +10,7 @@ import Header from './Header';
 import Title from './Title';
 import { Box, Button } from '@material-ui/core'
 import InfoBlock from './InfoBlock'
-import PlanetDisco from './planet_disco'
+// import PlanetDisco from './planet_disco'
 
 const sections = [
   { title: 'Data', url: '#Data' },
@@ -66,7 +66,7 @@ export default function Dashboard() {
 
             <Grid item xs={11}>
               <Paper className={classes.planet}>
-                <PlanetDisco />
+                {/* <PlanetDisco /> */}
               </Paper>
             </Grid>
             <InfoBlock name='City View' content=

@@ -2,10 +2,10 @@ import React from 'react'
 import { useLoader } from 'react-three-fiber'
 import * as THREE from 'three/src/Three'
 
-export function Earth() {
-  const texture = useLoader(THREE.TextureLoader, "/images/earth4.jpg")  
-  // const texture = useLoader(THREE.TextureLoader, "/images/8081_earthspec10k.gif")  
-  // texture.magFilter = THREE.NearestFilter
+export default function() {
+  // const texture = useLoader(THREE.TextureLoader, "/images/earth4.jpg")  
+  const texture = useLoader(THREE.TextureLoader, "/images/8081_earthspec10k.gif")  
+  texture.magFilter = THREE.NearestFilter
 
   return (
     <mesh position={[0, 0, 0]} receiveShadow castShadow>

@@ -19,45 +19,21 @@ const min_pop = 600
 const max_pop = 31480498
 const pop_scale = d3.scaleLog([min_pop, max_pop], [2, 7])
 
-const fromGPS = ({lat, lng}, r = 1) => {
-  const phi = (lat - 90) * Math.PI / 180
-  const theta = (180 - lng) * Math.PI / 180
+const to_rad = (x) => x * Math.PI / 180 
 
-  return [
-    r * Math.sin(phi) * Math.cos(theta),
-    r * Math.cos(phi),
-    r * Math.sin(phi) * Math.sin(theta)
-  ]
-}
-
-export function Cities({zoom}) {
+export default function({zoom}) {
   const mesh = useRef()
-  const [rendered, setRendered] = useState(false)
   const { data } = useQuery(CITIES)
-  
-  useEffect(() => {
-    const dummy = new THREE.Object3D()
-    if (data && mesh.current) {
-      data.cities.entries.forEach(({coord}, i) => {
-        dummy.position.set(...fromGPS(coord))
-        dummy.lookAt(0, 0, 0)
-        dummy.updateMatrix()
-        mesh.current.setMatrixAt(i, dummy.matrix)
-      })
-      mesh.current.instanceMatrix.needsUpdate = true
-      setRendered(true)
-    }
-  }, [data])
   
   useFrame(() => {
     const dummy = new THREE.Object3D()
-    if (rendered) {
-      data.cities.entries.forEach(({coord, population}, i) => {
+    if (data && mesh.current) {
+      data.cities.entries.forEach(({coord: {lat, lng}, population}, i) => {
         mesh.current.getMatrixAt(i, dummy.matrix)
-        dummy.position.set(...fromGPS(coord))
+        dummy.position.setFromSphericalCoords(1, to_rad(lat - 90), to_rad(lng - 90))
         dummy.lookAt(0, 0, 0)
         if (population > pop_scale.invert(zoom)) {
-          dummy.scale.set(1, 1, 1)
+          dummy.scale.set(zoom / 10, zoom / 10, zoom / 10)
         } else {
           dummy.scale.set(0, 0, 0)
         }
@@ -69,8 +45,15 @@ export function Cities({zoom}) {
   })
 
   return (<>
-    {data && (<instancedMesh ref={mesh} args={[null, null, data.cities.entries.length]} castShadow>
-      <boxBufferGeometry attach="geometry" args={[0.005, 0.005, 0.2]} />
+    {data && (<instancedMesh
+      ref={mesh}
+      args={[null, null, data.cities.entries.length]}
+      castShadow
+      // onPointerOver={({instanceId}) => {
+      //   console.log(data.cities.entries[instanceId])
+      // }}
+    >
+      <boxBufferGeometry attach="geometry" args={[0.02, 0.02, 0.002]} />
       <meshStandardMaterial attach="material" emissive="#ff0000" color="#ff3333" opacity={0.5} />
     </instancedMesh>)}
   </>)
