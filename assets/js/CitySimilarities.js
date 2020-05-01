@@ -81,22 +81,25 @@ class CitySimilarities extends React.Component {
   }
 
   drawGlow = () => {
-    if (isChrome) { //Only chrome seems to be able to handle it at the moment
-      const radiusScale = 1.5; 
-      this.showVisible((d) =>
-        this.drawPoint(d, this.hiddenCtx, radiusScale)
-      )
+    const radiusScale = 1.5;
+    this.showVisible((d) => {
+      if (d.highlight)
+        this.drawPoint(d, this.hiddenCtx, radiusScale, false)
+    })
 
+    if (isChrome) { //Only chrome seems to be able to handle it at the moment
       this.ctx.save();
       let filter = `blur(${7}px) saturate(110%) brightness(110%) `;
       this.ctx.filter = filter;
-      this.ctx.drawImage(this.hiddenCanvas, 0, 0);
-      this.ctx.restore();
     }
+    this.ctx.drawImage(this.hiddenCanvas, 0, 0);
+    if (isChrome)
+      this.ctx.restore();
+
   }
 
   drawPoints = () => {
-    this.showVisible(d => this.drawPoint(d, this.ctx, 1))
+    this.showVisible(d => this.drawPoint(d, this.ctx))
   }
 
   showVisible = (f) => {
@@ -114,22 +117,23 @@ class CitySimilarities extends React.Component {
   }
 
   redraw = () => {
-    this.ctx.clearRect(0, 0, this.state.width, this.state.height);
-    this.hiddenCtx.clearRect(0, 0, this.state.width, this.state.height);
+    // this.ctx.clearRect(0, 0, this.state.width, this.state.height);
+    // this.hiddenCtx.clearRect(0, 0, this.state.width, this.state.height);
 
-    this.drawGlow();
-    this.drawPoints();
-    this.drawLabels();
+    // this.drawGlow();
+    // this.drawPoints();
+    // this.drawLabels();
+    this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
   static getFont(fontSize) {
     return `${fontSize}px Arial, sans-serif`;
   }
 
-  drawPoint = (d, context, radiusScale) => {
+  drawPoint = (d, context, radiusScale = 1, color = true) => {
     context.beginPath();
     context.arc(d.cx, d.cy, radiusScale * d.radius / this.currentK, 0, 2 * Math.PI);
-    context.fillStyle = d.color;
+    context.fillStyle = color ? d.color : "white";
     context.fill();
   }
 
@@ -168,6 +172,7 @@ class CitySimilarities extends React.Component {
       d.color = myColor(d.geohash_norm)
       d.scale = labelScale(d.rank);
       d.visible = true;
+      d.highlight = false;
     });
   }
 
@@ -231,7 +236,7 @@ class CitySimilarities extends React.Component {
     this.setCanvasDimensions();
     this.prepareData();
     this.redraw();
-    this.zoom.scaleTo(this.canvas, this.currentK);
+    // this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
   componentWillUnmount() {
@@ -261,7 +266,7 @@ class CitySimilarities extends React.Component {
 
     return (
       <React.Fragment>
-        <Title>Embedding Map</Title>
+        <Title><a name="CityView">Embedding Map</a></Title>
         <Grid container spacing={3}>
           <Grid item xs={12} md={8} lg={8}>
             <Paper className={classes.cities}>
@@ -277,7 +282,7 @@ class CitySimilarities extends React.Component {
             </Paper>
             <Title>City Map</Title>
             <Paper className={classes.fixedHeight}>
-              <Map handleData={this.handleData} />
+              <Map handleData={this.handleData} redraw={this.redraw} />
             </Paper>
           </Grid>
         </Grid>

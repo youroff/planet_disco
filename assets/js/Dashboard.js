@@ -8,95 +8,31 @@ import Paper from '@material-ui/core/Paper';
 import Deposits from './Deposits';
 import CitySimilarities from './CitySimilarities'
 import Header from './Header';
+import Title from './Title';
+import { Box, Button } from '@material-ui/core'
+import InfoBlock from './InfoBlock'
 
 const sections = [
-  { title: 'Description', url: '#' },
-  { title: 'Data', url: '#' },
-  { title: 'About', url: '#' },
+  { title: 'Description', url: '#Description' },
+  { title: 'City View', url: '#CityView' }, 
+  { title: 'Data', url: '#Data' },
+  { title: 'About', url: '#About' },
 ];
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  title: {
-    flexGrow: 1,
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
-  },
-  appBarSpacer: theme.mixins.toolbar,
   content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    // flexGrow: 1,
+    height: '90vh',
+    overflowY: 'auto',
+    paddingBottom: "80vh",
   },
   container: {
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingBottom: theme.spacing(4), 
   },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: '50vh',
-  },
-  cities: {
-    height: '80vh',
-  }
 }));
 
 export default function Dashboard() {
@@ -106,16 +42,29 @@ export default function Dashboard() {
   const cities = clsx(classes.cities);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} >
       <CssBaseline />
       <Container maxWidth="xl" className={classes.container}>
         <Header title="Disco Planet" sections={sections} />
         <main className={classes.content}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3}>            
+            <InfoBlock name='Description' content=
+              "Here you can see a map of the world according to the musical preferences of those who live in those cities.
+              The closer two cities are on a map the closer should be the musical profiles of those cities. 
+              The cities are colored according to their position on the geographical map. If two cities have 
+              a similar color they should be close geographically (however, the inverse is not necesserilly true)." />
+
             {/* Chart */}
             <Grid item xs={12}>
-                <CitySimilarities />
+              <CitySimilarities />
             </Grid>
+
+            <InfoBlock name='Data' content=
+              'The data was collected by collecting the "About" block of a sample of artists from Spotify.' />
+
+            <InfoBlock name='About' content=
+              'This visualization was created as a project assignement for the "Data Visualization" course at EPFL.' />
+
           </Grid>
         </main>
       </Container>
