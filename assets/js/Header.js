@@ -9,9 +9,11 @@ import Link from '@material-ui/core/Link';
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
+    padding: 0,
   },
   toolbarTitle: {
     flex: 1,
+    fontWeight: 800,
   },
   toolbarLink: {
     padding: theme.spacing(1),
@@ -28,7 +30,7 @@ export default function Header(props) {
       <Toolbar className={classes.toolbar}>
         <Typography
           component="h5"
-          variant="h5"
+          variant="h4"
           color="inherit"
           align="left"
           noWrap

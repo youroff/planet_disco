@@ -13,7 +13,7 @@ export default () => (
   <Router>
     <ApolloProvider client={client}>
       <Switch>
-        <Route path="/cities">
+        <Route path="/dashboard">
           <Dashboard />
         </Route>
         <Route path="/">
