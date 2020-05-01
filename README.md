@@ -256,7 +256,7 @@ ORDER BY total_listeners DESC limit 10;
 Our [report](https://github.com/com-480-data-visualization/com-480-project-datavvizards/blob/master/milestone2_report.pdf) is available in the root folder of this repository.
 
 ### Functional project prototype review
-
+Our project prototype can be accessed by the [link](http://ec2-34-252-224-152.eu-west-1.compute.amazonaws.com/dashboard).
 
 
 ## Milestone 3 (Thursday 28th May, 5pm)
