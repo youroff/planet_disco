@@ -9,7 +9,7 @@ import Link from '@material-ui/core/Link';
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    padding: 0,
+    padding: theme.spacing(1)
   },
   toolbarTitle: {
     flex: 1,

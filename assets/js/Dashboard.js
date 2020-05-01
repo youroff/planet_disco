@@ -51,7 +51,10 @@ export default function Dashboard() {
       <Container maxWidth="xl" className={classes.container}>
         <Header title="Disco Planet" sections={sections} />
         <main className={classes.content}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{
+            margin: 0,
+            width: '100%',
+          }}>
             <InfoBlock name='Data' content=
               'The data was collected by collecting the "About" block of a sample of artists from Spotify.' />
 
