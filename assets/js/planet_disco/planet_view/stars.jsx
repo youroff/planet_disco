@@ -14,7 +14,7 @@ const genStar = (r1, r2) => {
   ))
 }
 
-export default function({radius, particles}) {
+export default ({radius, particles}) => {
   const material = useMemo(() => ({
     uniforms: {
       pointTexture: {
@@ -27,7 +27,7 @@ export default function({radius, particles}) {
     depthTest: false,
     transparent: false,
     vertexColors: true  
-  }), [])
+  }))
 
   useFrame((state) => {
     if (geometry.current) {
@@ -57,10 +57,8 @@ export default function({radius, particles}) {
     geometry.current.needsUpdate = true
   }, [])
 
-  return (
-    <points>
-      <bufferGeometry ref={geometry} attach="geometry" />
-      <shaderMaterial attach="material" {...material} />
-    </points>
-  )
+  return <points>
+    <bufferGeometry ref={geometry} attach="geometry" />
+    <shaderMaterial attach="material" {...material} />
+  </points>
 }

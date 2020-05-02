@@ -29,6 +29,7 @@ defmodule SpotifyTrackerWeb.Schema do
   end
 
   object :city do
+    field :id, :id
     field :city,          non_null(:string)
     field :region,        :string
     field :country,       non_null(:string)
@@ -49,9 +50,11 @@ defmodule SpotifyTrackerWeb.Schema do
       resolve &Resolvers.get_artists/3
     end
 
+    @desc "Cities entry point, returns list of cities"
     field :cities, :paginated_city do
       arg :cursor, :string
       arg :limit, :integer
+      arg :q, :string
       resolve &Resolvers.get_cities/3
     end
 

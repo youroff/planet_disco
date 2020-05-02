@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { useLoader, useFrame } from 'react-three-fiber'
-import * as THREE from 'three/src/Three'
+import React, { useRef } from 'react'
+import { useFrame } from 'react-three-fiber'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import * as THREE from 'three/src/Three'
 import * as d3 from 'd3'
 
 const CITIES = gql`{
@@ -24,7 +24,7 @@ const to_rad = (x) => x * Math.PI / 180
 export default function({zoom}) {
   const mesh = useRef()
   const { data } = useQuery(CITIES)
-  
+
   useFrame(() => {
     const dummy = new THREE.Object3D()
     if (data && mesh.current) {
@@ -45,16 +45,13 @@ export default function({zoom}) {
   })
 
   return (<>
-    {data && (<instancedMesh
+    {data && <instancedMesh
       ref={mesh}
       args={[null, null, data.cities.entries.length]}
       castShadow
-      // onPointerOver={({instanceId}) => {
-      //   console.log(data.cities.entries[instanceId])
-      // }}
     >
       <boxBufferGeometry attach="geometry" args={[0.02, 0.02, 0.002]} />
       <meshStandardMaterial attach="material" emissive="#ff0000" color="#ff3333" opacity={0.5} />
-    </instancedMesh>)}
+    </instancedMesh>}
   </>)
 }
