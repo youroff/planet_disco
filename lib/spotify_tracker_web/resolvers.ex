@@ -4,11 +4,28 @@ defmodule SpotifyTrackerWeb.Resolvers do
   import Ecto.Query
 
 
+
   def get_artists(_, args, _) do
-    Artist
-    |> order_by([:name, :id])
+    q = Artist
+    |> do_if(Map.get(args, :sort_by) == "listeners" || Map.get(args, :by_city), fn query ->
+      join(query, :left, [a], c in "artist_cities", as: :artist_city, on: c.artist_id == a.id)
+    end)
+
+    Enum.reduce(args, q, fn
+      {:by_city, city_id}, q -> where(q, [_, artist_city: ac], ac.city_id == ^city_id)
+      _, q -> q
+    end)
+    |> sort_artists(Map.get(args, :sort_by))
     |> Repo.paginate(cursor(args))
     |> ok()
+  end
+
+  defp sort_artists(q, "listeners") do
+    order_by(q, [_, artist_city: ac], [desc: ac.listeners, desc: :id])
+  end
+
+  defp sort_artists(q, _) do
+    order_by(q, [:name, :id])
   end
 
   def get_cities(_, args, _) do
@@ -18,7 +35,7 @@ defmodule SpotifyTrackerWeb.Resolvers do
     |> ok()
   end
 
-  defp sort_cities(q, %{q: term}) when not is_nil(term) do
+  defp sort_cities(q, %{q: term}) when not is_nil(term) or not term == "" do
     order_by(q, [p], desc: fragment("similarity(?, ?)", ^term, p.city), desc: :id)
   end
 
@@ -30,4 +47,7 @@ defmodule SpotifyTrackerWeb.Resolvers do
     Map.take(args, [:cursor, :limit])
     |> Map.put(:max_limit, 5000)
   end
+
+  defp do_if(q, true, f), do: f.(q)
+  defp do_if(q, false, f), do: q
 end

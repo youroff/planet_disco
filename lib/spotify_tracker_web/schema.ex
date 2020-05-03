@@ -47,6 +47,8 @@ defmodule SpotifyTrackerWeb.Schema do
     field :artists, :paginated_artist do
       arg :cursor, :string
       arg :limit, :integer
+      arg :by_city, :integer
+      arg :sort_by, :string
       resolve &Resolvers.get_artists/3
     end
 
