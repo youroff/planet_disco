@@ -2,11 +2,16 @@ import React, { useState } from 'react'
 import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
 import { Canvas } from 'react-three-fiber'
 import PlanetView from './planet_view/scene'
-import Panel from './common/panel'
+import Overlay from './common/overlay'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
-  palette: {type: 'dark'}
+  palette: {
+    type: 'dark',
+    background: {
+      paper: 'rgba(66, 66, 66, 0.6)'
+    }
+  }
 })
 
 export default () => {
@@ -14,8 +19,9 @@ export default () => {
 
   return <>
     <ThemeProvider theme={theme}>
-      <Panel onCitySelect={setCity} />      
+      <Overlay onCitySelect={setCity} />      
     </ThemeProvider>
+
     <ApolloConsumer client>
       {client => (
         <Canvas shadowMap>

@@ -12,7 +12,7 @@ defmodule SpotifyTrackerWeb.Resolvers do
     end)
 
     Enum.reduce(args, q, fn
-      {:by_city, city_id}, q -> where(q, [_, artist_city: ac], ac.city_id == ^city_id)
+      {:by_city, city_id}, q -> where(q, [_, artist_city: ac], ac.city_id == type(^city_id, :integer))
       _, q -> q
     end)
     |> sort_artists(Map.get(args, :sort_by))

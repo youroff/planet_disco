@@ -1,13 +1,24 @@
-import React, { useState, Suspense } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
+import { useThree } from 'react-three-fiber'
 import Controls from '../common/controls'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
+import { toRad } from '../common/utils'
+
 
 export default function({currentCity}) {
   const [zoom, updateZoom] = useState(5)
 
-  console.log(currentCity)
+  const {camera} = useThree()
+  useEffect(() => {
+    if (currentCity) {
+      const {lat, lng} = currentCity.coord
+      camera.position.setFromSphericalCoords(zoom, toRad(lat - 90), toRad(lng - 90))
+      camera.lookAt(0, 0, 0)
+      camera.updateProjectionMatrix()
+    }
+  }, [currentCity])
 
   return <scene>
     <Controls onZoom={updateZoom}/>

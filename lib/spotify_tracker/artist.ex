@@ -1,6 +1,6 @@
 defmodule SpotifyTracker.Artist do
   use Ecto.Schema
-  alias SpotifyTracker.{Genre, City}
+  alias SpotifyTracker.{Genre, City, Image}
 
   schema "artists" do
     field :name,        :string

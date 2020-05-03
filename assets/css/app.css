@@ -6,6 +6,9 @@ body {
   margin: 0;
   overflow: hidden;
 }
+* {
+  box-sizing: border-box;
+}
 
 canvas {
   width: 100vw;

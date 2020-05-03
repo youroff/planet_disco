@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import TextField from '@material-ui/core/TextField'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import React, { useState, useRef, useEffect } from 'react'
+import { TextField, CircularProgress } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
-const CITIES = gql`query CitiesAutocomplete($term: String!) {
+const CITIES = gql`query CitiesAutocomplete($term: String) {
   cities(q: $term, limit: 10) {
     entries {
       id
       city
       humanCountry
+      coord
     }
   }
 }`
 
 export default ({onChange}) => {
-  const [term, setTerm] = useState("")
-  const [options, setOptions] = React.useState([])
-  const variables = {term}
-  const { loading, data, refetch } = useQuery(CITIES, {variables})
+  const [options, setOptions] = useState([])
+  const {loading, data, refetch} = useQuery(CITIES)
 
   useEffect(() => {
     data && setOptions(data.cities.entries)
@@ -30,6 +28,7 @@ export default ({onChange}) => {
       refetch({term: input.inputValue})
       return options
     }}
+    autoComplete={false}
     getOptionSelected={(option, value) => option.id === value.id}
     getOptionLabel={(option) => `${option.city}, ${option.humanCountry}`}
     onChange={(_e, city) => onChange && onChange(city)}
@@ -43,10 +42,10 @@ export default ({onChange}) => {
         InputProps={{
           ...params.InputProps,
           endAdornment: (
-            <React.Fragment>
+            <>
               {loading && <CircularProgress color="inherit" size={20} />}
               {params.InputProps.endAdornment}
-            </React.Fragment>
+            </>
           ),
         }}
       />
