@@ -64,7 +64,7 @@ export default function Player({ city }) {
       fetchSongs(data.artists.entries).then((q) => {
         setAudioState({
           audioIndex: 0,
-          audioQueue: q
+          audioQueue: q.filter(x => x)
         })
       })
   }, [data])
@@ -72,7 +72,8 @@ export default function Player({ city }) {
   const fetchSongs = (artistList) => {
     let audioPromiseQueue = [];
     artistList.forEach(({ name, spotifyId }) => {
-      const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=SE`;
+      const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
+
       let result = fetch(url, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -81,26 +82,23 @@ export default function Player({ city }) {
         .then(res => res.json())
         .then(
           (result) => {
-            const track = result.tracks[0];
-            const track_url = track.preview_url;
-            const track_name = track.name;
-            const audio = new Audio(track_url);
-            return { audio: audio, artistName: name, track_name: track_name }
+            try {
+              const track = result.tracks[0];
+              const track_url = track.preview_url;
+              const track_name = track.name;
+              const audio = new Audio(track_url);
+              return { audio: audio, artistName: name, track_name: track_name }
+            } catch (err) {
+              return null;
+            }
           }
         )
+      
       audioPromiseQueue.push(result);
     })
 
     return Promise.all(audioPromiseQueue)
   }
-
-  // useEffect(() => {
-  //   return () => {
-  //     debugger
-  //     pause()
-  //     console.log('******************* UNMOUNTED');
-  //   };
-  // }, []);
 
   useEffect(() => {
     let a = play();
