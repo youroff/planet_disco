@@ -12,19 +12,22 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     width: "100%",
     margin: 0
+  },
+  children: {
+    maxHeight: "100%"
   }
 }))
 
 export default ({onCitySelect}) => {  
   const classes = useStyles()
-  const [currentCity, setCurrentCity] = useState()
-
+  const [currentCity, setCurrentCity] = useState({id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
+  // console.log(currentCity)
   return <Grid container className={classes.root} spacing={3}>
-    <Grid item xs={3}>
+    <Grid className={classes.children} item xs={3}>
       <Panel onCitySelect={setCurrentCity} />
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
-    <Grid item xs={3}>
+    <Grid className={classes.children} item xs={3}>
       {currentCity && <City city={currentCity} />}
     </Grid>
   </Grid>
