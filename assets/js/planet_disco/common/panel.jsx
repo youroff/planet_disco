@@ -12,7 +12,6 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     padding: theme.spacing(2),
     pointerEvents: "auto",
-    height: "100%",
     '& h1': {
       marginBottom: theme.spacing(2)
     }

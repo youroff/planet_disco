@@ -3,6 +3,7 @@ import { Grid, Hidden } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import City from './city'
 import Panel from './panel'
+import Player from './Player'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +26,7 @@ export default ({onCitySelect}) => {
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
       <Panel onCitySelect={setCurrentCity} />
+      {currentCity && <Player city={currentCity}/>}
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
