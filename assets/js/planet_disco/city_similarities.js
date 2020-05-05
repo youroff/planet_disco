@@ -23,6 +23,8 @@ const styles = theme => ({
   root: {
     letterSpacing: "initial",
     background: 'rgb(34, 37, 45)',
+    width: "100%",
+    height: "100%"
   },
   fixedHeight: {
     height: '50vh',
@@ -54,13 +56,13 @@ class CitySimilarities extends React.Component {
   zoomCanvas = (transform) => {
     this.currentK = transform.k;
     window.requestAnimationFrame(() => {
-      this.ctx.clearRect(0, 0, this.state.width, this.state.height);
-      this.hiddenCtx.clearRect(0, 0, this.state.width, this.state.height);
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.hiddenCtx.clearRect(0, 0, this.width, this.height);
 
       this.data.forEach((d) => {
         let newX = d.cx * transform.k + transform.x;
         let newY = d.cy * transform.k + transform.y;
-        d.visible = (newX > 0 && newX < this.state.width) && (newY > 0 && newY < this.state.height)
+        d.visible = (newX > 0 && newX < this.width) && (newY > 0 && newY < this.height)
       })
 
       this.rescaleContext(this.hiddenCtx, transform);
@@ -114,12 +116,6 @@ class CitySimilarities extends React.Component {
   }
 
   redraw = () => {
-    // this.ctx.clearRect(0, 0, this.state.width, this.state.height);
-    // this.hiddenCtx.clearRect(0, 0, this.state.width, this.state.height);
-
-    // this.drawGlow();
-    // this.drawPoints();
-    // this.drawLabels();
     this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
@@ -147,8 +143,8 @@ class CitySimilarities extends React.Component {
 
   prepareData = () => {
     let data = this.data;
-    let x = d3.scaleLinear().range([0, this.state.width]);
-    let y = d3.scaleLinear().range([this.state.height, 0]);
+    let x = d3.scaleLinear().range([0, this.width]);
+    let y = d3.scaleLinear().range([this.height, 0]);
 
     const labelScale = d3.scaleLinear().range(labelExtent).domain(d3.extent(data, (d) => +d.rank));
     const ex = d3.extent(data, (d) => +d.population);
@@ -175,14 +171,12 @@ class CitySimilarities extends React.Component {
 
   setCanvasDimensions = () => {
     let canvasNode = this.canvas.node()
-    canvasNode.style.width = '100%';
-    canvasNode.style.height = '100%';
 
-    canvasNode.width = this.state.width;
-    canvasNode.height = this.state.height;
+    canvasNode.width = this.width;
+    canvasNode.height = this.height;
 
-    this.hiddenCanvas.width = this.state.width;
-    this.hiddenCanvas.height = this.state.height;
+    this.hiddenCanvas.width = this.width;
+    this.hiddenCanvas.height = this.height;
   }
 
   setCtxProperties = () => {
@@ -204,15 +198,15 @@ class CitySimilarities extends React.Component {
     window.addEventListener('resize', () => { this.updateDimensions(); this.resetCanvas() });
     this.updateDimensions();
     this.handleData().then(() => {
-      if (this.props.city){
-        this.handleSearch(this.props.city.id);   
+      if (this.props.city) {
+        this.handleSearch(this.props.city.id);
       }
     })
   }
 
   componentDidUpdate(prevProps) {
     this.resetSelection();
-    if (this.props.city && (!prevProps.city || this.props.city.id !== prevProps.city.id)){
+    if (this.props.city && (!prevProps.city || this.props.city.id !== prevProps.city.id)) {
       this.handleSearch(this.props.city.id)
     }
   }
@@ -235,10 +229,8 @@ class CitySimilarities extends React.Component {
 
 
   updateDimensions = () => {
-    this.setState({
-      height: this.divElement.parentElement.clientHeight - 15,
-      width: this.divElement.parentElement.clientWidth,
-    })
+    this.height = this.divElement.parentElement.clientHeight - 15;
+    this.width = this.divElement.parentElement.clientWidth;
   };
 
   resetCanvas = () => {
@@ -253,13 +245,12 @@ class CitySimilarities extends React.Component {
   }
 
   resetSelection = () => {
-    debugger;
     if (this.selection)
       this.selection.highlight = false
   }
 
   setSelection = (d) => {
-    this.resetSelection() 
+    this.resetSelection()
     this.selection = d
     d.highlight = true;
   }
@@ -277,7 +268,7 @@ class CitySimilarities extends React.Component {
     if (city) {
       d3.select(this.ctx.canvas).transition().duration(750).call(
         this.zoom.transform,
-        d3.zoomIdentity.translate(this.state.width / 2, this.state.height / 2).scale(10).translate(-city.cx, -city.cy)
+        d3.zoomIdentity.translate(this.width / 2, this.height / 2).scale(10).translate(-city.cx, -city.cy)
       );
     }
   }
