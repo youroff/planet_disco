@@ -62,7 +62,7 @@ class CitySimilarities extends React.Component {
       this.data.forEach((d) => {
         let newX = d.cx * transform.k + transform.x;
         let newY = d.cy * transform.k + transform.y;
-        d.visible = (newX > 0 && newX < this.width) && (newY > 0 && newY < this.height)
+        d.dotVisible = (newX > 0 && newX < this.width) && (newY > 0 && newY < this.height)
       })
 
       this.rescaleContext(this.hiddenCtx, transform);
@@ -73,10 +73,19 @@ class CitySimilarities extends React.Component {
 
       this.drawPoints();
 
-      this.drawLabels();
+      let layout = this.calculateTextLayout();
+      // this.drawBoxes(this.ctx, layout)
+      this.drawLabels(layout);
       this.ctx.restore();
 
     });
+  }
+
+  drawBoxes(ctx, layout){
+    layout.forEach(l => {
+      ctx.fillStyle = "#" + (+l.data.id).toString(16)
+      ctx.fillRect(l.topLeft.x, l.topLeft.y, l.bottomRight.x - l.topLeft.x, l.bottomRight.y - l.topLeft.y)
+    })
   }
 
   drawGlow = () => {
@@ -103,16 +112,95 @@ class CitySimilarities extends React.Component {
 
   showVisible = (f) => {
     this.data.forEach((d) => {
-      if (d.visible)
+      if (d.dotVisible)
         f(d)
     });
   }
 
-  drawLabels = () => {
+  drawLabels = (layout) => {
     this.ctx.fillStyle = "white";
-    let fontSize = Math.max(12 / this.currentK, baseFontSize / (Math.pow(this.currentK, 1.8)));
-    this.ctx.font = CitySimilarities.getFont(fontSize);
-    this.showVisible(d => this.drawLabel(d))
+    layout.forEach(this.drawLabel)
+  }
+
+  labelsOverlap = (a, b) => {
+    if (a.topLeft.x >= b.bottomRight.x || b.topLeft.x >= a.bottomRight.x)
+      return false
+
+    if (a.topLeft.y >= b.bottomRight.y || b.topLeft.y >= a.bottomRight.y)
+      return false
+
+    return true
+  }
+
+  labelXOffset = (textMeasure) => {
+    let x = - textMeasure.width / 2;
+    return x;
+  }
+
+  labelLayout = (d, textMeasure) => {
+    const xOffset = this.labelXOffset(textMeasure);
+    const height = this.fontSize;
+    let width = textMeasure.width;
+    let y = d.cy + labelOffsetY / this.currentK; 
+    let x = d.cx + xOffset;
+    return {
+      xOffset: xOffset,
+      topLeft: { x: x, y: y - height },
+      bottomRight: { x: x + width, y: y },
+      data: d
+    }
+  }
+
+  partitionByExistingTextVisibility(a) {
+    const viz = [];
+    const non_viz = [];
+    a.forEach(a => {
+      if (a.textVisible)
+        viz.push(a)
+      else
+        non_viz.push(a);
+    })
+    return [viz, non_viz]
+  }
+
+  layOut = (toLayout, textLayout) => {
+    toLayout.forEach((d) => {
+      const textMeasure = this.ctx.measureText(d.city);
+      const labelLayout = this.labelLayout(d, textMeasure)
+
+      for (let i = 0; i < textLayout.length; i++) {
+        const other = textLayout[i];
+        if (this.labelsOverlap(labelLayout, other)) {
+          d.textVisible = false;
+          return;
+        }
+      }
+      labelLayout.data.textVisible = true;
+      textLayout.push(labelLayout);
+    })
+
+    return textLayout;
+  }
+
+  labelShouldBeVisible = (d) => {
+    return (d.rank < 11 || d.scale <= this.currentK)
+  }
+
+  calculateTextLayout = () => {
+    this.fontSize = Math.max(12 / this.currentK, baseFontSize / (Math.pow(this.currentK, 1.8)));
+    this.ctx.font = CitySimilarities.getFont(this.fontSize);
+    const [laidOut, toLayout] = this.partitionByExistingTextVisibility(
+      this.data.filter(d => d.dotVisible && this.labelShouldBeVisible(d))
+        .sort((a, b) => a.rank - b.rank))
+
+    const textLayout = this.layOut(laidOut, []);
+
+    return this.layOut(toLayout, textLayout)
+  }
+
+  drawLabel = (layout) => {
+    let d = layout.data;
+    this.ctx.fillText(d.city, layout.topLeft.x , layout.bottomRight.y);
   }
 
   redraw = () => {
@@ -128,17 +216,6 @@ class CitySimilarities extends React.Component {
     context.arc(d.cx, d.cy, radiusScale * d.radius / this.currentK, 0, 2 * Math.PI);
     context.fillStyle = color ? d.color : "white";
     context.fill();
-  }
-
-  drawLabel = (d) => {
-    if (d.rank < 11 || d.scale <= this.currentK) {
-      this.ctx.fillText(d.city, d.cx + this.labelXOffset(d), d.cy + labelOffsetY / this.currentK);
-    }
-  }
-
-  labelXOffset = (d) => {
-    let x = - this.ctx.measureText(d.city).width / 2;
-    return x;
   }
 
   prepareData = () => {
@@ -164,7 +241,7 @@ class CitySimilarities extends React.Component {
       d.geohash_norm = +d.geohash_norm;
       d.color = myColor(d.geohash_norm)
       d.scale = labelScale(d.rank);
-      d.visible = true;
+      d.dotVisible = true;
       d.highlight = false;
     });
   }
@@ -237,7 +314,6 @@ class CitySimilarities extends React.Component {
     this.setCanvasDimensions();
     this.prepareData();
     this.redraw();
-    // this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
   componentWillUnmount() {
