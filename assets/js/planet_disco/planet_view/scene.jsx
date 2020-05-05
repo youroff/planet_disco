@@ -7,21 +7,26 @@ import Cities from './cities'
 import { toRad } from '../common/utils'
 
 
-export default function({currentCity}) {
+export default function ({ currentCity }) {
   const [zoom, updateZoom] = useState(5)
 
-  const {camera} = useThree()
-  useEffect(() => {
+  const { camera } = useThree()
+
+  const updateCity = () => {
     if (currentCity) {
-      const {lat, lng} = currentCity.coord
+      const { lat, lng } = currentCity.coord
       camera.position.setFromSphericalCoords(zoom, toRad(lat - 90), toRad(lng - 90))
       camera.lookAt(0, 0, 0)
       camera.updateProjectionMatrix()
     }
-  }, [currentCity])
+  }
+
+  useEffect(() => {
+   updateCity() 
+  })
 
   return <scene>
-    <Controls onZoom={updateZoom}/>
+    <Controls onZoom={updateZoom} />
     <ambientLight intensity={0.3} />
     <spotLight
       castShadow

@@ -3,7 +3,9 @@ import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
 import { Canvas } from 'react-three-fiber'
 import PlanetView from './planet_view/scene'
 import Overlay from './common/overlay'
+import CitySimilarities from './city_similarities'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { views } from './common/views'
 
 const theme = createMuiTheme({
   palette: {
@@ -15,20 +17,31 @@ const theme = createMuiTheme({
 })
 
 export default () => {
-  const [city, setCity] = useState()
+  const [city, setCity] = useState(null) //{id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
+  const [currentView, setView] = useState(views.PLANET)
+  debugger
 
   return <>
     <ThemeProvider theme={theme}>
-      <Overlay onCitySelect={setCity} />      
+      <Overlay view={currentView} currentCity={city} onCitySelect={setCity} onViewChange={setView} />
     </ThemeProvider>
 
     <ApolloConsumer client>
       {client => (
-        <Canvas shadowMap>
-          <ApolloProvider client={client}>
-            <PlanetView currentCity={city} />
-          </ApolloProvider>
-        </Canvas>
+        (() => {
+          switch (currentView) {
+            case views.PLANET:
+              return (
+                <Canvas shadowMap>
+                  <ApolloProvider client={client}>
+                    <PlanetView currentCity={city} />
+                  </ApolloProvider>
+                </Canvas>)
+            case views.CITY:
+              return <CitySimilarities city={city}/>
+          }
+        })()
+
       )}
     </ApolloConsumer>
   </>

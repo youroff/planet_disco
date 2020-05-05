@@ -5,6 +5,7 @@ import City from './city'
 import Panel from './panel'
 import Player from './Player'
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "absolute",
@@ -19,13 +20,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({onCitySelect}) => {  
+
+
+export default ({currentCity, view, onCitySelect, onViewChange}) => {  
   const classes = useStyles()
-  const [currentCity, setCurrentCity] = useState({id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
+
   // console.log(currentCity)
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
-      <Panel onCitySelect={setCurrentCity} />
+      <Panel view={view} onCitySelect={onCitySelect} onViewChange={onViewChange} />
       {currentCity && <Player city={currentCity}/>}
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />

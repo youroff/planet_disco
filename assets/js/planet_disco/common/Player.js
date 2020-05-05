@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ARTISTS = gql`
  query CityArtists($cityId: ID){
-artists(sortBy: "listeners", byCity: $cityId, limit:10) {
+artists(sortBy: "listeners", byCity: $cityId, limit:1) {
   entries {
     name
     spotifyId
@@ -48,9 +48,10 @@ function getAccessToken() {
   return getParameterByName('access_token');
 }
 
+const accessToken = getAccessToken()
+
 export default function Player({ city }) {
   const classes = useStyles();
-  const accessToken = getAccessToken()
   const [audioState, setAudioState] = useState({
     audioIndex: 0,
     audioQueue: []

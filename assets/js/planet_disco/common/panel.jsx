@@ -2,6 +2,8 @@ import React from 'react'
 import CitySelector from './city_selector'
 import { Paper, Typography, ButtonGroup, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { views } from './views'
+
 import {
   Language as PlanetIcon,
   LocationCity as CitiesIcon,
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({onCitySelect}) => {  
+export default ({view, onCitySelect, onViewChange}) => {  
   const classes = useStyles()
 
   return <Paper className={classes.panel}>
@@ -30,10 +32,10 @@ export default ({onCitySelect}) => {
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">
-      <Button variant="contained">
+      <Button variant={view == views.PLANET ? "contained" : "outlined"} onClick={() => onViewChange(views.PLANET)}>
         <PlanetIcon />
       </Button>
-      <Button>
+      <Button variant={view == views.CITY ? "contained" : "outlined"} onClick={() => onViewChange(views.CITY)}>
         <CitiesIcon />
       </Button>
       <Button>
