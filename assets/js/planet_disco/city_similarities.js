@@ -67,23 +67,22 @@ class CitySimilarities extends React.Component {
 
       this.rescaleContext(this.hiddenCtx, transform);
       this.drawGlow();
+      this.hiddenCtx.clearRect(0, 0, this.width, this.height);
+      let layout = this.calculateTextLayout();
+      this.drawBoxes(this.hiddenCtx, layout);
       this.hiddenCtx.restore();
 
       this.rescaleContext(this.ctx, transform);
-
       this.drawPoints();
-
-      let layout = this.calculateTextLayout();
-      // this.drawBoxes(this.ctx, layout)
       this.drawLabels(layout);
       this.ctx.restore();
-
     });
   }
 
-  drawBoxes(ctx, layout){
+  drawBoxes(ctx, layout) {
     layout.forEach(l => {
-      ctx.fillStyle = "#" + (+l.data.id).toString(16)
+      let color = "#" + (+l.data.id).toString(16).padStart(6, '0')
+      ctx.fillStyle = color
       ctx.fillRect(l.topLeft.x, l.topLeft.y, l.bottomRight.x - l.topLeft.x, l.bottomRight.y - l.topLeft.y)
     })
   }
@@ -103,7 +102,6 @@ class CitySimilarities extends React.Component {
     this.ctx.drawImage(this.hiddenCanvas, 0, 0);
     if (isChrome)
       this.ctx.restore();
-
   }
 
   drawPoints = () => {
@@ -141,7 +139,7 @@ class CitySimilarities extends React.Component {
     const xOffset = this.labelXOffset(textMeasure);
     const height = this.fontSize;
     let width = textMeasure.width;
-    let y = d.cy + labelOffsetY / this.currentK; 
+    let y = d.cy + labelOffsetY / this.currentK;
     let x = d.cx + xOffset;
     return {
       xOffset: xOffset,
@@ -200,7 +198,7 @@ class CitySimilarities extends React.Component {
 
   drawLabel = (layout) => {
     let d = layout.data;
-    this.ctx.fillText(d.city, layout.topLeft.x , layout.bottomRight.y);
+    this.ctx.fillText(d.city, layout.topLeft.x, layout.bottomRight.y);
   }
 
   redraw = () => {
@@ -263,6 +261,18 @@ class CitySimilarities extends React.Component {
     this.ctx.textAlign = "left";
   }
 
+  rgbaToId = (rgba) => {
+    return (rgba[0] << 16) + (rgba[1] << 8) + rgba[2];
+  }
+
+  findUnderMouseId = (e) => {
+    //Figure out where the mouse click occurred.
+    const mouseX = e.layerX;
+    const mouseY = e.layerY;
+    const rgba = this.hiddenCtx.getImageData(mouseX, mouseY, 1, 1).data;
+    return this.rgbaToId(rgba);
+  }
+
   componentDidMount() {
     this.canvas = d3.select(this.canvasRef.current)
     this.ctx = this.canvas.node().getContext("2d");
@@ -271,6 +281,25 @@ class CitySimilarities extends React.Component {
     this.hiddenCtx = this.hiddenCanvas.getContext('2d');
 
     this.setCtxProperties();
+
+    // Listen for clicks on the main canvas
+    this.canvasRef.current.addEventListener("click", (e) => {
+      const id = this.findUnderMouseId(e);
+      let d = this.findCity(id)
+      if (d)
+        this.props.onCitySelect({ id: id, city: d.city, humanCountry: "" })
+    });
+
+    // Listen for mouse move on the main canvas
+    this.canvasRef.current.addEventListener("mousemove", (e) => {
+      const id = this.findUnderMouseId(e);
+      if (this.findCity(id))
+        this.redraw()
+      else {
+        if (this.resetSelection())
+          this.redraw();
+      }
+    });
 
     window.addEventListener('resize', () => { this.updateDimensions(); this.resetCanvas() });
     this.updateDimensions();
@@ -306,7 +335,7 @@ class CitySimilarities extends React.Component {
 
 
   updateDimensions = () => {
-    this.height = this.divElement.parentElement.clientHeight - 15;
+    this.height = this.divElement.parentElement.clientHeight;
     this.width = this.divElement.parentElement.clientWidth;
   };
 
@@ -321,8 +350,12 @@ class CitySimilarities extends React.Component {
   }
 
   resetSelection = () => {
-    if (this.selection)
+    let prev = false;
+    if (this.selection) {
+      prev = this.selection.highlight;
       this.selection.highlight = false
+    }
+    return prev;
   }
 
   setSelection = (d) => {
@@ -331,16 +364,23 @@ class CitySimilarities extends React.Component {
     d.highlight = true;
   }
 
-  handleSearch = (cityId) => {
+  findCity = (cityId) => {
+    if (cityId == 0)
+      return null;
+
     var city = null;
     for (let d of this.data) {
-      if (d.id === cityId) {
+      if (d.id == cityId) {
         city = d;
         this.setSelection(d);
         break;
       }
     }
+    return city;
+  }
 
+  handleSearch = (cityId) => {
+    let city = this.findCity(cityId)
     if (city) {
       d3.select(this.ctx.canvas).transition().duration(750).call(
         this.zoom.transform,

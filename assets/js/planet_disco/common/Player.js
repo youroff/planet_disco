@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ARTISTS = gql`
  query CityArtists($cityId: ID){
-artists(sortBy: "listeners", byCity: $cityId, limit:1) {
+artists(sortBy: "listeners", byCity: $cityId, limit:5) {
   entries {
     name
     spotifyId
@@ -74,7 +74,7 @@ export default function Player({ city }) {
     let audioPromiseQueue = [];
     artistList.forEach(({ name, spotifyId }) => {
       const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
-
+      debugger
       let result = fetch(url, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,

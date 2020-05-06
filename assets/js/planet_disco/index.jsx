@@ -18,8 +18,7 @@ const theme = createMuiTheme({
 
 export default () => {
   const [city, setCity] = useState(null) //{id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
-  const [currentView, setView] = useState(views.PLANET)
-  debugger
+  const [currentView, setView] = useState(views.CITY)
 
   return <>
     <ThemeProvider theme={theme}>
@@ -38,7 +37,7 @@ export default () => {
                   </ApolloProvider>
                 </Canvas>)
             case views.CITY:
-              return <CitySimilarities city={city}/>
+              return <CitySimilarities city={city} onCitySelect={setCity}/>
           }
         })()
 
