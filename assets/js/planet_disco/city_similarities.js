@@ -19,6 +19,18 @@ const isChrome = !!window.chrome;
 const myColor = d3.scaleSequential().domain([0, 1])
   .interpolator(d3.interpolateSpectral);
 
+const PIXEL_RATIO = (function () {
+  var ctx = document.createElement("canvas").getContext("2d"),
+    dpr = window.devicePixelRatio || 1,
+    bsr = ctx.webkitBackingStorePixelRatio ||
+      ctx.mozBackingStorePixelRatio ||
+      ctx.msBackingStorePixelRatio ||
+      ctx.oBackingStorePixelRatio ||
+      ctx.backingStorePixelRatio || 1;
+
+  return dpr / bsr;
+})();
+
 const styles = theme => ({
   root: {
     letterSpacing: "initial",
@@ -131,14 +143,14 @@ class CitySimilarities extends React.Component {
   }
 
   labelXOffset = (textMeasure) => {
-    let x = - textMeasure.width / 2;
+    let x = - textMeasure / 4;
     return x;
   }
 
   labelLayout = (d, textMeasure) => {
     const xOffset = this.labelXOffset(textMeasure);
     const height = this.fontSize;
-    let width = textMeasure.width;
+    let width = textMeasure;
     let y = d.cy + labelOffsetY / this.currentK;
     let x = d.cx + xOffset;
     return {
@@ -163,7 +175,7 @@ class CitySimilarities extends React.Component {
 
   layOut = (toLayout, textLayout) => {
     toLayout.forEach((d) => {
-      const textMeasure = this.ctx.measureText(d.city);
+      const textMeasure = d.city.length * this.fontSize;
       const labelLayout = this.labelLayout(d, textMeasure)
 
       for (let i = 0; i < textLayout.length; i++) {
@@ -247,8 +259,16 @@ class CitySimilarities extends React.Component {
   setCanvasDimensions = () => {
     let canvasNode = this.canvas.node()
 
-    canvasNode.width = this.width;
-    canvasNode.height = this.height;
+    let ratio = chrome ? Math.min(2, PIXEL_RATIO) : 1;
+    console.log(ratio);
+
+    canvasNode.width = this.width * ratio;
+    canvasNode.height = this.height * ratio;
+
+    canvasNode.style.width = this.width + "px";
+    canvasNode.style.height = this.height + "px";
+    this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
 
     this.hiddenCanvas.width = this.width;
     this.hiddenCanvas.height = this.height;
@@ -278,7 +298,7 @@ class CitySimilarities extends React.Component {
     this.ctx = this.canvas.node().getContext("2d");
 
     this.hiddenCanvas = document.createElement('canvas');
-    this.hiddenCtx = this.hiddenCanvas.getContext('2d');
+    this.hiddenCtx = this.hiddenCanvas.getContext('2d', { alpha: false });
 
     this.setCtxProperties();
 
@@ -382,7 +402,7 @@ class CitySimilarities extends React.Component {
   handleSearch = (cityId) => {
     let city = this.findCity(cityId)
     if (city) {
-      d3.select(this.ctx.canvas).transition().duration(750).call(
+      d3.select(this.ctx.canvas).transition().duration(1000).call(
         this.zoom.transform,
         d3.zoomIdentity.translate(this.width / 2, this.height / 2).scale(10).translate(-city.cx, -city.cy)
       );
