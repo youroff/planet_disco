@@ -71,21 +71,22 @@ class CitySimilarities extends React.Component {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.hiddenCtx.clearRect(0, 0, this.width, this.height);
 
-      this.data.forEach((d) => {
+      let visible = this.data.filter((d) => {
         let newX = d.cx * transform.k + transform.x;
         let newY = d.cy * transform.k + transform.y;
         d.dotVisible = (newX > 0 && newX < this.width) && (newY > 0 && newY < this.height)
+        return d.dotVisible
       })
 
       this.rescaleContext(this.hiddenCtx, transform);
-      this.drawGlow();
+      this.drawGlow(visible);
       this.hiddenCtx.clearRect(0, 0, this.width, this.height);
-      let layout = this.calculateTextLayout();
+      let layout = this.calculateTextLayout(visible);
       this.drawBoxes(this.hiddenCtx, layout);
       this.hiddenCtx.restore();
 
       this.rescaleContext(this.ctx, transform);
-      this.drawPoints();
+      this.drawPoints(visible);
       this.drawLabels(layout);
       this.ctx.restore();
     });
@@ -99,16 +100,17 @@ class CitySimilarities extends React.Component {
     })
   }
 
-  drawGlow = () => {
+  drawGlow = (visible) => {
     const radiusScale = 1.5;
-    this.showVisible((d) => {
+    this.hiddenCtx.fillStyle = "white";
+    visible.forEach((d) => {
       if (d.highlight)
-        this.drawPoint(d, this.hiddenCtx, radiusScale, false)
+        this.drawPoint(d, this.hiddenCtx, radiusScale)
     })
 
     if (isChrome) { //Only chrome seems to be able to handle it at the moment
       this.ctx.save();
-      let filter = `blur(${7}px) saturate(110%) brightness(110%) `;
+      let filter = `blur(7px) saturate(110%) brightness(110%) `;
       this.ctx.filter = filter;
     }
     this.ctx.drawImage(this.hiddenCanvas, 0, 0);
@@ -116,16 +118,23 @@ class CitySimilarities extends React.Component {
       this.ctx.restore();
   }
 
-  drawPoints = () => {
-    this.showVisible(d => this.drawPoint(d, this.ctx))
+  drawPoints = (visible) => {
+    let prevColor = null
+    visible.sort((d) => d.color).forEach(d => {
+      if (d.color != prevColor){
+        this.ctx.fillStyle = d.color;
+        prevColor = d.color;
+      }
+      this.drawPoint(d, this.ctx)
+    })
   }
 
-  showVisible = (f) => {
-    this.data.forEach((d) => {
-      if (d.dotVisible)
-        f(d)
-    });
-  }
+  // showVisible = (f) => {
+  //   this.data.forEach((d) => {
+  //     if (d.dotVisible)
+  //       f(d)
+  //   });
+  // }
 
   drawLabels = (layout) => {
     this.ctx.fillStyle = "white";
@@ -196,11 +205,11 @@ class CitySimilarities extends React.Component {
     return (d.rank < 11 || d.scale <= this.currentK)
   }
 
-  calculateTextLayout = () => {
+  calculateTextLayout = (visibleDots) => {
     this.fontSize = Math.max(12 / this.currentK, baseFontSize / (Math.pow(this.currentK, 1.8)));
     this.ctx.font = CitySimilarities.getFont(this.fontSize);
     const [laidOut, toLayout] = this.partitionByExistingTextVisibility(
-      this.data.filter(d => d.dotVisible && this.labelShouldBeVisible(d))
+      visibleDots.filter((d) => this.labelShouldBeVisible(d))
         .sort((a, b) => a.rank - b.rank))
 
     const textLayout = this.layOut(laidOut, []);
@@ -221,10 +230,9 @@ class CitySimilarities extends React.Component {
     return `${fontSize}px Arial, sans-serif`;
   }
 
-  drawPoint = (d, context, radiusScale = 1, color = true) => {
+  drawPoint = (d, context, radiusScale = 1) => {
     context.beginPath();
     context.arc(d.cx, d.cy, radiusScale * d.radius / this.currentK, 0, 2 * Math.PI);
-    context.fillStyle = color ? d.color : "white";
     context.fill();
   }
 
