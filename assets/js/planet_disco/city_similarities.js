@@ -259,7 +259,7 @@ class CitySimilarities extends React.Component {
   setCanvasDimensions = () => {
     let canvasNode = this.canvas.node()
 
-    let ratio = chrome ? Math.min(2, PIXEL_RATIO) : 1;
+    let ratio = isChrome ? Math.min(2, PIXEL_RATIO) : 1;
     console.log(ratio);
 
     canvasNode.width = this.width * ratio;
@@ -298,7 +298,7 @@ class CitySimilarities extends React.Component {
     this.ctx = this.canvas.node().getContext("2d");
 
     this.hiddenCanvas = document.createElement('canvas');
-    this.hiddenCtx = this.hiddenCanvas.getContext('2d', { alpha: false });
+    this.hiddenCtx = this.hiddenCanvas.getContext('2d');
 
     this.setCtxProperties();
 
