@@ -58,6 +58,7 @@ defmodule SpotifyTrackerWeb.Schema do
       arg :limit, :integer
       arg :by_city, :id
       arg :sort_by, :string
+      arg :min_listeners, :integer
       resolve &Resolvers.get_artists/3
     end
 

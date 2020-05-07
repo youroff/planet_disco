@@ -6,8 +6,9 @@ defmodule SpotifyTrackerWeb.Resolvers do
 
 
   def get_artists(_, args, _) do
+    sort = Map.get(args, :sort_by)
     q = Artist
-    |> do_if(Map.get(args, :sort_by) == "listeners" || Map.get(args, :by_city), fn query ->
+    |> do_if(sort == "listeners" || sort == "score"  || Map.get(args, :by_city), fn query ->
       join(query, :left, [a], c in "artist_cities", as: :artist_city, on: c.artist_id == a.id)
     end)
 
@@ -15,13 +16,21 @@ defmodule SpotifyTrackerWeb.Resolvers do
       {:by_city, city_id}, q -> where(q, [_, artist_city: ac], ac.city_id == type(^city_id, :integer))
       _, q -> q
     end)
-    |> sort_artists(Map.get(args, :sort_by))
+    |> do_if(Map.get(args, :min_listeners) != nil, fn query ->
+      limit = Map.get(args, :min_listeners)
+      where(query, [_, artist_city: ac], ac.listeners > type(^limit, :integer))
+    end)
+    |> sort_artists(sort)
     |> Repo.paginate(cursor(args))
     |> ok()
   end
 
   defp sort_artists(q, "listeners") do
     order_by(q, [_, artist_city: ac], [desc: ac.listeners, desc: :id])
+  end
+
+  defp sort_artists(q, "score") do
+    order_by(q, [_, artist_city: ac], [desc: ac.score, desc: :id])
   end
 
   defp sort_artists(q, _) do
