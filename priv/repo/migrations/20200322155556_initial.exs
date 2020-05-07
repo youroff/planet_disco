@@ -51,6 +51,7 @@ defmodule SpotifyTracker.Repo.Migrations.Initial do
       add :artist_id, references(:artists, on_delete: :delete_all), primary_key: true
       add :city_id, references(:cities, on_delete: :delete_all), primary_key: true
       add :listeners, :integer
+      add :score, :float
     end
     create unique_index(:artist_cities, [:artist_id, :city_id])
   end

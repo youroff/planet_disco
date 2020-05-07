@@ -23,7 +23,7 @@ images = Path.absname('priv/repo/seeds/images.csv')
 SpotifyTracker.Repo.query!("COPY images(artist_id,height,path,width) from '#{images}' WITH CSV HEADER;")
 
 artist_cities = Path.absname('priv/repo/seeds/artist_cities.csv')
-SpotifyTracker.Repo.query!("COPY artist_cities(artist_id,city_id,listeners) from '#{artist_cities}' WITH CSV HEADER;")
+SpotifyTracker.Repo.query!("COPY artist_cities(artist_id,city_id,listeners,score) from '#{artist_cities}' WITH CSV HEADER;")
 
 artist_genres = Path.absname('priv/repo/seeds/artist_genres.csv')
 SpotifyTracker.Repo.query!("COPY artist_genres(artist_id,genre_id) from '#{artist_genres}' WITH CSV HEADER;")
