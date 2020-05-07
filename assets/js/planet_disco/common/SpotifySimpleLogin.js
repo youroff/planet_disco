@@ -30,7 +30,7 @@ class SpotifySimpleLogin extends React.Component {
     return (
       <React.Fragment>
         <Box className={classes.root}>
-          <a href={`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=http:%2F%2Flocalhost:4000&scope=user-read-private%20user-read-email&response_type=token&state=123`}>
+          <a href={`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=http:%2F%2Flocalhost:4000&scope=&response_type=token&state=`}>
             <Button
               type="button"
               variant="contained"

@@ -29,7 +29,7 @@ export default ({currentCity, view, onCitySelect, onViewChange}) => {
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
       <Panel view={view} onCitySelect={onCitySelect} onViewChange={onViewChange} />
-      {currentCity && <Player city={currentCity}/>}
+      {/* {currentCity && <Player city={currentCity}/>} */}
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
