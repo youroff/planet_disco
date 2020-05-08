@@ -1,5 +1,5 @@
 import Button from '@material-ui/core/Button';
-import { Box, ButtonGroup } from '@material-ui/core'
+import { Box, ButtonGroup, Hidden } from '@material-ui/core'
 
 import React, { useState, useEffect, Fragment } from 'react'
 import { Grid } from '@material-ui/core';
@@ -12,12 +12,13 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 
+import PlayerLink from './player_link'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flex: '1 0 auto',
+    padding: 0,
+    margin: theme.spacing(2),
+    overflow: "hidden",
   },
   cover: {
     width: 151,
@@ -48,18 +52,7 @@ const useStyles = makeStyles((theme) => ({
     height: 38,
     width: 38,
   },
-  link: {
-    color: "inherit",
-    display: "inline-block",
-    textDecoration: "none",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "90%",
-    '&:hover': {
-      textDecoration: "underline",
-    },
-  }
+
 }));
 
 function getParameterByName(name) {
@@ -181,19 +174,22 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
           <CardContent className={classes.content}>
             {currentAudio &&
               <Fragment>
-                <Typography component="h5" variant="h5">
-                  <a className={classes.link} target="_blank" rel="noopener noreferrer"
-                    href={`https://open.spotify.com/track/${currentAudio.trackId}`}>
-                    {currentAudio.trackName}
-                  </a>
-                </Typography>
-
-                <Typography variant="subtitle1" color="textSecondary">
+                {/* <div key={currentAudio.trackName} className={classes.marqueeWrapper}>
+                  <Typography component="h5" variant="h5">
+                    <a className={classes.link} target="_blank" rel="noopener noreferrer"
+                      href={`https://open.spotify.com/track/${currentAudio.trackId}`}>
+                      {currentAudio.trackName}
+                    </a>
+                  </Typography>
+                </div> */}
+                <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true}/>
+                <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false}/>
+                {/* <Typography variant="subtitle1" color="textSecondary">
                   <a className={classes.link} target="_blank" rel="noopener noreferrer"
                     href={`https://open.spotify.com/artist/${currentAudio.artistId}`}>
                     {currentAudio.artistName}
                   </a>
-                </Typography>
+                </Typography> */}
 
               </Fragment>}
           </CardContent>
