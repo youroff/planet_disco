@@ -3,7 +3,6 @@ import { Grid, Hidden } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import City from './city'
 import Panel from './panel'
-import Player from './Player'
 
 
 const useStyles = makeStyles((theme) => ({

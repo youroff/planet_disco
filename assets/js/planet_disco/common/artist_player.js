@@ -21,11 +21,15 @@ import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import PlayerLink from './player_link'
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    position: "relative",
+  },
   root: {
     display: 'flex',
     width: "100%",
     justifyContent: 'space-between',
-    pointerEvents: "auto"
+    pointerEvents: "auto",
+    zIndex: 10,
   },
   details: {
     flex: '2 0 auto',
@@ -64,55 +68,58 @@ function getAccessToken() {
   return getParameterByName('access_token');
 }
 
-const accessToken = getAccessToken()
-
-const fetchSong = (artist) => {
-  const spotifyId = artist.spotifyId;
-  const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
-  let result = fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  })
-    .then(res => res.json())
-    .then(
-      (result) => {
-        try {
-          const track = result.tracks[0];
-
-          let cover = null;
-          try {
-            cover = track.album.images[1].url;
-          } catch (err) {
-            console.log(err)
-          }
-
-          return {
-            audio: new Audio(track.preview_url),
-            artistName: artist.name,
-            artistId: spotifyId,
-            trackName: track.name,
-            trackId: track.id,
-            albumCover: cover,
-          }
-        } catch (err) {
-          console.log(err)
-          return null;
-        }
-      }
-    )
-  return result;
-}
-
-
 export default function ArtistPlayer({ currentArtist, fetchNext }) {
   const classes = useStyles();
   const theme = useTheme();
   const [playing, setPlaying] = useState(true)
   const [currentAudio, setAudioState] = useState(null)
+  const [accessToken, setAccessToken] = useState(getAccessToken())
+
+  const fetchSong = (artist) => {
+    const spotifyId = artist.spotifyId;
+    const url = `https://api.spotify.com/v1/artists/${spotifyId}/top-tracks?country=CH`;
+    let result = fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          if (result.error && result.error.status == 401){
+            setAccessToken(null)
+            return null;
+          }
+  
+          try {
+            const track = result.tracks[0];
+  
+            let cover = null;
+            try {
+              cover = track.album.images[1].url;
+            } catch (err) {
+              console.log(err)
+            }
+  
+            return {
+              audio: new Audio(track.preview_url),
+              artistName: artist.name,
+              artistId: spotifyId,
+              trackName: track.name,
+              trackId: track.id,
+              albumCover: cover,
+            }
+          } catch (err) {
+            console.log(err)
+            return null;
+          }
+        }
+      )
+    return result;
+  }
 
   useEffect(() => {
-    if (currentArtist) {
+    if (currentArtist && accessToken) {
       fetchSong(currentArtist).then((result) => {
         pause();
         setAudioState(result)
@@ -174,23 +181,8 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
           <CardContent className={classes.content}>
             {currentAudio &&
               <Fragment>
-                {/* <div key={currentAudio.trackName} className={classes.marqueeWrapper}>
-                  <Typography component="h5" variant="h5">
-                    <a className={classes.link} target="_blank" rel="noopener noreferrer"
-                      href={`https://open.spotify.com/track/${currentAudio.trackId}`}>
-                      {currentAudio.trackName}
-                    </a>
-                  </Typography>
-                </div> */}
-                <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true}/>
-                <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false}/>
-                {/* <Typography variant="subtitle1" color="textSecondary">
-                  <a className={classes.link} target="_blank" rel="noopener noreferrer"
-                    href={`https://open.spotify.com/artist/${currentAudio.artistId}`}>
-                    {currentAudio.artistName}
-                  </a>
-                </Typography> */}
-
+                <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
+                <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
               </Fragment>}
           </CardContent>
           <div className={classes.controls}>
@@ -200,7 +192,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
                 : <PlayArrowIcon className={classes.playIcon} />}
             </IconButton>
             <IconButton aria-label="next" onClick={next}>
-              {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
+              <SkipNextIcon />
             </IconButton>
           </div>
         </div>
@@ -213,9 +205,10 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
     )
   }
   return (
-    <Paper className={classes.root}>
-      {accessToken ?
-        getPlayer() : <SpotifySimpleLogin />}
-    </Paper>
+      <Paper className={classes.container}>
+        {getPlayer()}
+        {!accessToken &&
+            <SpotifySimpleLogin />}
+      </Paper>
   )
 }

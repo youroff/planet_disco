@@ -34,7 +34,7 @@ const PIXEL_RATIO = (function () {
 const styles = theme => ({
   root: {
     letterSpacing: "initial",
-    background: 'rgb(34, 37, 45)',
+    // background: 'rgb(9, 19, 36)', // 'rgb(34, 37, 45)',
     width: "100%",
     height: "100%"
   },
@@ -89,6 +89,7 @@ class CitySimilarities extends React.Component {
       this.drawPoints(visible);
       this.drawLabels(layout);
       this.ctx.restore();
+
     });
   }
 
@@ -152,7 +153,7 @@ class CitySimilarities extends React.Component {
   }
 
   labelXOffset = (textMeasure) => {
-    let x = - textMeasure / 4;
+    let x = - textMeasure / 2;
     return x;
   }
 
@@ -184,7 +185,7 @@ class CitySimilarities extends React.Component {
 
   layOut = (toLayout, textLayout) => {
     toLayout.forEach((d) => {
-      const textMeasure = d.city.length * this.fontSize;
+      const textMeasure = this.ctx.measureText(d.city).width; //d.city.length * this.fontSize;
       const labelLayout = this.labelLayout(d, textMeasure)
 
       for (let i = 0; i < textLayout.length; i++) {
@@ -207,7 +208,7 @@ class CitySimilarities extends React.Component {
 
   calculateTextLayout = (visibleDots) => {
     this.fontSize = Math.max(12 / this.currentK, baseFontSize / (Math.pow(this.currentK, 1.8)));
-    this.ctx.font = CitySimilarities.getFont(this.fontSize);
+    this.ctx.font = this.getFont(this.fontSize);
     const [laidOut, toLayout] = this.partitionByExistingTextVisibility(
       visibleDots.filter((d) => this.labelShouldBeVisible(d))
         .sort((a, b) => a.rank - b.rank))
@@ -220,6 +221,12 @@ class CitySimilarities extends React.Component {
   drawLabel = (layout) => {
     let d = layout.data;
     this.ctx.fillText(d.city, layout.topLeft.x, layout.bottomRight.y);
+    if (d.highlight) {
+      this.ctx.fillRect(layout.topLeft.x,
+        layout.bottomRight.y + 2 / this.currentK,
+        (layout.bottomRight.x - layout.topLeft.x),
+        1 / this.currentK)
+    }
   }
 
   redraw = () => {
@@ -227,8 +234,8 @@ class CitySimilarities extends React.Component {
       this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
-  static getFont(fontSize) {
-    return `${fontSize}px Arial, sans-serif`;
+  getFont = (fontSize) => {
+    return `600 ${fontSize}px Helvetica Neue, sans-serif` // ${this.props.theme.typography.fontFamily}`;
   }
 
   drawPoint = (d, context, radiusScale = 1) => {
@@ -285,7 +292,7 @@ class CitySimilarities extends React.Component {
 
   setCtxProperties = () => {
     this.canvas.style.position = "absolute";
-    this.ctx.font = CitySimilarities.getFont(baseFontSize);
+    this.ctx.font = this.getFont(baseFontSize);
     this.ctx.textBaseline = "middle";
     this.ctx.textAlign = "left";
   }
@@ -439,4 +446,4 @@ CitySimilarities.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CitySimilarities);
+export default withStyles(styles, { withTheme: true })(CitySimilarities);

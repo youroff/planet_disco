@@ -28,7 +28,7 @@ export default ({view, onCitySelect, onViewChange}) => {
 
   return <Paper className={classes.panel}>
     <Typography variant="h4" component="h1">
-      Spotify Tracker
+     <b>Disco Planet</b>
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">

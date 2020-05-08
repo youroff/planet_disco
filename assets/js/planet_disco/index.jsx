@@ -6,14 +6,28 @@ import Overlay from './common/overlay'
 import CitySimilarities from './city_similarities'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { views } from './common/views'
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
+    primary: {
+      main: '#df616d',
+    },
+    secondary: {
+      main: '#433e60',
+    },
     background: {
-      paper: 'rgba(66, 66, 66, 0.6)'
-    }
-  }
+      default: "#091324",
+      paper: 'rgba(71, 80, 98, 0.6)', // 'rgba(89, 100, 117, 0.6)' //'rgba(66, 66, 66, 0.6)'
+    },
+  },
+  typography: {
+    fontFamily: [
+      'Roboto, Helvetica Neue, sans-serif',
+    ].join(','),
+  },
 })
 
 export default () => {
@@ -22,8 +36,9 @@ export default () => {
 
   return <>
     <ThemeProvider theme={theme}>
+    <CssBaseline />
       <Overlay view={currentView} currentCity={city} onCitySelect={setCity} onViewChange={setView} />
-    </ThemeProvider>
+    
 
     <ApolloConsumer client>
       {client => (
@@ -37,11 +52,13 @@ export default () => {
                   </ApolloProvider>
                 </Canvas>)
             case views.CITY:
-              return <CitySimilarities city={city} onCitySelect={setCity}/>
+              return <CitySimilarities city={city} onCitySelect={setCity} />
           }
         })()
 
       )}
     </ApolloConsumer>
+
+    </ThemeProvider>
   </>
 }
