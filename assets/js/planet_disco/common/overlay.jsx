@@ -31,7 +31,7 @@ export default ({currentCity, view, onCitySelect, onViewChange}) => {
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
-      {currentCity && <City city={currentCity} />}
+      {currentCity && <City view={view} city={currentCity} />}
     </Grid>
   </Grid>
 }

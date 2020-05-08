@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { Paper, Typography, Slider, Button, ButtonGroup } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import TopArtists from './top_artists'
 import TopGenres from './top_genres'
+import view, { views } from './views'
 
 const useStyles = makeStyles((theme) => ({
   city: {
@@ -22,33 +23,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({city}) => {
+export default ({ view, city }) => {
   const classes = useStyles()
   const [selector, setSelector] = useState('artists')
 
-  return  <Paper className={classes.city}>
+  return <Paper className={classes.city}>
     <div>
       <Typography variant="h5" gutterBottom>
         {city.city}, {city.humanCountry}
       </Typography>
+      {view == views.PLANET &&
+        <Fragment>
+          <Typography variant="subtitle1">
+            Threshold distance
+          </Typography>
 
-      <Typography variant="subtitle1">
-        Threshold distance
-      </Typography>
+          <Typography variant="caption">
+            Only those similar cities that are at this distance or farther will be displayed
+          </Typography>
 
-      <Typography variant="caption">
-        Only those similar cities will be displayed that at this distance and farther
-      </Typography>
-
-      <Slider
-        defaultValue={500}
-        step={10}
-        marks
-        min={0}
-        max={5000}
-        track="inverted"
-        valueLabelDisplay="auto"
-      />
+          <Slider
+            defaultValue={500}
+            step={10}
+            marks
+            min={0}
+            max={5000}
+            track="inverted"
+            valueLabelDisplay="auto"
+          />
+        </Fragment>
+      }
 
       <ButtonGroup className={classes.selector} fullWidth size="large">
         <Button
@@ -63,8 +67,8 @@ export default ({city}) => {
         >
           Top genres
         </Button>
-      </ButtonGroup>            
+      </ButtonGroup>
     </div>
-    {selector == 'artists' ? <TopArtists city={city} /> : <TopGenres city={city} />}    
+    {selector == 'artists' ? <TopArtists city={city} /> : <TopGenres city={city} />}
   </Paper>
 }

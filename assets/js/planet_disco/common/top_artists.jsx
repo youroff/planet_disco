@@ -4,10 +4,16 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
+
 import ArtistPlayer from './artist_player'
 
-const TOP_ARTISTS = gql`query TopArtists($cityId: ID, $cursor: String) {
-  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: "listeners") {
+const TOP_ARTISTS = gql`query TopArtists($cityId: ID, $cursor: String, $sort: String, $minListeners: Int) {
+  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: $sort, minListeners: $minListeners) {
     entries {
       name
       spotifyId
@@ -30,6 +36,15 @@ const useStyles = makeStyles((theme) => ({
     '& li:last-child': {
       display: 'none'
     }
+  },
+  formControl: {
+    marginTop: theme.spacing(2),
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  controlItem: {
+    flex: '1 1 auto',
+    margin: theme.spacing(1),
   }
 }))
 
@@ -45,15 +60,30 @@ const updateQuery = (base, { fetchMoreResult }) => {
 }
 
 const trigger = 600
+let lastSort = 'score'
 
 export default ({ city }) => {
   const classes = useStyles()
 
-  const variables = { cityId: city.id }
+  const [sortBy, setSortBy] = useState(lastSort);
+  const [minListeners, setMinListeners] = useState(100)
+
+  const variables = { cityId: city.id, sort: sortBy, minListeners: minListeners }
   const { loading, data, fetchMore } = useQuery(TOP_ARTISTS, { variables, fetchPolicy: "cache-and-network" })
   const [artistIdx, setArtistIdx] = useState(0)
 
-  useEffect(() => setArtistIdx(0), [city])
+  useEffect(() => setArtistIdx(0), [city, sortBy])
+
+  const handleSortUpdate = (event) => {
+    lastSort = event.target.value
+    setSortBy(lastSort);
+  };
+
+  const handleMinListenersUpdate = (event) => {
+    let val = event.target.value
+    if (val != "")
+      setMinListeners(+val);
+  };
 
   const fetchNextArtist = () => {
     if (!data) {
@@ -70,11 +100,29 @@ export default ({ city }) => {
         variables: { ...variables, cursor: data.artists.cursor },
         updateQuery
       })
-    setArtistIdx(-1)
+    else
+      setArtistIdx(-1)
   }
 
   return (
     <Fragment>
+      <form className={classes.formControl}>
+        <FormControl className={classes.controlItem} >
+          <InputLabel shrink>
+            Sort by
+          </InputLabel>
+          <Select
+            value={sortBy}
+            onChange={handleSortUpdate}
+            displayEmpty
+          >
+            <MenuItem value={"listeners"}>Absolute listeners</MenuItem>
+            <MenuItem value={"score"}>Z-score</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField className={classes.controlItem} id="standard-helperText" label="Min listeners" value={minListeners} onChange={handleMinListenersUpdate} />
+      </form>
+
       <List
         className={classes.root}
         onScroll={(e) => {
