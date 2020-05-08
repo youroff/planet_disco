@@ -56,8 +56,8 @@ class CitySimilarities extends React.Component {
 
     this.canvasRef = React.createRef();
     this.currentK = initialScale;
+    this.inTransition = false;
   }
-
 
   rescaleContext = (context, transform) => {
     context.save();
@@ -121,7 +121,7 @@ class CitySimilarities extends React.Component {
   drawPoints = (visible) => {
     let prevColor = null
     visible.sort((d) => d.color).forEach(d => {
-      if (d.color != prevColor){
+      if (d.color != prevColor) {
         this.ctx.fillStyle = d.color;
         prevColor = d.color;
       }
@@ -223,7 +223,8 @@ class CitySimilarities extends React.Component {
   }
 
   redraw = () => {
-    this.zoom.scaleTo(this.canvas, this.currentK);
+    if (!this.inTransition)
+      this.zoom.scaleTo(this.canvas, this.currentK);
   }
 
   static getFont(fontSize) {
@@ -353,7 +354,9 @@ class CitySimilarities extends React.Component {
 
       this.zoom = d3.zoom()
         .scaleExtent(zoomExtent)
-        .on("zoom", () => this.zoomCanvas(d3.event.transform));
+        .on("start", () => this.inTransition = true)
+        .on("zoom", () => this.zoomCanvas(d3.event.transform))
+        .on("end", () => this.inTransition = false)
 
       d3.select(this.ctx.canvas).call(this.zoom);
       this.zoom.scaleTo(this.canvas, initialScale);
