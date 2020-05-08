@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     '& h1': {
       marginBottom: theme.spacing(2)
-    }
+    },
+    backdropFilter: "blur(6px)"
   },
   selector: {
     marginTop: theme.spacing(3)

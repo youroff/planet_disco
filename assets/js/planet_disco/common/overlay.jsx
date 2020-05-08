@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   children: {
-    maxHeight: "100%"
+    maxHeight: "100%",
   }
 }))
 

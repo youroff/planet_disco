@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: "auto",
     '& h1': {
       marginBottom: theme.spacing(2)
-    }
+    },
+    backdropFilter: "blur(6px)"
   },
   switch: {
     marginBottom: theme.spacing(3)
