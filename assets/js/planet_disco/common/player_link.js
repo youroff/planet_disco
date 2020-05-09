@@ -43,14 +43,10 @@ const useStyles = makeStyles((theme) => ({
 export default function PlayerLink({ href, content, header }) {
   const elementRef = useRef()
   const classes = useStyles()
-  const [_class, setClass] = useState()
 
   useEffect(() => {
     if (isOverflown(elementRef.current)) {
-      setClass(classes.marqueeWrapper)
-    }
-    else{
-      setClass(null)
+      elementRef.current.classList.add(classes.marqueeWrapper);
     }
   }, [content])
 
@@ -62,9 +58,10 @@ export default function PlayerLink({ href, content, header }) {
   )
 
   return (
-    <div ref={elementRef} key={content} className={_class} >
+    <div ref={elementRef} key={content}>
       {header ?
         <Typography component="h5" variant="h5"> {getInner()} </Typography>
         : <Typography variant="subtitle1" color="textSecondary"> {getInner()} </Typography>}
-    </div >)
+    </div >
+  )
 }
