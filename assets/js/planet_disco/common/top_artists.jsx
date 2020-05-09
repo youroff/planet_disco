@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import PersonIcon from '@material-ui/icons/Person';
 
 import ArtistPlayer from './artist_player'
 
@@ -45,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
   controlItem: {
     flex: '1 1 auto',
     margin: theme.spacing(1),
+  },
+  placeHolderAvatar: {
+    color: theme.palette.secondary.main,
+    backgroundColor: theme.palette.getContrastText(theme.palette.background.paper) ,
   }
 }))
 
@@ -137,9 +142,15 @@ export default ({ city }) => {
       >
         {data && data.artists.entries.map((artist, i) => (<Fragment key={i}>
           <ListItem selected={i == artistIdx} alignItems="flex-start" onClick={() => setArtistIdx(i)}>
-            {artist.images[0] && <ListItemAvatar>
-              <Avatar alt={artist.name} src={artist.images[0].path} />
-            </ListItemAvatar>}
+            <ListItemAvatar>
+              {artist.images[0] ?
+                <Avatar alt={artist.name} src={artist.images[0].path} />
+                :
+                <Avatar className={classes.placeHolderAvatar} alt={artist.name}>
+                  <PersonIcon/>
+                </Avatar>
+              }
+            </ListItemAvatar>
             <ListItemText
               primary={`#${i + 1} ${artist.name}`}
               secondary={artist.genres.map(g => g.name).join(', ')}
