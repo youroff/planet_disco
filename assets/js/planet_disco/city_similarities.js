@@ -79,7 +79,7 @@ class CitySimilarities extends React.Component {
       })
 
       this.rescaleContext(this.hiddenCtx, transform);
-      this.drawGlow(visible);
+      // this.drawGlow(visible);
       this.hiddenCtx.clearRect(0, 0, this.width, this.height);
       let layout = this.calculateTextLayout(visible);
       this.drawBoxes(this.hiddenCtx, layout);
