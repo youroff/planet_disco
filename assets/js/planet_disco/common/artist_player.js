@@ -69,7 +69,6 @@ function getAccessToken() {
 
 export default function ArtistPlayer({ currentArtist, fetchNext }) {
   const classes = useStyles();
-  const theme = useTheme();
   const [playing, setPlaying] = useState(true)
   const [currentAudio, setAudioState] = useState(null)
   const [accessToken, setAccessToken] = useState(getAccessToken())
@@ -85,21 +84,21 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
       .then(res => res.json())
       .then(
         (result) => {
-          if (result.error && result.error.status == 401){
+          if (result.error && result.error.status == 401) {
             setAccessToken(null)
             return null;
           }
-  
+
           try {
             const track = result.tracks[0];
-  
+
             let cover = null;
             try {
               cover = track.album.images[1].url;
             } catch (err) {
               console.log(err)
             }
-  
+
             return {
               audio: new Audio(track.preview_url),
               artistName: artist.name,
@@ -140,9 +139,11 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
   }
 
   useEffect(() => {
-    if (!currentAudio)
+    if (!currentAudio){
       // setPlaying(false)
+      debugger
       fetchNext()
+    }
     else
       setPlaying(true)
   }, [currentAudio])
@@ -180,16 +181,17 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
           <CardContent className={classes.content}>
             {currentAudio ?
               <Fragment>
-                <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
-                <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
-              </Fragment>:
-              
-              <Fragment>
-                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"80%"} height={"35px"}/>
-                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"60%"} height={"20px"}/>
+                <div onClick={pause}>
+                  <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
+                  <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
+                </div>
               </Fragment>
-
-              }
+              :
+              <Fragment>
+                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"80%"} height={"35px"} />
+                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"60%"} height={"20px"} />
+              </Fragment>
+            }
           </CardContent>
           <div className={classes.controls}>
             <IconButton aria-label="play/pause" onClick={() => setPlaying(!playing)}>
@@ -211,10 +213,10 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
     )
   }
   return (
-      <Paper className={classes.container}>
-        {getPlayer()}
-        {!accessToken &&
-            <SpotifySimpleLogin />}
-      </Paper>
+    <Paper className={classes.container}>
+      {getPlayer()}
+      {!accessToken &&
+        <SpotifySimpleLogin />}
+    </Paper>
   )
 }
