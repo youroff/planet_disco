@@ -140,8 +140,6 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
 
   useEffect(() => {
     if (!currentAudio){
-      // setPlaying(false)
-      debugger
       fetchNext()
     }
     else
