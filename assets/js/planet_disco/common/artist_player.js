@@ -1,8 +1,4 @@
-import Button from '@material-ui/core/Button';
-import { Box, ButtonGroup, Hidden } from '@material-ui/core'
-
 import React, { useState, useEffect, Fragment } from 'react'
-import { Grid } from '@material-ui/core';
 
 import { Paper } from '@material-ui/core'
 import SpotifySimpleLogin from './SpotifySimpleLogin';
@@ -13,10 +9,11 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
+
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import PlayerLink from './player_link'
 
@@ -56,7 +53,9 @@ const useStyles = makeStyles((theme) => ({
     height: 38,
     width: 38,
   },
-
+  placeholder: {
+    backgroundColor: theme.palette.background.default,
+  }
 }));
 
 function getParameterByName(name) {
@@ -179,11 +178,18 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
       <Card className={classes.root}>
         <div className={classes.details}>
           <CardContent className={classes.content}>
-            {currentAudio &&
+            {currentAudio ?
               <Fragment>
                 <PlayerLink href={`https://open.spotify.com/track/${currentAudio.trackId}`} content={currentAudio.trackName} header={true} />
                 <PlayerLink href={`https://open.spotify.com/artist/${currentAudio.artistId}`} content={currentAudio.artistName} header={false} />
-              </Fragment>}
+              </Fragment>:
+              
+              <Fragment>
+                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"80%"} height={"35px"}/>
+                <Skeleton className={classes.placeholder} variant="text" animation={false} width={"60%"} height={"20px"}/>
+              </Fragment>
+
+              }
           </CardContent>
           <div className={classes.controls}>
             <IconButton aria-label="play/pause" onClick={() => setPlaying(!playing)}>

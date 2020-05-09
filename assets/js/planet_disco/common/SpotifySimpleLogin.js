@@ -19,7 +19,8 @@ const styles = theme => ({
     flexDirection: "column",
     justifyContent: "center",
     align: "center",
-  }
+    backgroundColor: 'rgba(71, 80, 98, 0.8)',
+  },
 });
 
 const clientId = "6371ef37c4fc48a18b52a3837f1b51a9"
