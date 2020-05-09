@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react'
 
 import { Paper } from '@material-ui/core'
-import SpotifySimpleLogin from './SpotifySimpleLogin';
+import SpotifySimpleLogin from './spotify_simple_login';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';

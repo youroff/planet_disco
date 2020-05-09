@@ -34,7 +34,6 @@ const PIXEL_RATIO = (function () {
 const styles = theme => ({
   root: {
     letterSpacing: "initial",
-    // background: 'rgb(9, 19, 36)', // 'rgb(34, 37, 45)',
     width: "100%",
     height: "100%"
   },
@@ -129,13 +128,6 @@ class CitySimilarities extends React.Component {
       this.drawPoint(d, this.ctx)
     })
   }
-
-  // showVisible = (f) => {
-  //   this.data.forEach((d) => {
-  //     if (d.dotVisible)
-  //       f(d)
-  //   });
-  // }
 
   drawLabels = (layout) => {
     this.ctx.fillStyle = "white";

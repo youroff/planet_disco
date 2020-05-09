@@ -3,7 +3,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 function isOverflown(element) {
-  // debugger
   return element.scrollWidth > element.clientWidth;
 }
 
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     "33%": {
       transform: "translate(-100%, 0)"
     },
-    "33.001%": {
+    "33.0001%": {
       transform: "translate(100%, 0)"
     },
     "66%": {
