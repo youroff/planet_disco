@@ -30,7 +30,7 @@ export default ({view, onCitySelect, onViewChange}) => {
 
   return <Paper className={classes.panel}>
     <Typography variant="h4" component="h1">
-     <b>Disco Planet</b>
+     <b>Disco Planet  {String.fromCodePoint(0x1F30D)}</b>
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">
