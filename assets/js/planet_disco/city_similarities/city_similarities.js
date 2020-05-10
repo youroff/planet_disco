@@ -179,41 +179,43 @@ class CitySimilarities extends React.Component {
 
     this.textLayout = new TextUtils(this.ctx, this.hiddenCtx)
     this.pointsLayout = new PointsLayout(this.ctx)
-
-    // Listen for clicks on the main canvas
-    this.canvasRef.current.addEventListener("click", (e) => {
-      const id = this.textLayout.findUnderMouseId(e);
-      let d = this.citySelector.findCity(id)
-      if (d) {
-        this.props.client.query({
-          query: RETRIEVE_CITY_BY_ID,
-          variables: { cityId: d.id }
-        })
-          .then((res) => 
-            this.props.onCitySelect(res.data.cities.entries[0])
-          )
-      }
-    });
-
-    // Listen for mouse move on the main canvas
-    this.canvasRef.current.addEventListener("mousemove", (e) => {
-      const id = this.textLayout.findUnderMouseId(e);
-      if (this.citySelector.findCity(id))
-        this.redraw()
-      else {
-        if (this.citySelector.resetSelection())
-          this.redraw();
-      }
-    });
-
-    window.addEventListener('resize', () => { this.updateDimensions(); this.resetCanvas() });
     this.updateDimensions();
     this.handleData().then(() => {
+      window.addEventListener('resize', this.handleResize);
+
+      // Listen for clicks on the main canvas
+      this.canvasRef.current.addEventListener("click", (e) => {
+        const id = this.textLayout.findUnderMouseId(e);
+        let d = this.citySelector.findCity(id)
+        if (d) {
+          this.props.client.query({
+            query: RETRIEVE_CITY_BY_ID,
+            variables: { cityId: d.id }
+          })
+            .then((res) =>
+              this.props.onCitySelect(res.data.cities.entries[0])
+            )
+        }
+      });
+
+      // Listen for mouse move on the main canvas
+      this.canvasRef.current.addEventListener("mousemove", (e) => {
+        const id = this.textLayout.findUnderMouseId(e);
+        if (this.citySelector.findCity(id))
+          this.redraw()
+        else {
+          if (this.citySelector.resetSelection())
+            this.redraw();
+        }
+      });
+
       if (this.props.city) {
         this.handleSearch(this.props.city.id);
       }
     })
   }
+
+  handleResize = () => { this.updateDimensions(); this.resetCanvas() }
 
   componentDidUpdate(prevProps) {
     this.citySelector.resetSelection();
@@ -252,7 +254,7 @@ class CitySimilarities extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
+    window.removeEventListener('resize', this.handleResize);
   }
 
   handleSearch = (cityId) => {
