@@ -39,11 +39,18 @@ defmodule SpotifyTracker.Repo.Migrations.Initial do
       add :human_region, :string
       add :human_country, :string, null: false
       add :population, :integer
+      add :geohash, :float
     end
 
     execute("SELECT AddGeometryColumn ('cities','coord',4326,'POINT',2);", "")
     create index("cities", [:coord],
       name: :providers_geo_index,
+      using: "GIST"
+    )
+
+    execute("SELECT AddGeometryColumn ('cities','em_coord',4326,'POINT',2);", "")
+    create index("cities", [:em_coord],
+      name: :providers_em_index,
       using: "GIST"
     )
 

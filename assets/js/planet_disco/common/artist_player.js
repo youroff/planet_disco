@@ -139,7 +139,7 @@ export default function ArtistPlayer({ currentArtist, fetchNext }) {
   }
 
   useEffect(() => {
-    if (!currentAudio){
+    if (!currentAudio) {
       fetchNext()
     }
     else

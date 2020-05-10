@@ -46,6 +46,8 @@ defmodule SpotifyTrackerWeb.Schema do
     field :human_country, non_null(:string)
     field :population,    non_null(:integer)
     field :coord,         non_null(:location)
+    field :em_coord,      :location
+    field :geohash,       :float
 
     # many_to_many :artists, Artist, join_through: "artist_cities"
   end
@@ -67,6 +69,8 @@ defmodule SpotifyTrackerWeb.Schema do
       arg :cursor, :string
       arg :limit, :integer
       arg :q, :string
+      arg :has_embedding, :boolean
+      arg :sort_by, :string
       resolve &Resolvers.get_cities/3
     end
 
