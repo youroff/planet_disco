@@ -6,6 +6,7 @@ import * as d3 from 'd3'
 import { TextUtils } from './text_layout';
 import { PointsLayout } from './point_layout';
 import { CitySelector } from './city_selection';
+import { gql } from 'apollo-boost'
 
 const zoomExtent = [0.7, 32];
 const labelExtent = [1, 10];
@@ -28,6 +29,22 @@ const PIXEL_RATIO = (function () {
 
   return dpr / bsr;
 })();
+
+
+const RETRIEVE_CITY_BY_ID = gql`
+  query CityById($cityId: String) {
+    cities(byId: $cityId){
+      entries {
+        id,
+        city,
+        population,
+        humanCountry,
+        coord
+      }
+      cursor
+    }
+  }
+`;
 
 const styles = theme => ({
   root: {
@@ -167,8 +184,15 @@ class CitySimilarities extends React.Component {
     this.canvasRef.current.addEventListener("click", (e) => {
       const id = this.textLayout.findUnderMouseId(e);
       let d = this.citySelector.findCity(id)
-      if (d)
-        this.props.onCitySelect({ id: id, city: d.city, humanCountry: "" })
+      if (d) {
+        this.props.client.query({
+          query: RETRIEVE_CITY_BY_ID,
+          variables: { cityId: d.id }
+        })
+          .then((res) => 
+            this.props.onCitySelect(res.data.cities.entries[0])
+          )
+      }
     });
 
     // Listen for mouse move on the main canvas

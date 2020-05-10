@@ -36,28 +36,30 @@ export default () => {
 
   return <>
     <ThemeProvider theme={theme}>
-    <CssBaseline />
+      <CssBaseline />
       <Overlay view={currentView} currentCity={city} onCitySelect={setCity} onViewChange={setView} />
-    
 
-    <ApolloConsumer client>
-      {client => (
-        (() => {
-          switch (currentView) {
-            case views.PLANET:
-              return (
-                <Canvas shadowMap>
-                  <ApolloProvider client={client}>
-                    <PlanetView currentCity={city} />
-                  </ApolloProvider>
-                </Canvas>)
-            case views.CITY:
-              return <CitySimilarities city={city} onCitySelect={setCity} />
-          }
-        })()
 
-      )}
-    </ApolloConsumer>
+      <ApolloConsumer client>
+        {client => (
+          (() => {
+            switch (currentView) {
+              case views.PLANET:
+                return (
+                  <Canvas shadowMap>
+                    <ApolloProvider client={client}>
+                      <PlanetView currentCity={city} />
+                    </ApolloProvider>
+                  </Canvas>)
+              case views.CITY:
+                return (
+                  <CitySimilarities client={client} city={city} onCitySelect={setCity} />
+                )
+            }
+          })()
+
+        )}
+      </ApolloConsumer>
 
     </ThemeProvider>
   </>
