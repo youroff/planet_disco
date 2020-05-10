@@ -69,6 +69,7 @@ defmodule SpotifyTrackerWeb.Schema do
       arg :cursor, :string
       arg :limit, :integer
       arg :q, :string
+      arg :by_id, :string
       arg :has_embedding, :boolean
       arg :sort_by, :string
       resolve &Resolvers.get_cities/3

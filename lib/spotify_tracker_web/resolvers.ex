@@ -35,7 +35,10 @@ defmodule SpotifyTrackerWeb.Resolvers do
   end
 
   def get_cities(_, args, _) do
-    City
+    City 
+    |>  do_if(Map.get(args, :by_id)!= nil, fn q ->
+          where(q, [c], c.id == ^args.by_id)
+        end)
     |> filter_embedding(args)
     |> sort_cities(args)
     |> Repo.paginate(cursor(args))
