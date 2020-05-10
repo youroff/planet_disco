@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Dashboard from './Dashboard'
 import PlanetDisco from './planet_disco'
 import ApolloClient from 'apollo-boost'
@@ -13,9 +13,8 @@ export default () => (
   <Router>
     <ApolloProvider client={client}>
       <Switch>
-        <Route path="/">
-          <PlanetDisco />
-        </Route>
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/" component={PlanetDisco} />
       </Switch>
     </ApolloProvider>
   </Router>

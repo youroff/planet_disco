@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TextField, CircularProgress } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
@@ -17,7 +17,7 @@ const CITIES = gql`query CitiesAutocomplete($term: String) {
 
 export default ({onChange}) => {
   const [options, setOptions] = useState([])
-  const {loading, data, refetch} = useQuery(CITIES)
+  const { loading, data, refetch } = useQuery(CITIES)
 
   useEffect(() => {
     data && setOptions(data.cities.entries)

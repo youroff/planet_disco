@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import City from './city'
 import Panel from './panel'
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     position: "absolute",
@@ -15,22 +14,20 @@ const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   children: {
-    maxHeight: "100%",
+    maxHeight: "100%"
   }
 }))
 
-
-
-export default ({currentCity, view, onCitySelect, onViewChange}) => {  
+export default ({onCitySelect}) => {  
   const classes = useStyles()
-
+  const [currentCity, setCurrentCity] = useState({id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
-      <Panel view={view} onCitySelect={onCitySelect} onViewChange={onViewChange} />
+      <Panel onCitySelect={setCurrentCity} />      
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
-      {currentCity && <City view={view} city={currentCity} />}
+      {currentCity && <City city={currentCity} />}
     </Grid>
   </Grid>
 }

@@ -13,8 +13,10 @@ defmodule SpotifyTrackerWeb.Resolvers do
     end)
 
     Enum.reduce(args, q, fn
-      {:by_city, city_id}, q -> where(q, [_, artist_city: ac], ac.city_id == type(^city_id, :integer))
-      {:min_listeners, limit}, q -> where(q, [_, artist_city: ac], ac.listeners > ^limit)
+      {:by_city, city_id}, q ->
+        where(q, [_, artist_city: ac], ac.city_id == type(^city_id, :integer))
+      {:min_listeners, limit}, q ->
+        where(q, [_, artist_city: ac], ac.listeners > ^limit)
       _, q -> q
     end)
     |> sort_artists(sort)
@@ -35,7 +37,7 @@ defmodule SpotifyTrackerWeb.Resolvers do
   end
 
   def get_cities(_, args, _) do
-    City 
+    City
     |>  do_if(Map.get(args, :by_id)!= nil, fn q ->
           where(q, [c], c.id == ^args.by_id)
         end)
@@ -45,7 +47,7 @@ defmodule SpotifyTrackerWeb.Resolvers do
     |> ok()
   end
 
-  defp filter_embedding(q, %{has_embedding: true}) do 
+  defp filter_embedding(q, %{has_embedding: true}) do
     where(q, [c], not is_nil(c.em_coord))
   end
 
@@ -72,4 +74,8 @@ defmodule SpotifyTrackerWeb.Resolvers do
 
   defp do_if(q, true, f), do: f.(q)
   defp do_if(q, false, f), do: q
+
+  defp not_nulls(args) do
+    Enum.filter(args, &!is_nil(elem(&1, 1)))
+  end
 end
