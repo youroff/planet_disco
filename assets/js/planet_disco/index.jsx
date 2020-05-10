@@ -3,7 +3,7 @@ import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
 import { Canvas } from 'react-three-fiber'
 import PlanetView from './planet_view/scene'
 import Overlay from './common/overlay'
-import CitySimilarities from './city_similarities'
+import CitySimilarities from './city_similarities/city_similarities'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { views } from './common/views'
 import CssBaseline from '@material-ui/core/CssBaseline';
