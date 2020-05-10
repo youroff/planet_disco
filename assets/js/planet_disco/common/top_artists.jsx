@@ -121,11 +121,11 @@ export default ({ city }) => {
             onChange={handleSortUpdate}
             displayEmpty
           >
-            <MenuItem value={"listeners"}>Absolute listeners</MenuItem>
-            <MenuItem value={"score"}>Z-score</MenuItem>
+            <MenuItem value={"listeners"}>Most popular</MenuItem>
+            <MenuItem value={"score"}>Most specific</MenuItem>
           </Select>
         </FormControl>
-        <TextField className={classes.controlItem} id="standard-helperText" label="Min listeners" value={minListeners} onChange={handleMinListenersUpdate} />
+        <TextField className={classes.controlItem} id="standard-helperText" label="Min. listeners in the city" value={minListeners} onChange={handleMinListenersUpdate} />
       </form>
 
       <List

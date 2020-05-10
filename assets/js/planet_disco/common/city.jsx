@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     '& h1': {
       marginBottom: theme.spacing(2)
     },
-    backdropFilter: "blur(6px)"
+    // backdropFilter: "blur(6px)",
+    // backfaceVisibility: "hidden"
   },
   selector: {
     marginTop: theme.spacing(3)
