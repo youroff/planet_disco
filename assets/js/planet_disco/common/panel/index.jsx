@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import CitySelector from './city_selector'
+import GenreSelector from './genre_selector'
 import { Paper, Typography, ButtonGroup, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -11,10 +12,13 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   panel: {
+    padding: theme.spacing(2),
     pointerEvents: "auto",
     maxHeight: "100%",
     height: "100%",
-    padding: theme.spacing(2),
+    display: "flex",
+    flex: "auto",
+    flexDirection: "column",
     '& h1': {
       marginBottom: theme.spacing(2)
     }
@@ -27,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export default ({ onCitySelect }) => {
   const location = useLocation()
   const classes = useStyles()
-// console.log(location)
   const buttonVariant = (path) => location.pathname === path ? 'contained' : 'outlined'
 
   return <Paper className={classes.panel}>
@@ -47,7 +50,9 @@ export default ({ onCitySelect }) => {
       </Button>
     </ButtonGroup>
 
-    <CitySelector onChange={onCitySelect} />
+    <CitySelector />
     
+    <GenreSelector />
+
   </Paper>
 }

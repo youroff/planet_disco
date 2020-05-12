@@ -1,10 +1,9 @@
 defmodule SpotifyTrackerWeb.Resolvers do
   import MonEx.{Result, Option}
-  alias SpotifyTracker.{Repo, Artist, City}
+  alias SpotifyTracker.{Repo, Artist, City, CityListener, Genre, ArtistCity}
   import Ecto.Query
 
-
-
+  # ARTISTS ENDPOINT
   def get_artists(_, args, _) do
     sort = Map.get(args, :sort_by)
     q = Artist
@@ -36,9 +35,10 @@ defmodule SpotifyTrackerWeb.Resolvers do
     order_by(q, [:name, :id])
   end
 
+  # CITIES ENDPOINT
   def get_cities(_, args, _) do
     City
-    |>  do_if(Map.get(args, :by_id)!= nil, fn q ->
+    |>  do_if(Map.has_key?(args, :by_id), fn q ->
           where(q, [c], c.id == ^args.by_id)
         end)
     |> filter_embedding(args)
@@ -59,12 +59,67 @@ defmodule SpotifyTrackerWeb.Resolvers do
     order_by(q, desc: :population)
   end
 
-  defp sort_cities(q, %{q: term}) when not is_nil(term) or not term == "" do
-    order_by(q, [p], desc: fragment("similarity(?, ?)", ^term, p.city), desc: :id)
+  defp sort_cities(q, %{q: ""}) do
+    order_by(q, [:city, :id])
+  end
+
+  defp sort_cities(q, %{q: t}) do
+    order_by(q, [p], desc: fragment("similarity(?, ?)", ^t, p.city), desc: :id)
   end
 
   defp sort_cities(q, _) do
     order_by(q, [:city, :id])
+  end
+
+  # GENRES
+  def get_genres(_, args, _) do
+    IO.inspect(args)
+    Genre
+    |> sort_genres(args)
+    |> Repo.paginate(cursor(args))
+    |> ok()
+  end
+
+  defp sort_genres(q, %{q: ""}) do
+    order_by(q, [g], asc: g.name, desc: :id)
+  end
+
+  defp sort_genres(q, %{q: t}) do
+    order_by(q, [g], desc: fragment("similarity(?, ?)", ^t, g.name), desc: :id)
+  end
+
+  defp sort_genres(q, _) do
+    order_by(q, [g], asc: g.name, desc: :id)
+  end
+
+
+  # CITY GENRES
+  def get_city_genres(_, %{genre_id: genre_id}, _) do
+    (from g in Genre,
+      join: a in assoc(g, :artists),
+      join: ac in ArtistCity, on: ac.artist_id == a.id,
+      join: c in City, on: ac.city_id == c.id,
+      where: g.id == ^genre_id,
+      group_by: c.id,
+      select: %{city_id: c.id, popularity: fragment("SUM(?)::float / ?", ac.listeners, c.population)})
+    |> Repo.all()
+    |> ok()
+  end
+
+  def get_city_genres_norm(_, %{genre_ids: genre_ids}, _) do
+    (from g in Genre,
+      inner_join: a in assoc(g, :artists),
+      inner_join: ac in ArtistCity, on: ac.artist_id == a.id,
+      inner_join: c in City, on: ac.city_id == c.id,
+      inner_join: cl in CityListener, on: cl.city_id == c.id,
+      where: g.id in ^genre_ids,
+      distinct: c.id,
+      group_by: [c.id, g.id, cl.listeners],
+      select: %{city_id: c.id, genre_id: g.id, popularity: fragment("SUM(?)::float / ?", ac.listeners, cl.listeners)},
+      order_by: [desc: c.id, desc: fragment("SUM(?)", ac.listeners)]
+    )
+    |> Repo.all()
+    |> ok()
   end
 
   defp cursor(args) do

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import { Grid, Hidden } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import City from './city'
 import Panel from './panel'
+import { StoreContext } from './store'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,16 +19,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({onCitySelect}) => {  
+export default () => {  
   const classes = useStyles()
-  const [currentCity, setCurrentCity] = useState({id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
+  const { state } = useContext(StoreContext)
+
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
-      <Panel onCitySelect={setCurrentCity} />      
+      <Panel />      
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
-      {currentCity && <City city={currentCity} />}
+      {state.currentCity && <City city={state.currentCity} />}
     </Grid>
   </Grid>
 }

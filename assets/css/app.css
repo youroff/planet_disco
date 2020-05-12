@@ -1,6 +1,6 @@
 /* This file is for your main application css. */
 body {
-  /* height: 100vw; */
+  height: 100vw;
   /* width: 100vh; */
   background-color: black;
   margin: 0;
@@ -10,10 +10,8 @@ body {
   box-sizing: border-box;
 }
 
-canvas {
-  width: 100vw;
+main {
   height: 100vh;
-  display: block;
 }
 
 .city-name-shown {
@@ -23,22 +21,4 @@ canvas {
 
 .city-name-hidden {
   display: none;
-}
-
-.overlay-container {
-  width: 100%;
-  pointer-events: none;
-  z-index: 1000;
-  position: absolute;
-  top: 0;
-  color: white;
-}
-
-.overlay-container .panel {
-  background-color: rgba(100, 100, 100, 0.3);
-  pointer-events: auto;
-  margin: 50px;
-  width: 20%;
-  height: 700px;
-  border: 1px solid red;
 }

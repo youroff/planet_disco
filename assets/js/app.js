@@ -1,3 +1,4 @@
+require("babel-polyfill")
 import _ from "../css/app.css"
 
 import React from 'react'

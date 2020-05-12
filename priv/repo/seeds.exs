@@ -27,3 +27,6 @@ SpotifyTracker.Repo.query!("COPY artist_cities(artist_id,city_id,listeners,score
 
 artist_genres = Path.absname('priv/repo/seeds/artist_genres.csv')
 SpotifyTracker.Repo.query!("COPY artist_genres(artist_id,genre_id) from '#{artist_genres}' WITH CSV HEADER;")
+
+SpotifyTracker.Repo.query!("REFRESH MATERIALIZED VIEW genre_listeners")
+SpotifyTracker.Repo.query!("REFRESH MATERIALIZED VIEW city_listeners")

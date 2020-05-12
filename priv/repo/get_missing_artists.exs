@@ -15,11 +15,8 @@ else
   _ -> exit("Import dir structure is invalid")
 end
 
-# artists = :ets.new(:artists, [:set, :public])
-genres = :ets.new(:genres, [:set, :public])
 
-# Stuffing Genres into ETS
-Path.wildcard(import_dir <> "/artists/**/*.json")
+artists1 = Path.wildcard(import_dir <> "/artists/**/*.json")
 |> Flow.from_enumerable()
 |> Flow.flat_map(fn file ->
   File.read(file)
@@ -27,12 +24,10 @@ Path.wildcard(import_dir <> "/artists/**/*.json")
   |> MonEx.map(& &1["artists"])
   |> MonEx.Result.unwrap([])
 end)
-|> Flow.map(fn artist ->
-  :ets.insert(genres, Enum.map(artist["genres"], & {String.trim(&1)}))
-end)
-|> Flow.run()
+|> Flow.map(& &1["id"])
+|> Enum.into(MapSet.new())
 
-Path.wildcard(import_dir <> "/seed/*.json")
+artists2 = Path.wildcard(import_dir <> "/seed/*.json")
 |> Flow.from_enumerable()
 |> Flow.flat_map(fn file ->
   File.read(file)
@@ -40,16 +35,23 @@ Path.wildcard(import_dir <> "/seed/*.json")
   |> MonEx.map(& &1["artists"]["items"])
   |> MonEx.Result.unwrap([])
 end)
-|> Flow.map(fn artist ->
-  :ets.insert(genres, Enum.map(artist["genres"], & {String.trim(&1)}))
-end)
-|> Flow.run()
+|> Flow.map(& &1["id"])
+|> Enum.into(MapSet.new())
 
-# Writing genres into genres.csv
-File.mkdir_p!("priv/repo/seeds")
-:ets.foldl(fn {el}, acc -> [el | acc] end, [], genres)
-|> Enum.with_index(1)
-|> Stream.map(& %{id: elem(&1, 1), name: elem(&1, 0)})
-|> CSV.encode(headers: true)
-|> Stream.into(File.stream!("priv/repo/seeds/genres.csv"))
+
+
+# Processing actual artists
+existing = Path.wildcard(import_dir <> "/cities/**/*.json")
+|> Flow.from_enumerable()
+|> Flow.map(&Path.basename(&1, ".json"))
+|> Enum.into(MapSet.new())
+# |> IO.inspect()
+
+# IO.inspect(MapSet.size(existing))
+
+MapSet.difference(MapSet.union(artists1, artists2), existing)
+|> MapSet.to_list()
+|> Stream.map(&[&1])
+|> CSV.encode(headers: false)
+|> Stream.into(File.stream!("priv/missing_artists.csv"))
 |> Stream.run()

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({city}) => {
+export default ({ city }) => {
   const classes = useStyles()
   const [selector, setSelector] = useState('artists')
 

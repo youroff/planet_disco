@@ -29,6 +29,7 @@ defmodule SpotifyTrackerWeb.Schema do
     field :id, :id
     field :name, non_null(:string)
   end
+  paginated(:genre)
 
   object :image do
     field :id, :id
@@ -53,6 +54,12 @@ defmodule SpotifyTrackerWeb.Schema do
   end
   paginated(:city)
 
+  object :city_genre do
+    field :city_id, :id
+    field :genre_id, :id
+    field :popularity, :float
+  end
+
   query do
     @desc "Artists entry point, returns list of artists"
     field :artists, :paginated_artist do
@@ -75,8 +82,25 @@ defmodule SpotifyTrackerWeb.Schema do
       resolve &Resolvers.get_cities/3
     end
 
+    @desc "Genres entry point, returns list of genres"
+    field :genres, :paginated_genre do
+      arg :cursor, :string
+      arg :limit, :integer
+      arg :q, :string
+      resolve &Resolvers.get_genres/3
+    end
 
-    # Fields go here
+    @desc "List of city ids along with popularity of a given genre normalized by population"
+    field :genre_popularity, non_null(list_of(non_null(:city_genre))) do
+      arg :genre_id, non_null(:id)
+      resolve &Resolvers.get_city_genres/3
+    end
+
+    @desc "List of city ids along with popularity of a given genre normalized by population"
+    field :genre_popularity_normalized, non_null(list_of(non_null(:city_genre))) do
+      arg :genre_ids, non_null(list_of(non_null(:id)))
+      resolve &Resolvers.get_city_genres_norm/3
+    end
   end
 
   def context(ctx) do
