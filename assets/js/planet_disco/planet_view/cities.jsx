@@ -15,37 +15,52 @@ const CITIES = gql`{
   }
 }`
 
+const dummy = new THREE.Object3D()
+
 export default function({zoom}) {
   const mesh = useRef()
   const { data } = useQuery(CITIES)
   const { dispatch } = useContext(StoreContext)
   const [weights, setWeights] = useState({})
 
+  // This attaches and removes handler to context, which allows Genre selector
+  // for updating genre weights
   useEffect(() => {
     dispatch({type: 'SET_GENRE_HANDLER', handler: setWeights})
     return () => { dispatch({type: 'SET_GENRE_HANDLER'}) }
   }, [])
 
   useEffect(() => {
-    const dummy = new THREE.Object3D()
+    if (mesh.current) {
+
+    }
+  }, [weights])
+
+  useEffect(() => {
     if (data && mesh.current) {
-      // console.log(weights)
       data.cities.entries.forEach(({coord: {lat, lng}, population}, i) => {
         mesh.current.getMatrixAt(i, dummy.matrix)
         dummy.position.setFromSphericalCoords(1, toRad(lat - 90), toRad(lng - 90))
         dummy.lookAt(0, 0, 0)
-        
-        // if (population > pop_scale.invert(zoom)) {
         dummy.scale.set(zoom / 15, zoom / 15, 100)
-        // } else {
-        //   dummy.scale.set(0, 0, 0)
-        // }
         dummy.updateMatrix()
         mesh.current.setMatrixAt(i, dummy.matrix)
       })
       mesh.current.instanceMatrix.needsUpdate = true
     }
-  }, [data, zoom, weights])
+  }, [data])
+
+  useEffect(() => {
+    if (data && mesh.current) {
+      data.cities.entries.forEach(({coord: {lat, lng}, population}, i) => {
+        mesh.current.getMatrixAt(i, dummy.matrix)
+        dummy.scale.set(zoom / 15, zoom / 15, 100)
+        dummy.updateMatrix()
+        mesh.current.setMatrixAt(i, dummy.matrix)
+      })
+      mesh.current.instanceMatrix.needsUpdate = true
+    }
+  }, [zoom])
 
   return (<>
     {data && <instancedMesh

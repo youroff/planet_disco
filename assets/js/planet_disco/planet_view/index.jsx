@@ -30,8 +30,8 @@ export default () => {
       intensity={1}
       angle={Math.PI / 8}
       position={[20, 10, 20]}
-      shadow-mapSize-width={2048}
-      shadow-mapSize-height={2048}
+      shadow-mapSize-width={8192}
+      shadow-mapSize-height={8192}
     />
     <Stars radius={10} particles={10000} />
     <Suspense fallback={null}>
