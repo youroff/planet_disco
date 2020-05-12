@@ -21,17 +21,12 @@ const genreLimit = 10
 const useStyles = makeStyles((theme) => ({
   header: {
     marginTop: theme.spacing(2)
-  },
-  search: {
-    marginBottom: theme.spacing(2)
   }
 }))
 
 export default () => {
   const classes = useStyles()
   const graphql = useApolloClient()
-
-  const [term, setTerm] = useState("")
   const [selectedGenres, setSelectedGenres] = useState([])
   const { state, dispatch } = useContext(StoreContext)
 
@@ -68,12 +63,6 @@ export default () => {
       Pick up to {genreLimit} genres to see their popularity worldwide
     </Typography>
 
-    <TextField
-      className={classes.search}
-      label="Find genre"
-      onChange={(e) => setTerm(e.target.value)}
-    />
-
     <div>
       {selectedGenres.map((genre, i) => <Chip
         key={i}
@@ -88,7 +77,6 @@ export default () => {
     </div>
 
     <Genres
-      term={term}
       selectGenre={addGenre}
       selectedGenres={new Set(selectedGenres.map(g => g.id))}
       canAddMore={selectedGenres.length < genreLimit}
