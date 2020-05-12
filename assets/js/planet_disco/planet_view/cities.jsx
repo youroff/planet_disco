@@ -84,7 +84,7 @@ export default function({zoom}) {
         mesh.current.geometry.attributes.instanceColor.array[i * 3 + 1] = color.g
         mesh.current.geometry.attributes.instanceColor.array[i * 3 + 2] = color.b
         mesh.current.geometry.attributes.instanceColor.needsUpdate = true
-        dummy.scale.set(zoom / 15, zoom / 15, 300 * height)
+        dummy.scale.set(zoom / 7, zoom / 7, 500 * height)
         dummy.updateMatrix()
         mesh.current.setMatrixAt(i, dummy.matrix)
       })
