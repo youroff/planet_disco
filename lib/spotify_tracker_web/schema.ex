@@ -90,6 +90,11 @@ defmodule SpotifyTrackerWeb.Schema do
       resolve &Resolvers.get_genres/3
     end
 
+    @desc "Master genres — genres that serve as cluster representative"
+    field :master_genres, non_null(list_of(non_null(:genre))) do
+      resolve &Resolvers.get_master_genres/3
+    end
+
     @desc "List of city ids along with popularity of a given genre normalized by population"
     field :genre_popularity, non_null(list_of(non_null(:city_genre))) do
       arg :genre_id, non_null(:id)

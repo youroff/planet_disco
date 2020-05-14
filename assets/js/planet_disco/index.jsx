@@ -5,8 +5,8 @@ import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
 import { Canvas } from 'react-three-fiber'
 import PlanetView from './planet_view'
 import GenresView from './genres_view'
+import CitiesView from './cities_view'
 import Overlay from './common/overlay'
-import CitySimilarities from './city_similarities/city_similarities'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { StoreContextProvider, StoreContext } from './common/store'
 
@@ -14,7 +14,7 @@ const theme = createMuiTheme({
   palette: {
     type: 'dark',
     background: {
-      paper: 'rgba(66, 66, 66, 0.6)'
+      paper: 'rgba(66, 66, 66, 0.9)'
     }
   }
 })
@@ -39,7 +39,7 @@ export default ({ match, history }) => {
                 <StoreContext.Provider value={store}>
                   <Router history={history}>
                     <Switch>
-                      {/* <Route path={match.url + "cities"} component={CitySimilarities} /> */}
+                      <Route path={match.url + "cities"} component={CitiesView} />
                       <Route path={match.url + "genres"} component={GenresView} />
                       <Route path={match.url} component={PlanetView} />
                     </Switch>

@@ -1,6 +1,9 @@
 defmodule SpotifyTrackerWeb.Resolvers do
   import MonEx.{Result, Option}
-  alias SpotifyTracker.{Repo, Artist, City, CityListener, Genre, ArtistCity}
+  alias SpotifyTracker.{
+    Repo, Artist, City, CityListener, Genre, ArtistCity,
+    GenreListener, GenreCluster, CityGenreListener
+  }
   import Ecto.Query
 
   # ARTISTS ENDPOINT
@@ -73,7 +76,6 @@ defmodule SpotifyTrackerWeb.Resolvers do
 
   # GENRES
   def get_genres(_, args, _) do
-    IO.inspect(args)
     Genre
     |> sort_genres(args)
     |> Repo.paginate(cursor(args))
@@ -92,6 +94,36 @@ defmodule SpotifyTrackerWeb.Resolvers do
     order_by(q, [g], asc: g.name, desc: :id)
   end
 
+  # MASTER GENRES
+  def get_master_genres(_, _, _) do
+    # # BY SUM OF LISTENERS
+    # query = from gc in GenreCluster,
+    #   join: gl in GenreListener, on: gc.genre_id == gl.genre_id,
+    #   join: g in assoc(gc, :master_genre),
+    #   group_by: g.id,
+    #   order_by: [desc: sum(gl.listeners)],
+    #   select: g
+
+    # # BY CLUSTER SIZE / PAGERANK
+    # query = from gc in GenreCluster,
+    #   # join: gl in GenreListener, on: gc.genre_id == gl.genre_id,
+    #   join: g in assoc(gc, :master_genre),
+    #   group_by: g.id,
+    #   # order_by: [desc: count(g.id)],
+    #   order_by: [desc: max(gc.pagerank)],
+    #   select: g
+
+    # BY PAGERANK
+    query = from gc in GenreCluster,
+      # join: gl in GenreListener, on: gc.genre_id == gl.genre_id,
+      join: g in assoc(gc, :master_genre),
+      where: gc.genre_id == gc.master_genre_id,
+      order_by: [desc: gc.pagerank],
+      select: g
+
+    Repo.all(query) |> ok()
+  end
+
 
   # CITY GENRES
   def get_city_genres(_, %{genre_id: genre_id}, _) do
@@ -107,16 +139,16 @@ defmodule SpotifyTrackerWeb.Resolvers do
   end
 
   def get_city_genres_norm(_, %{genre_ids: genre_ids}, _) do
-    (from g in Genre,
-      inner_join: a in assoc(g, :artists),
-      inner_join: ac in ArtistCity, on: ac.artist_id == a.id,
-      inner_join: c in City, on: ac.city_id == c.id,
-      inner_join: cl in CityListener, on: cl.city_id == c.id,
-      where: g.id in ^genre_ids,
-      distinct: c.id,
-      group_by: [c.id, g.id, cl.listeners],
-      select: %{city_id: c.id, genre_id: g.id, popularity: fragment("SUM(?)::float / ?", ac.listeners, cl.listeners)},
-      order_by: [desc: c.id, desc: fragment("SUM(?)", ac.listeners)]
+    (from g in CityGenreListener,
+      inner_join: cl in CityListener, on: cl.city_id == g.city_id,
+      where: g.genre_id in ^genre_ids,
+      distinct: g.city_id,
+      select: %{
+        city_id: g.city_id,
+        genre_id: g.genre_id,
+        popularity: type(g.listeners, :float) / cl.listeners
+      },
+      order_by: [desc: g.city_id, desc: g.listeners]
     )
     |> Repo.all()
     |> ok()
@@ -134,3 +166,15 @@ defmodule SpotifyTrackerWeb.Resolvers do
     Enum.filter(args, &!is_nil(elem(&1, 1)))
   end
 end
+
+
+# select c.id, gc.master_genre_id, sum(cl.listeners) from genre_clusters gc
+# inner join artist_genres ag on ag.genre_id = gc.genre_id
+# inner join artist_cities ac on ac.artist_id = ag.artist_id
+# inner join cities c on c.id = ac.city_id
+# inner join city_listeners cl on c.id = cl.city_id
+# group by c.id, gc.master_genre_id;
+
+# select ag.genre_id, ac.city_id, sum(ac.listeners) from artist_genres ag
+# inner join artist_cities ac on ag.artist_id = ac.artist_id
+# group by ag.genre_id, ac.city_id;

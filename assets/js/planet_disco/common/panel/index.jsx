@@ -48,11 +48,8 @@ export default ({ onCitySelect }) => {
       <Button variant={buttonVariant('/genres')} component={Link} to="/genres">
         <GenresIcon />
       </Button>
-    </ButtonGroup>
-
-    <CitySelector />
-    
+    </ButtonGroup>    
     <GenreSelector />
-
+    <CitySelector />
   </Paper>
 }
