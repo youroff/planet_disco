@@ -6,6 +6,7 @@ defmodule SpotifyTrackerWeb.Schema do
   import SpotifyTrackerWeb, only: [paginated: 1]
 
   import_types SpotifyTrackerWeb.Types.Location
+  import_types SpotifyTrackerWeb.Types.Coordinate
 
   object :artist do
     field :id, :id
@@ -31,6 +32,14 @@ defmodule SpotifyTrackerWeb.Schema do
   end
   paginated(:genre)
 
+  object :clustered_genre do
+    field :id, :id
+    field :name, non_null(:string)
+    field :coord, :coordinate
+    field :pagerank, :float
+    field :master_genre_id, :id
+  end
+
   object :image do
     field :id, :id
     field :path, :string
@@ -50,6 +59,7 @@ defmodule SpotifyTrackerWeb.Schema do
     field :em_coord,      :location
     field :geohash,       :float
 
+    field :similarity,    :float
     # many_to_many :artists, Artist, join_through: "artist_cities"
   end
   paginated(:city)
@@ -105,6 +115,16 @@ defmodule SpotifyTrackerWeb.Schema do
     field :genre_popularity_normalized, non_null(list_of(non_null(:city_genre))) do
       arg :genre_ids, non_null(list_of(non_null(:id)))
       resolve &Resolvers.get_city_genres_norm/3
+    end
+
+    field :similar_cities, non_null(list_of(non_null(:city))) do
+      arg :threshold, non_null(:integer)
+      arg :id, non_null(:id)
+      resolve &Resolvers.get_similar_cities/3
+    end
+
+    field :clustered_genres, non_null(list_of(non_null(:clustered_genre))) do
+      resolve &Resolvers.get_clustered_genres/3
     end
   end
 

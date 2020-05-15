@@ -12,6 +12,7 @@ defmodule SpotifyTracker.City do
     field :em_coord,      Geo.PostGIS.Geometry
     field :geohash,       :float
 
+    field :similarity,    :float, virtual: true
     many_to_many :artists, Artist, join_through: "artist_cities"
   end
 end

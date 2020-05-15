@@ -1,5 +1,6 @@
 defmodule SpotifyTrackerWeb.Resolvers do
   import MonEx.{Result, Option}
+  import Geo.PostGIS
   alias SpotifyTracker.{
     Repo, Artist, City, CityListener, Genre, ArtistCity,
     GenreListener, GenreCluster, CityGenreListener
@@ -154,6 +155,28 @@ defmodule SpotifyTrackerWeb.Resolvers do
     |> ok()
   end
 
+  def get_similar_cities(_, %{id: city_id, threshold: t}, _) do
+    city = Repo.get_by(City, id: city_id)
+
+    (from c in City,
+      where: st_distance_in_meters(c.coord, ^city.coord) > ^(t * 1000)
+        and st_distance(c.em_coord, ^city.em_coord) < 1.0,
+      order_by: [asc: st_distance(c.em_coord, ^city.em_coord)],
+      select_merge: %{c | similarity: st_distance(c.em_coord, ^city.em_coord)}
+    )
+    |> Repo.all()
+    |> ok()
+  end
+
+  def get_clustered_genres(_, _, _) do
+    (from gc in GenreCluster,
+      join: g in assoc(gc, :genre),
+      select_merge: %{gc | name: g.name}
+    )
+    |> Repo.all()
+    |> ok()
+  end
+
   defp cursor(args) do
     Map.take(args, [:cursor, :limit])
     |> Map.put(:max_limit, 5000)
@@ -161,20 +184,4 @@ defmodule SpotifyTrackerWeb.Resolvers do
 
   defp do_if(q, true, f), do: f.(q)
   defp do_if(q, false, f), do: q
-
-  defp not_nulls(args) do
-    Enum.filter(args, &!is_nil(elem(&1, 1)))
-  end
 end
-
-
-# select c.id, gc.master_genre_id, sum(cl.listeners) from genre_clusters gc
-# inner join artist_genres ag on ag.genre_id = gc.genre_id
-# inner join artist_cities ac on ac.artist_id = ag.artist_id
-# inner join cities c on c.id = ac.city_id
-# inner join city_listeners cl on c.id = cl.city_id
-# group by c.id, gc.master_genre_id;
-
-# select ag.genre_id, ac.city_id, sum(ac.listeners) from artist_genres ag
-# inner join artist_cities ac on ag.artist_id = ac.artist_id
-# group by ag.genre_id, ac.city_id;

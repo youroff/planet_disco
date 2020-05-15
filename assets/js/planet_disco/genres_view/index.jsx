@@ -1,10 +1,25 @@
-import React, { Suspense } from 'react'
-import Controls from '../common/controls'
+import React from 'react'
 import Box from './box'
+import { OrbitControls } from 'drei'
+import { useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
+
+const GENRES = gql`{
+  clusteredGenres {
+    name
+    coord
+    pagerank
+    masterGenreId
+  }
+}`
 
 export default () => {
+
+  const { data } = useQuery(GENRES)
+  
+
   return <scene>
-    <Controls />
+    <OrbitControls />
     <ambientLight intensity={0.3} />
     <spotLight
       castShadow
@@ -14,9 +29,9 @@ export default () => {
       shadow-mapSize-width={8192}
       shadow-mapSize-height={8192}
     />
-    <Suspense fallback={null}>
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-    </Suspense>
+    {data && data.clusteredGenres.map((genre, i) => {
+      const { x, y, z } = genre.coord
+      return <Box key={i} position={[x, y, z]} />
+    })}
   </scene>
 }

@@ -20,7 +20,7 @@ export default (props) => {
       onClick={e => setActive(!active)}
       onPointerOver={e => setHover(true)}
       onPointerOut={e => setHover(false)}>
-      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+      <sphereBufferGeometry attach="geometry" args={[0.1, 16, 16]} />
       <meshStandardMaterial attach="material" color={hovered ? 'hotpink' : 'orange'} />
     </mesh>
   )
