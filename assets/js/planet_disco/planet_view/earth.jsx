@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react'
 import { useLoader } from 'react-three-fiber'
 import * as THREE from 'three/src/Three'
-import {
-  atmoVertexShader as vertexShader,
-  atmoFragmentShader as fragmentShader
-} from '../common/shaders'
+import { vertexShader, fragmentShader } from '../shaders/atmo'
 
 export default function() {
   // const texture = useLoader(THREE.TextureLoader, "/images/earth-night.jpg")  

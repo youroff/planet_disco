@@ -1,15 +1,22 @@
 import React, {createContext, useReducer} from 'react'
 
 const initialState = {
-  // currentCity: {id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"}
+  city: undefined,
+  genres: new Set(),
+  colorMap: {}
 }
 
 function reducer(state, action) {
   switch(action.type) {
+    // Clearing genres when setting the city and
+    // the other way around
     case 'SET_CITY':
-      return { ...state, currentCity: action.city }
-    case 'SET_GENRE_HANDLER':
-      return { ...state, genreHandler: action.handler }
+      return { ...state, city: action.city, genres: new Set(), colorMap: {} }
+    case 'SET_GENRES':
+      const { genres, colorMap } = action
+      return { ...state, genres, colorMap, city: undefined }
+    // case 'SET_GENRE_HANDLER':
+    //   return { ...state, genreHandler: action.handler }
     default:
       throw new Error("Unknown action for StoreContext", action)
   }

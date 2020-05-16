@@ -45,10 +45,10 @@ export default () => {
       shadow-mapSize-width={2048}
       shadow-mapSize-height={2048}
     />
-    <Stars radius={5} particles={10000} />
+    <Stars radius={5} particles={30000} />
     <Suspense fallback={null}>
       <Earth />
-      <Cities zoom={zoom} />
+      <Cities />
     </Suspense>
   </scene>
 }

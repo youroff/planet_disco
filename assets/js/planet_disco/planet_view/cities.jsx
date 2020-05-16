@@ -1,31 +1,9 @@
 import React, { useRef, useEffect, useContext, useState } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-import { toRad } from '../common/utils'
 import { StoreContext } from '../common/store'
-import * as THREE from 'three/src/Three'
-import * as d3 from 'd3'
-
-const colorParsChunk = [
-  'attribute vec3 instanceColor;',
-  'varying vec3 vInstanceColor;',
-  '#include <common>'
-].join( '\n' )
-
-const instanceColorChunk = [
-  '#include <begin_vertex>',
-  '\tvInstanceColor = instanceColor;'
-].join( '\n' )
-
-const fragmentParsChunk = [
-  'varying vec3 vInstanceColor;',
-  '#include <common>'
-].join( '\n' )
-
-const colorChunk = [
-  'vec4 diffuseColor = vec4( diffuse * vInstanceColor, opacity );'
-].join( '\n' )
-
+import { max } from 'd3'
+import CityBars from './city_bars'
 
 const CITIES = gql`{
   cities(limit: 5000) {
@@ -37,84 +15,45 @@ const CITIES = gql`{
   }
 }`
 
-const dummy = new THREE.Object3D()
-const defaultColor = '#ececec'
+const CITY_GENRES = gql`query CityGenres($genreIds: [ID]) {
+  genrePopularityNormalized(genreIds: $genreIds) {
+    cityId
+    genreId
+    popularity
+  }
+}`
+
+const SIMILAR_CITIES = gql`query CityGenres($genreId: ID, $threshold: Integer) {
+  similarCities(id: $genreId, threshold: $threshold) {
+    city
+    coord
+    similarity
+  }
+}`
 
 export default function({zoom}) {
-  const mesh = useRef()
-  const material = useRef()
   const { data } = useQuery(CITIES)
-  const { dispatch } = useContext(StoreContext)
+  const graphql = useApolloClient()
+  const { state: { city, genres, colorMap } } = useContext(StoreContext)
   const [weights, setWeights] = useState({})
 
-  // This attaches and removes handler to context, which allows Genre selector
-  // for updating genre weights
   useEffect(() => {
-    dispatch({type: 'SET_GENRE_HANDLER', handler: setWeights})
-    return () => { dispatch({type: 'SET_GENRE_HANDLER'}) }
-  }, [])
-
-  useEffect(() => {
-    if (mesh.current) {
-
+    if (genres.size > 0) {
+      const genreIds = Array.from(genres).map(g => g.id)
+      graphql.query({query: CITY_GENRES, variables: { genreIds }}).then(({ data }) => {
+        const cityMap = {}
+        const top = max(data.genrePopularityNormalized.map(g => g.popularity))
+        data.genrePopularityNormalized.forEach(({ cityId, genreId, popularity }) => {
+          cityMap[cityId] = [colorMap[genreId], popularity / top]
+        })
+        setWeights(cityMap)
+      })  
+    } else {
+      setWeights({})
     }
-  }, [weights])
-
-  useEffect(() => {
-    if (data && mesh.current) {
-      if (!mesh.current.geometry.instanceColor) {
-        const instanceColors = []
-        for (let i = 0; i < data.cities.entries.length; i++) {
-          instanceColors.push(210, 210, 210)
-        }
-        mesh.current.geometry.setAttribute('instanceColor', new THREE.InstancedBufferAttribute(new Float32Array(instanceColors), 3, true))
-      }
-      data.cities.entries.forEach(({id, coord: {lat, lng}}, i) => {
-        mesh.current.getMatrixAt(i, dummy.matrix)
-        dummy.position.setFromSphericalCoords(1, toRad(lat - 90), toRad(lng - 90))
-        dummy.lookAt(0, 0, 0)
-        let color = new THREE.Color(210, 210, 210)
-        let height = 0.001
-        if (weights[id]) {
-          const [c, h] = weights[id]
-          height = h
-          color = new THREE.Color(c)
-        }
-        mesh.current.geometry.attributes.instanceColor.array[i * 3] = color.r
-        mesh.current.geometry.attributes.instanceColor.array[i * 3 + 1] = color.g
-        mesh.current.geometry.attributes.instanceColor.array[i * 3 + 2] = color.b
-        mesh.current.geometry.attributes.instanceColor.needsUpdate = true
-        dummy.scale.set(zoom / 7, zoom / 7, 500 * height)
-        dummy.updateMatrix()
-        mesh.current.setMatrixAt(i, dummy.matrix)
-      })
-
-      mesh.current.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
-      mesh.current.instanceMatrix.needsUpdate = true
-    }
-  }, [data, zoom, weights])
+  }, [genres])
 
   return (<>
-    {data && <instancedMesh
-      ref={mesh}
-      args={[null, null, data.cities.entries.length]}
-      castShadow
-    >
-      <boxBufferGeometry attach="geometry" args={[0.02, 0.02, 0.002]} />
-      <meshMatcapMaterial
-        attach="material"
-        color="#ececec"
-        opacity={0.5}
-        onBeforeCompile={(shader) => {
-          shader.vertexShader = shader.vertexShader
-            .replace( '#include <common>', colorParsChunk )
-            .replace( '#include <begin_vertex>', instanceColorChunk )
-
-          shader.fragmentShader = shader.fragmentShader
-            .replace( '#include <common>', fragmentParsChunk )
-            .replace( 'vec4 diffuseColor = vec4( diffuse, opacity );', colorChunk )
-        }}
-      />
-    </instancedMesh>}
+    {data && <CityBars cities={data.cities.entries} weights={weights} />}
   </>)
 }
