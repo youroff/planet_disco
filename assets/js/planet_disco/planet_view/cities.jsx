@@ -4,6 +4,7 @@ import { gql } from 'apollo-boost'
 import { StoreContext } from '../common/store'
 import { max } from 'd3'
 import CityBars from './city_bars'
+import CityArcs from './city_arcs'
 
 const CITIES = gql`{
   cities(limit: 5000) {
@@ -11,6 +12,7 @@ const CITIES = gql`{
       id
       city
       coord
+      humanCountry
     }
   }
 }`
@@ -23,10 +25,12 @@ const CITY_GENRES = gql`query CityGenres($genreIds: [ID]) {
   }
 }`
 
-const SIMILAR_CITIES = gql`query CityGenres($genreId: ID, $threshold: Integer) {
-  similarCities(id: $genreId, threshold: $threshold) {
+const SIMILAR_CITIES = gql`query CityGenres($cityId: ID, $threshold: Int) {
+  similarCities(id: $cityId, threshold: $threshold) {
+    id
     city
     coord
+    humanCountry
     similarity
   }
 }`
@@ -34,7 +38,7 @@ const SIMILAR_CITIES = gql`query CityGenres($genreId: ID, $threshold: Integer) {
 export default function({zoom}) {
   const { data } = useQuery(CITIES)
   const graphql = useApolloClient()
-  const { state: { city, genres, colorMap } } = useContext(StoreContext)
+  const { state: { city, genres, colorMap, similarCities }, dispatch } = useContext(StoreContext)
   const [weights, setWeights] = useState({})
 
   useEffect(() => {
@@ -53,7 +57,29 @@ export default function({zoom}) {
     }
   }, [genres])
 
+  useEffect(() => {
+    if (city) {
+      const variables = {
+        cityId: city.id,
+        threshold: 500
+      }
+      graphql.query({ query: SIMILAR_CITIES, variables }).then(({ data: { similarCities } }) => {
+        dispatch({ type: 'SET_SIMILAR_CITIES', cities: similarCities })
+      })  
+    } else {
+      dispatch({ type: 'SET_SIMILAR_CITIES' })
+    }
+  }, [city])
+
   return (<>
-    {data && <CityBars cities={data.cities.entries} weights={weights} />}
+    {data && <CityBars
+      cities={data.cities.entries}
+      weights={weights}
+    />}
+    
+    {(city && similarCities.length > 0) && <CityArcs
+      city={city}
+      similarCities={similarCities}
+    />}
   </>)
 }

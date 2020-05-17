@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useEffect, useContext, useRef } from 'react'
 import { useThree } from 'react-three-fiber'
 import { PerspectiveCamera, OrbitControls } from 'drei'
-import Controls from '../common/controls'
+import Effects from '../common/effects'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
@@ -50,5 +50,6 @@ export default () => {
       <Earth />
       <Cities />
     </Suspense>
+    <Effects />
   </scene>
 }

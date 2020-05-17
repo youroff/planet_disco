@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default () => {  
   const classes = useStyles()
-  const { state } = useContext(StoreContext)
+  const { state: { city, similarCities } } = useContext(StoreContext)
 
   return <Grid container className={classes.root} spacing={3}>
     <Grid className={classes.children} item xs={3}>
@@ -29,7 +29,7 @@ export default () => {
     </Grid>
     <Grid item xs={6} implementation="css" component={Hidden} />
     <Grid className={classes.children} item xs={3}>
-      {state.currentCity && <City city={state.currentCity} />}
+      {city && <City city={city} similarCities={similarCities} />}
     </Grid>
   </Grid>
 }

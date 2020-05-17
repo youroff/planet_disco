@@ -39,7 +39,7 @@ export default ({ cities, weights }) => {
         height = h
         color = new THREE.Color(c)
       }
-      mesh.current.geometry.attributes.instanceHeight.array[i] = height * 100
+      mesh.current.geometry.attributes.instanceHeight.array[i] = height * 200
       mesh.current.geometry.attributes.instanceColor.array[i * 3] = color.r
       mesh.current.geometry.attributes.instanceColor.array[i * 3 + 1] = color.g
       mesh.current.geometry.attributes.instanceColor.array[i * 3 + 2] = color.b
