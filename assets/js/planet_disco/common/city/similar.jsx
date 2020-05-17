@@ -31,7 +31,7 @@ export default ({ cities }) => {
           variant="outlined"
           size="small"
           onClick={() => dispatch({type: 'SET_CITY', city})}
-          style={{backgroundColor: color(city.similarity)}}
+          style={{borderColor: color(city.similarity)}}
           className={classes.cityButton}
           label={city.city}
         />)}
