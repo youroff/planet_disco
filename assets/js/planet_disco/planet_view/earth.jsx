@@ -23,9 +23,9 @@ export default function() {
       <meshStandardMaterial attach="material" map={texture} />
     </mesh>
 
-    {/* <mesh position={[0, 0, 0]}>
+    <mesh position={[0, 0, 0]}>
       <sphereGeometry attach="geometry" args={[1.1, 64, 64]} />
       <shaderMaterial attach="material" {...atmo} />
-    </mesh> */}
+    </mesh>
   </group>
 }

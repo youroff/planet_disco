@@ -28,7 +28,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
+    "react-spring-three": "^1.0.4",
     "react-three-fiber": "^4.0.28",
+    "react-use-gesture": "^7.0.15",
     "three": "^0.115.0",
     "topojson-client": "^3.1.0"
   },

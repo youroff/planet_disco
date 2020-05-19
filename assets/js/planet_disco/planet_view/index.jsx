@@ -1,41 +1,14 @@
-import React, { useState, Suspense, useEffect, useContext, useRef } from 'react'
-import { useThree } from 'react-three-fiber'
-import { PerspectiveCamera, OrbitControls } from 'drei'
+import React, { Suspense } from 'react'
 import Effects from '../common/effects'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
-import { StoreContext } from '../common/store'
-import { toRad } from '../common/utils'
-
+import Controls from '../common/controls'
 
 export default () => {
-  const [zoom, updateZoom] = useState(5)
-  const camera = useRef()
-  // const { camera } = useThree()
-  const { currentCity } = useContext(StoreContext).state
-
-  useEffect(() => {
-    if (currentCity && camera.current) {
-      const { lat, lng } = currentCity.coord
-      camera.current.position.setFromSphericalCoords(zoom, toRad(lat - 90), toRad(lng - 90))
-      camera.current.lookAt(0, 0, 0)
-      camera.current.updateProjectionMatrix()
-    }
-  }, [currentCity])
 
   return <scene>
-    <PerspectiveCamera
-      ref={camera}
-      makeDefault
-      position={[6, 0, 0]}
-      zoom={2}
-      up={[0, 1, 0]}
-      far={100}
-    />
-    <OrbitControls
-      change={console.log}
-    />
+    <Controls />
     <ambientLight intensity={0.3} />
     <spotLight
       castShadow

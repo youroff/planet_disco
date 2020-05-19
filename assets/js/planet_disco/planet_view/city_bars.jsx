@@ -8,10 +8,10 @@ export default ({ cities, weights }) => {
   const material = useMemo(() => ({
     fragmentShader,
     vertexShader,
-    blending: THREE.AdditiveBlending,
+    blending: THREE.NormalBlending,
     depthTest: true,
     transparent: false,
-    vertexColors: true  
+    vertexColors: false  
   }))
 
   const mesh = useUpdate((mesh) => {
@@ -53,7 +53,7 @@ export default ({ cities, weights }) => {
     <shaderMaterial
       attach="material"
       color="#ececec"
-      opacity={0.8}
+      opacity={1}
       {...material}
     />
   </instancedMesh>

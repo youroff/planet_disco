@@ -21,9 +21,6 @@ export default ({ cities }) => {
       <Typography variant="subtitle1">
         Similar cities
       </Typography>
-      {/* <Typography variant="caption">
-        You can navigate
-      </Typography> */}
 
       <div>
         {cities.map((city, i) => <Chip
