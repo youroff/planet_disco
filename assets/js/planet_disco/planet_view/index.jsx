@@ -3,12 +3,12 @@ import Effects from '../common/effects'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
-import Controls from '../common/controls'
+import ControlsTilted from '../common/controls_tilted'
 
 export default () => {
 
   return <scene>
-    <Controls />
+    <ControlsTilted />
     <ambientLight intensity={0.3} />
     <spotLight
       castShadow

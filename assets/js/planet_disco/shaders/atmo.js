@@ -9,7 +9,7 @@ export const vertexShader = `
 export const fragmentShader = `
   varying vec3 vNormal;
   void main() {
-    float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );
-    gl_FragColor = vec4( 1.0, 1.0, 1.0, 0.6 ) * intensity;
+    float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 5.0 );
+    gl_FragColor = vec4( 0.81, 0.87, 1.0, 0.4 ) * intensity;
   }
 `

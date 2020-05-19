@@ -67,6 +67,7 @@ export default () => {
     <div>
       {data && data.masterGenres.map((genre, i) => <Chip
         key={i}
+        size="small"
         variant="outlined"
         onClick={(genres.size < genreLimit || colorMap[genre.id]) && (() => toggle(genre))}
         style={{backgroundColor: colorMap[genre.id]}}
