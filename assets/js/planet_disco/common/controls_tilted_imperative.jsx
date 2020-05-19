@@ -2,7 +2,7 @@ import * as THREE from 'three/src/Three'
 import React, { useRef, useEffect } from 'react'
 import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
-import { useSpring, animated } from '@react-spring/three'
+import { Controller, animated, advanceUntilIdle } from '@react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
 
 const maxSpeed = 20
@@ -11,33 +11,62 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
   const camera = useRef()
   const { gl, setDefaultCamera } = useThree()
 
+  const controller = new Controller({
+    data: [maxDistance, Math.PI / 2, 2 * Math.PI]
+  })
+
   useEffect(() => {
     if (external) {
-      set({ props: [external.distance, external.phi, 2 * Math.PI + external.theta] })
+      const [distance, phi, theta] = controller.springs.data.get()
+
+      // controller.update({
+      //   to: { data: [4, phi, theta] }
+      // }).update({
+      //   to: { data: [4, external.phi, 2 * Math.PI + external.theta] }
+      // }).update({
+      //   to: { data: [external.distance, external.phi, 2 * Math.PI + external.theta] }
+      // }).start()
+
+      controller.start({
+        to: async update => {
+          await update({data: [external.distance, external.phi, 2 * Math.PI + external.theta]})
+        }
+      })
+
     } else {
-      set({ props: [maxDistance, Math.PI / 2, 2 * Math.PI] })
+      controller.start({
+        to: async update => {
+          await update({data: [maxDistance, Math.PI / 2, 2 * Math.PI]})
+        }
+      })
     }
   }, [external])
-
-  const [{ props }, set] = useSpring(() => ({
-    props: [maxDistance, Math.PI / 2, 2 * Math.PI]
-  }))
 
   const bind = useGesture({
     onDrag: ({ dragging, velocities: [x, y] }) => {
       if (dragging) {
-        const [distance, phi, theta] = props.get()
+        const [distance, phi, theta] = controller.springs.data.get()
         const p = MathUtils.clamp(phi - y / distance, 0.1, Math.PI - 0.1)
         // Handle wrapping somehow
         const t = theta - x / distance
-        set({ props: [distance, p, t] })
+
+        controller.start({
+          to: async update => {
+            await update({data: [distance, p, t]})
+          }
+        })
       }
     },
     onWheel: ({ velocities: [_, y] }) => {
-      const [distance, phi, theta] = props.get()
+      const [distance, phi, theta] = controller.springs.data.get()
       const k = 1 + Math.sign(y) * Math.min(8 * Math.abs(y), maxSpeed) / (maxSpeed + 10)
       const d = MathUtils.clamp(k * distance, minDistance, maxDistance)
-      set({ props: [d, phi, theta] })
+
+      controller.start({
+        to: async update => {
+          await update({data: [d, phi, theta]})
+        }
+      })
     }
   }, { domTarget: gl.domElement })
   useEffect(bind, [bind])
@@ -59,9 +88,9 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
 
   return <animated.perspectiveCamera
     ref={camera}
-    position={props.interpolate(calcPosition)}
+    position={controller.springs.data.interpolate(calcPosition)}
 
-    quaternion={props.interpolate((distance, phi, theta) => {
+    quaternion={controller.springs.data.interpolate((distance, phi, theta) => {
       const poi = getPoi(phi, theta)
       const pos = calcPosition(distance, phi, theta)
       const m = new THREE.Matrix4().lookAt(new THREE.Vector3(...pos), poi, new THREE.Vector3(0, 1, 0))

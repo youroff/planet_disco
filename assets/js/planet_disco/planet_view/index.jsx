@@ -3,6 +3,7 @@ import Effects from '../common/effects'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
+// import ControlsTilted from '../common/controls_tilted_imperative'
 import ControlsTilted from '../common/controls_tilted'
 import { StoreContext } from '../common/store'
 import { toRad } from '../common/utils'
@@ -12,10 +13,6 @@ export default () => {
   const [external, setExternal] = useState()
 
   useEffect(() => {
-    if (city) {
-      console.log(city.coord.lat, city.coord.lng)
-    }
-
     setExternal(city && {
       distance: 2,
       phi: toRad(90 - city.coord.lat),
