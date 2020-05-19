@@ -7,9 +7,19 @@ import { MathUtils } from 'three/src/math/MathUtils'
 
 const maxSpeed = 20
 
-export default ({ maxDistance = 4, minDistance = 1.5}) => {
+export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
   const camera = useRef()
   const { gl, setDefaultCamera } = useThree()
+
+  useEffect(() => {
+    if (external) {
+      console.log("TWICE???")
+      // console.log(external)
+      set({ props: [external.distance, external.phi, 2 * Math.PI + external.theta] })
+    } else {
+      set({ props: [maxDistance, Math.PI / 2, 2 * Math.PI] })
+    }
+  }, [external])
 
   const [{ props }, set] = useSpring(() => ({
     props: [maxDistance, Math.PI / 2, 2 * Math.PI]

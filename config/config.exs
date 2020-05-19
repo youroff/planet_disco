@@ -12,6 +12,7 @@ config :spotify_tracker,
 
 # Configures the endpoint
 config :spotify_tracker, SpotifyTrackerWeb.Endpoint,
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   url: [host: "localhost"],
   secret_key_base: "qg7vahrUz7BojG/m024ZXGFBYE8t8EpgW1YZei9XAXiCfTMgOI65sxKfmoR1+a4p",
   render_errors: [view: SpotifyTrackerWeb.ErrorView, accepts: ~w(html json)],

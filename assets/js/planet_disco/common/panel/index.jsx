@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(2)
     }
   },
+  scrollable: {
+    overflowY: "scroll",
+    scrollBehavior: "smooth",
+    height: "100%"
+  },
   switch: {
     marginBottom: theme.spacing(3)
   }
@@ -48,8 +53,10 @@ export default ({ onCitySelect }) => {
       <Button variant={buttonVariant('/genres')} component={Link} to="/genres">
         <GenresIcon />
       </Button>
-    </ButtonGroup>    
-    <GenreSelector />
+    </ButtonGroup>
     <CitySelector />
+    <div className={classes.scrollable}>
+      <GenreSelector />
+    </div>
   </Paper>
 }

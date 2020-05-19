@@ -1,11 +1,16 @@
 /* This file is for your main application css. */
 body {
-  height: 100vw;
-  /* width: 100vh; */
+  height: 100%;
+  width: 100%;
   background-color: black;
   margin: 0;
   overflow: hidden;
 }
+
+body, html {
+  position: fixed;
+}
+
 * {
   box-sizing: border-box;
 }
