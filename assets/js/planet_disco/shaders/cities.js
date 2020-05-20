@@ -5,8 +5,11 @@ export const vertexShader = `
   
   void main() {
     vInstanceColor = instanceColor;
-    mat4 sPos = mat4(vec4(1.0,0.0,0.0,0.0),
-                     vec4(0.0,1.0,0.0,0.0),
+    vec4 nominalPos = modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+    float dist = distance(cameraPosition, nominalPos.xyz);
+
+    mat4 sPos = mat4(vec4(dist/5.0,0.0,0.0,0.0),
+                     vec4(0.0,dist/5.0,0.0,0.0),
                      vec4(0.0,0.0,instanceHeight,0.0),
                      vec4(0.0,0.0,0.0,1.0));
 

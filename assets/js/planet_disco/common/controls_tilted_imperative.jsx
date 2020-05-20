@@ -20,18 +20,24 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
       const [distance, phi, theta] = controller.springs.data.get()
 
       // controller.update({
-      //   to: { data: [4, phi, theta] }
+      //   data: [4, phi, theta]
       // }).update({
-      //   to: { data: [4, external.phi, 2 * Math.PI + external.theta] }
+      //   data: [4, external.phi, 2 * Math.PI + external.theta]
       // }).update({
-      //   to: { data: [external.distance, external.phi, 2 * Math.PI + external.theta] }
-      // }).start()
+      //   data: [external.distance, external.phi, 2 * Math.PI + external.theta]
+      // }).start().then(console.log)
 
       controller.start({
-        to: async update => {
-          await update({data: [external.distance, external.phi, 2 * Math.PI + external.theta]})
-        }
+        to: { data: [external.distance, external.phi, 2 * Math.PI + external.theta] },
+        config: { duration: 3000 / 30 }
       })
+
+
+      // controller.start({
+      //   to: async update => {
+      //     await update({data: [external.distance, external.phi, 2 * Math.PI + external.theta]})
+      //   }
+      // })
 
     } else {
       controller.start({

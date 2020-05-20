@@ -8,7 +8,7 @@ export default ({ cities, weights }) => {
   const material = useMemo(() => ({
     fragmentShader,
     vertexShader,
-    blending: THREE.NormalBlending,
+    blending: THREE.AdditiveBlending,
     depthTest: true,
     transparent: false,
     vertexColors: false  
