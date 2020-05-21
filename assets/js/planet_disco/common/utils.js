@@ -24,8 +24,8 @@ export const processScroll = (variables, trigger, relation, query) => (e) => {
 }
 
 const GLOBE_RADIUS = 1
-const CURVE_MIN_ALTITUDE = 0.2
-const CURVE_MAX_ALTITUDE = 0.5
+const CURVE_MIN_ALTITUDE = 0.1
+const CURVE_MAX_ALTITUDE = 0.7
 
 export function clamp(num, min, max) {
   return num <= min ? min : (num >= max ? max : num);
@@ -43,10 +43,10 @@ export function getSplineFromCoords(coord1, coord2) {
 
   const interpolate = geoInterpolate([coord1.lng, coord1.lat], [coord2.lng, coord2.lat])
 
-  const [lng, lat] = interpolate(0.25)
+  const [lng, lat] = interpolate(0.3)
   const mid1 = coordToVec({ lat, lng }, GLOBE_RADIUS + altitude)
 
-  const [lng2, lat2] = interpolate(0.75)
+  const [lng2, lat2] = interpolate(0.7)
   const mid2 = coordToVec({ lat: lat2, lng: lng2 }, GLOBE_RADIUS + altitude)
 
   return new THREE.CubicBezierCurve3(start, mid1, mid2, end)
