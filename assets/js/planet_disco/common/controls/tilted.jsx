@@ -1,11 +1,15 @@
-import * as THREE from 'three/src/Three'
 import React, { useRef, useEffect } from 'react'
+import { Vector3 } from 'three/src/math/Vector3'
+import { Matrix4 } from 'three/src/math/Matrix4'
+import { Quaternion } from 'three/src/math/Quaternion'
 import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
 import { useSpring, animated } from '@react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
 
 const maxSpeed = 20
+const def_phi = Math.PI / 2 * 0.7
+const def_theta = 2 * Math.PI * 1.3
 
 export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
   const camera = useRef()
@@ -15,12 +19,12 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
     if (external) {
       set({ props: [external.distance, external.phi, 2 * Math.PI + external.theta] })
     } else {
-      set({ props: [maxDistance, Math.PI / 2, 2 * Math.PI] })
+      set({ props: [maxDistance, def_phi, def_theta] })
     }
   }, [external])
 
   const [{ props }, set] = useSpring(() => ({
-    props: [maxDistance, Math.PI / 2, 2 * Math.PI]
+    props: [maxDistance, def_phi, def_theta]
   }))
 
   const bind = useGesture({
@@ -45,11 +49,11 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
   useEffect(() => void setDefaultCamera(camera.current), [])
   useFrame(() => camera.current.updateMatrixWorld())
 
-  const getPoi = (phi, theta) => new THREE.Vector3().setFromSphericalCoords(1, phi, theta)
+  const getPoi = (phi, theta) => new Vector3().setFromSphericalCoords(1, phi, theta)
 
   const calcPosition = (distance, phi, theta) => {
     const poi = getPoi(phi, theta)
-    const ext = new THREE.Vector3().setFromSphericalCoords(
+    const ext = new Vector3().setFromSphericalCoords(
       distance - 1,
       phi + (1 - (distance - minDistance) / (maxDistance - minDistance)) * Math.PI / 3,
       theta
@@ -64,8 +68,8 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
     quaternion={props.interpolate((distance, phi, theta) => {
       const poi = getPoi(phi, theta)
       const pos = calcPosition(distance, phi, theta)
-      const m = new THREE.Matrix4().lookAt(new THREE.Vector3(...pos), poi, new THREE.Vector3(0, 1, 0))
-      return new THREE.Quaternion().setFromRotationMatrix(m).toArray()
+      const m = new Matrix4().lookAt(new Vector3(...pos), poi, new Vector3(0, 1, 0))
+      return new Quaternion().setFromRotationMatrix(m).toArray()
     })}
   />
 }

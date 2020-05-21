@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { useUpdate } from 'react-three-fiber'
 import { getSplineFromCoords } from '../common/utils'
 import { scaleLinear } from 'd3-scale'
 

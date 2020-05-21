@@ -1,6 +1,8 @@
-import * as THREE from 'three/src/Three'
 import React, { useRef, useEffect } from 'react'
 import { useThree, useFrame } from 'react-three-fiber'
+import { Vector3 } from 'three/src/math/Vector3'
+import { Matrix4 } from 'three/src/math/Matrix4'
+import { Quaternion } from 'three/src/math/Quaternion'
 import { useGesture } from 'react-use-gesture'
 import { Controller, animated, advanceUntilIdle } from '@react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
@@ -80,11 +82,11 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
   useEffect(() => void setDefaultCamera(camera.current), [])
   useFrame(() => camera.current.updateMatrixWorld())
 
-  const getPoi = (phi, theta) => new THREE.Vector3().setFromSphericalCoords(1, phi, theta)
+  const getPoi = (phi, theta) => new Vector3().setFromSphericalCoords(1, phi, theta)
 
   const calcPosition = (distance, phi, theta) => {
     const poi = getPoi(phi, theta)
-    const ext = new THREE.Vector3().setFromSphericalCoords(
+    const ext = new Vector3().setFromSphericalCoords(
       distance - 1,
       phi + (1 - (distance - minDistance) / (maxDistance - minDistance)) * Math.PI / 3,
       theta
@@ -99,8 +101,8 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
     quaternion={controller.springs.data.interpolate((distance, phi, theta) => {
       const poi = getPoi(phi, theta)
       const pos = calcPosition(distance, phi, theta)
-      const m = new THREE.Matrix4().lookAt(new THREE.Vector3(...pos), poi, new THREE.Vector3(0, 1, 0))
-      return new THREE.Quaternion().setFromRotationMatrix(m).toArray()
+      const m = new Matrix4().lookAt(new Vector3(...pos), poi, new Vector3(0, 1, 0))
+      return new Quaternion().setFromRotationMatrix(m).toArray()
     })}
   />
 }

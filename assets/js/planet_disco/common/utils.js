@@ -1,4 +1,5 @@
-import * as THREE from 'three'
+import { Vector3 } from 'three/src/math/Vector3'
+import { CubicBezierCurve3 } from 'three/src/extras/curves/CubicBezierCurve3'
 import { geoInterpolate } from 'd3-geo'
 
 export const toRad = (x) => x * Math.PI / 180
@@ -32,7 +33,7 @@ export function clamp(num, min, max) {
 }
 
 export function coordToVec({ lat, lng }, r = 1) {
-  return new THREE.Vector3().setFromSphericalCoords(r, toRad(lat - 90), toRad(lng - 90))
+  return new Vector3().setFromSphericalCoords(r, toRad(lat - 90), toRad(lng - 90))
 }
 
 export function getSplineFromCoords(coord1, coord2) {
@@ -49,5 +50,5 @@ export function getSplineFromCoords(coord1, coord2) {
   const [lng2, lat2] = interpolate(0.7)
   const mid2 = coordToVec({ lat: lat2, lng: lng2 }, GLOBE_RADIUS + altitude)
 
-  return new THREE.CubicBezierCurve3(start, mid1, mid2, end)
+  return new CubicBezierCurve3(start, mid1, mid2, end)
 }

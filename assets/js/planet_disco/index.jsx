@@ -33,7 +33,6 @@ export default ({ match, history }) => {
             <Canvas
               shadowMap
               updateDefaultCamera
-              // invalidateFrameloop
               resize={{debounce: { scroll: 50, resize: 50 }}}
             >
               <ApolloProvider client={client}>

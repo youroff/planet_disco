@@ -1,9 +1,8 @@
 import React, { Suspense, useContext, useState, useEffect } from 'react'
-import Effects from '../common/effects'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
-import ControlsTilted from '../common/controls_tilted'
+import ControlsTilted from '../common/controls/tilted'
 import { StoreContext } from '../common/store'
 import { toRad } from '../common/utils'
 
@@ -35,6 +34,5 @@ export default () => {
       <Earth />
       <Cities />
     </Suspense>
-    <Effects />
   </scene>
 }

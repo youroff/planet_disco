@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { useApolloClient, useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { StoreContext } from '../common/store'

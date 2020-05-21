@@ -1,26 +1,26 @@
 import React, { useMemo } from 'react'
 import { useLoader } from 'react-three-fiber'
-import * as THREE from 'three/src/Three'
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import { BackSide, AdditiveBlending } from 'three/src/constants'
 import { vertexShader, fragmentShader } from '../shaders/atmo'
 
 export default function() {
-  // const texture = useLoader(THREE.TextureLoader, "/images/earth-night.jpg")  
-  const texture = useLoader(THREE.TextureLoader, "/images/8081_earthspec10k.gif")  
-  // const bump = useLoader(THREE.TextureLoader, "/images/earth-topology.png")  
-  // texture.magFilter = THREE.NearestFilter
+  const texture = useLoader(TextureLoader, "/images/earth-night.jpg")  
+  // const texture = useLoader(TextureLoader, "/images/8081_earthspec10k.gif")  
+  const bump = useLoader(TextureLoader, "/images/earth-topology.png")  
 
   const atmo = useMemo(() => ({
     vertexShader,
     fragmentShader,
-    side: THREE.BackSide,
-    blending: THREE.AdditiveBlending,
+    side: BackSide,
+    blending: AdditiveBlending,
     transparent: true
   }))
 
   return <group>
     <mesh position={[0, 0, 0]} receiveShadow castShadow>
       <sphereGeometry attach="geometry" args={[1, 64, 64]} />
-      <meshStandardMaterial attach="material" map={texture} />
+      <meshStandardMaterial attach="material" map={texture} bumpMap={bump} />
     </mesh>
 
     <mesh position={[0, 0, 0]}>

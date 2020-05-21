@@ -1,6 +1,8 @@
-import * as THREE from 'three/src/Three'
 import React, { useRef, useEffect } from 'react'
 import { useThree, useFrame } from 'react-three-fiber'
+import { Vector3 } from 'three/src/math/Vector3'
+import { Matrix4 } from 'three/src/math/Matrix4'
+import { Quaternion } from 'three/src/math/Quaternion'
 import { useGesture } from 'react-use-gesture'
 import { useSpring, animated } from 'react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
@@ -40,13 +42,13 @@ export default ({ maxDistance = 4, minDistance = 1.5}) => {
   return <animated.perspectiveCamera
     ref={camera}
     position={props.interpolate((distance, phi, theta) => {
-      return new THREE.Vector3().setFromSphericalCoords(distance, phi, theta).toArray()
+      return new Vector3().setFromSphericalCoords(distance, phi, theta).toArray()
     })}
 
     quaternion={props.interpolate((distance, phi, theta) => {
-      const p = new THREE.Vector3().setFromSphericalCoords(distance, phi, theta)
-      const m = new THREE.Matrix4().lookAt(p, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0))
-      return new THREE.Quaternion().setFromRotationMatrix(m).toArray()
+      const p = new Vector3().setFromSphericalCoords(distance, phi, theta)
+      const m = new Matrix4().lookAt(p, new Vector3(0, 0, 0), new Vector3(0, 1, 0))
+      return new Quaternion().setFromRotationMatrix(m).toArray()
     })}
   />
 }
