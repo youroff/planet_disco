@@ -8,16 +8,11 @@ const color = scaleLinear().domain([0, 1]).range(["#00ff26", "#ff9900"])
 export default ({ from, to }) => {
   const spline = useMemo(() => getSplineFromCoords(from.coord, to.coord))
 
-  const geometry = useUpdate(geometry => {
-    geometry.setFromPoints(spline.getPoints(30))
-  }, [])
-
-  return <line>
-    <bufferGeometry attach="geometry" ref={geometry} />
-    <lineBasicMaterial
+  return <mesh>
+    <tubeGeometry attach="geometry" args={[spline, 64, 0.0012]}/>
+    <meshBasicMaterial
       attach="material"
       color={color(to.similarity)}
-      linewidth={5.0}
     />
-  </line>
+  </mesh>
 }
