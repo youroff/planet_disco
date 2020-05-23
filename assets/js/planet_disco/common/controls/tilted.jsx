@@ -1,39 +1,44 @@
 import React, { useRef, useEffect } from 'react'
 import { Vector3 } from 'three/src/math/Vector3'
+import { Vector2 } from 'three/src/math/Vector2'
+import { Spherical } from 'three/src/math/Spherical'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
 import { useSpring, animated } from '@react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
+import { PhotoSizeSelectActual } from '@material-ui/icons'
 
 const maxSpeed = 20
-const def_phi = Math.PI / 2 * 0.7
-const def_theta = 2 * Math.PI * 1.3
 
-export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
+export default ({
+  speed = 5,
+  maxDistance = 4,
+  minDistance = 1.5,
+  distance,
+  phi = Math.PI / 2,
+  theta = 2 * Math.PI
+}) => {
   const camera = useRef()
   const { gl, setDefaultCamera } = useThree()
 
   useEffect(() => {
-    if (external) {
-      set({ props: [external.distance, external.phi, 2 * Math.PI + external.theta] })
-    } else {
-      set({ props: [maxDistance, def_phi, def_theta] })
-    }
-  }, [external])
+    set({ props: [distance, phi, theta] })
+  }, [distance, phi, theta])
 
   const [{ props }, set] = useSpring(() => ({
-    props: [maxDistance, def_phi, def_theta]
+    props: [distance || maxDistance, phi, theta]
   }))
 
   const bind = useGesture({
     onDrag: ({ dragging, velocities: [x, y] }) => {
       if (dragging) {
         const [distance, phi, theta] = props.get()
-        const p = MathUtils.clamp(phi - y / distance, 0.1, Math.PI - 0.1)
+        const k = Math.sqrt(distance + 100) / speed
+        const p = MathUtils.clamp(phi - y / k, 0.1, Math.PI - 0.1)
         // Handle wrapping somehow
-        const t = theta - x / distance
+        const t = theta - x / k
         set({ props: [distance, p, t] })
       }
     },
@@ -63,12 +68,13 @@ export default ({ maxDistance = 4, minDistance = 1.5, external }) => {
 
   return <animated.perspectiveCamera
     ref={camera}
-    position={props.interpolate(calcPosition)}
+    position={props.to(calcPosition)}
 
-    quaternion={props.interpolate((distance, phi, theta) => {
+    quaternion={props.to((distance, phi, theta) => {
       const poi = getPoi(phi, theta)
-      const pos = calcPosition(distance, phi, theta)
-      const m = new Matrix4().lookAt(new Vector3(...pos), poi, new Vector3(0, 1, 0))
+      const pos = new Vector3(...calcPosition(distance, phi, theta))
+      const up = pos.clone().sub(poi).dot(new Vector3(poi.x, 0, poi.z))
+      const m = new Matrix4().lookAt(pos, poi, new Vector3(0, Math.sign(up), 0))
       return new Quaternion().setFromRotationMatrix(m).toArray()
     })}
   />

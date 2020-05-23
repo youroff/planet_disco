@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import CitySelector from './city_selector'
 import GenreSelector from './genre_selector'
 import { Paper, Typography, ButtonGroup, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { WormholeBase } from '../wormhole'
 import {
   Language as PlanetIcon,
   LocationCity as CitiesIcon,
@@ -54,9 +54,9 @@ export default ({ onCitySelect }) => {
         <GenresIcon />
       </Button>
     </ButtonGroup>
-    <CitySelector />
+    
     <div className={classes.scrollable}>
-      <GenreSelector />
+      <WormholeBase name='panel' />
     </div>
   </Paper>
 }

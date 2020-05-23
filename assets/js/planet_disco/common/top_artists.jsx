@@ -4,10 +4,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import Skeleton from '@material-ui/lab/Skeleton'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-import { processScroll } from '../utils'
+import { processScroll } from './utils'
 
 const TOP_ARTISTS = gql`query TopArtists($cityId: ID, $cursor: String) {
-  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: "listeners") {
+  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: "score") {
     entries {
       name
       genres {

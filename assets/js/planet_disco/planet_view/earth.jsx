@@ -20,7 +20,7 @@ export default function() {
   return <group>
     <mesh position={[0, 0, 0]} receiveShadow castShadow>
       <sphereGeometry attach="geometry" args={[1, 64, 64]} />
-      <meshStandardMaterial attach="material" map={texture} bumpMap={bump} />
+      <meshStandardMaterial attach="material" map={texture} bumpMap={bump} roughness={0.8} />
     </mesh>
 
     <mesh position={[0, 0, 0]}>

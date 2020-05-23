@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { Typography, Chip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { scaleLinear } from 'd3-scale'
-import { StoreContext } from '../store'
+import { StoreContext } from './store'
 
 const useStyles = makeStyles((theme) => ({
   cityButton: {

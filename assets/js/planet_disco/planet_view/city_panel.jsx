@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
-import { Paper, Typography, Slider, Button, ButtonGroup } from '@material-ui/core'
+import React, { useState, useContext } from 'react'
+import { Paper, Typography, Grid, Button, ButtonGroup, IconButton } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
-import TopArtists from './top_artists'
-import TopGenres from './top_genres'
-import Similar from './similar'
+import TopArtists from '../common/top_artists'
+import TopGenres from '../common/top_genres'
+import { StoreContext } from '../common/store'
+import Similar from '../common/similar_cities'
 
 const useStyles = makeStyles((theme) => ({
   city: {
@@ -20,20 +22,27 @@ const useStyles = makeStyles((theme) => ({
   },
   selector: {
     marginTop: theme.spacing(3)
+  },
+  close: {
+    marginLeft: 2
   }
 }))
 
 export default ({ city, similarCities }) => {
   const classes = useStyles()
   const [selector, setSelector] = useState('artists')
+  const { dispatch } = useContext(StoreContext)
 
   return  <Paper className={classes.city}>
     <div>
       <Typography variant="h5" gutterBottom>
         {city.city}, {city.humanCountry}
+        <IconButton className={classes.close} onClick={() => dispatch({ type: 'SET_CITY' })}>
+          <CloseIcon />
+        </IconButton>
       </Typography>
 
-      {similarCities.length > 0 && <Similar cities={similarCities} />}
+      {similarCities && similarCities.length > 0 && <Similar cities={similarCities} />}
 
       <ButtonGroup className={classes.selector} fullWidth size="large">
         <Button

@@ -118,7 +118,7 @@ defmodule SpotifyTrackerWeb.Schema do
     end
 
     field :similar_cities, non_null(list_of(non_null(:city))) do
-      arg :threshold, non_null(:integer)
+      arg :threshold, non_null(:integer), default_value: 500
       arg :id, non_null(:id)
       resolve &Resolvers.get_similar_cities/3
     end
