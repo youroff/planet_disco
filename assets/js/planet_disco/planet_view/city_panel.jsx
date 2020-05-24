@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
-import { Paper, Typography, Grid, Button, ButtonGroup, IconButton } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+import { Paper, Typography, Button, ButtonGroup, IconButton } from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import TopArtists from '../common/top_artists'
 import TopGenres from '../common/top_genres'

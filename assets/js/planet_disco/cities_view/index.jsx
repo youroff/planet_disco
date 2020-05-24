@@ -1,19 +1,18 @@
 import React, { Suspense, useRef } from 'react'
-import { MapControls, OrthographicCamera } from 'drei'
 import Box from './box'
 
 export default () => {
   const cam = useRef()
 
   return <scene>
-    <MapControls />
+    {/* <MapControls />
     <OrthographicCamera
       ref={cam}
       position={[0, 0, 50]}
       zoom={10}
       up={[0, 0, 1]}
       far={10000}
-    />
+    /> */}
     <ambientLight intensity={0.3} />
     <spotLight
       castShadow

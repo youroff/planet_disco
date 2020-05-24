@@ -11,7 +11,10 @@ module.exports = (env, options) => ({
     mainFiles: ['index'],
     extensions: [".js", ".jsx"]
   },
+  mode: 'development',
   optimization: {
+    // usedExports: true,
+    // minimize: true,
     minimizer: [
       new TerserPlugin({ cache: true, parallel: true, sourceMap: false }),
       new OptimizeCSSAssetsPlugin({})

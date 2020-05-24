@@ -24,7 +24,10 @@ export default ({
   const { gl, setDefaultCamera } = useThree()
 
   useEffect(() => {
-    set({ props: [distance, phi, theta] })
+    set({
+      props: [distance, phi, theta],
+      delay: 400 // Dirty hack... Well... Tried everything! Goddamn web development
+    })
   }, [distance, phi, theta])
 
   const [{ props }, set] = useSpring(() => ({

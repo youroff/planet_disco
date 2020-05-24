@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import Skeleton from '@material-ui/lab/Skeleton'
+import { Skeleton } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { processScroll } from './utils'

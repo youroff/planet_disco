@@ -9,7 +9,7 @@ import { toRad } from '../common/utils'
 import GenrePopularity from './genre_popularity'
 import CityPanel from './city_panel'
 import CityLookup from './city_lookup'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useApolloClient } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
 const SIMILAR_CITIES = gql`query CityGenres($cityId: ID) {
@@ -24,6 +24,8 @@ const SIMILAR_CITIES = gql`query CityGenres($cityId: ID) {
 
 export default () => {
   const { state: { city, wormholes: { panel, sidebar } }, dispatch } = useContext(StoreContext)
+  const [citySync, updateCitySync] = useState({})
+  const graphql = useApolloClient()
 
   const location = useMemo(() => {
     return city ? {
@@ -39,13 +41,17 @@ export default () => {
 
   const [genreColors, setGenreColors] = useState({})
 
-  useEffect(() => { city && setGenreColors({}) }, [city])
-
-  const { data } = useQuery(SIMILAR_CITIES, {
-    variables: { cityId: city && city.id },
-    skip: !city,
-    fetchPolicy: 'network-only'
-  })
+  useEffect(() => {
+    if (city) {
+      setGenreColors({})
+      graphql.query({query: SIMILAR_CITIES, variables: { cityId: city.id }})
+        .then(({ data: { similarCities } }) => {
+          updateCitySync({ city, similarCities })
+        })
+    } else {
+      updateCitySync({})
+    }
+  }, [city])
 
   return <scene>
     {panel && <ContextWormhole to={panel}>
@@ -56,8 +62,8 @@ export default () => {
     </ContextWormhole>}
 
     {sidebar && <ContextWormhole to={sidebar}>
-      {!city && <CityLookup />}
-      {city && <CityPanel city={city} similarCities={data && data.similarCities} />}
+      {!citySync.city && <CityLookup />}
+      {citySync.city && <CityPanel { ...citySync } />}
     </ContextWormhole>}
 
     <ControlsTilted {...location} maxDistance={4} />
@@ -73,7 +79,7 @@ export default () => {
     <Stars radius={5} particles={30000} />
     <Suspense fallback={null}>
       <Earth />
-      <Cities genreColors={genreColors} city={city} similarCities={data && data.similarCities} />
+      <Cities genreColors={genreColors} { ...citySync } />
     </Suspense>
   </scene>
 }

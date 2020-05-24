@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import GenreSelector from './genre_selector'
 import { Paper, Typography, ButtonGroup, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { WormholeBase } from '../wormhole'
@@ -54,9 +53,13 @@ export default ({ onCitySelect }) => {
         <GenresIcon />
       </Button>
     </ButtonGroup>
-    
-    <div className={classes.scrollable}>
+
+    {/* <div className={classes.scrollable}> */}
+    <WormholeBase name='panel' className={classes.scrollable} />
+    {/* </div> */}
+
+    {/* <div className={classes.scrollable}>
       <WormholeBase name='panel' />
-    </div>
+    </div> */}
   </Paper>
 }

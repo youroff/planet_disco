@@ -1,15 +1,15 @@
 import React, { useState, useContext, useMemo } from 'react'
-import Controls from '../common/controls/basic'
-import GenreCloud from './genre_cloud'
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import GenreSelector from '../common/panel/genre_selector'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { interpolateSpectral } from 'd3'
 import { StoreContext } from '../common/store'
 import { ContextWormhole } from '../common/wormhole'
 import { computeDirection } from '../common/utils'
+import GenreSelector from '../common/panel/genre_selector'
+import Controls from '../common/controls/basic'
+import GenreCloud from './genre_cloud'
 
 const GENRES = gql`{
   clusteredGenres {

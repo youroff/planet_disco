@@ -2,14 +2,14 @@ import React from 'react'
 import { Router } from 'react-router'
 import { Switch, Route } from 'react-router-dom'
 import { Canvas } from 'react-three-fiber'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { indigo } from '@material-ui/core/colors'
+import { StoreContextProvider } from './common/store'
+import { ContextForward } from './common/wormhole'
 import PlanetView from './planet_view'
 import GenresView from './genres_view'
 import CitiesView from './cities_view'
 import Overlay from './common/overlay'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-import indigo from '@material-ui/core/colors/indigo'
-import { StoreContextProvider } from './common/store'
-import { ContextForward } from './common/wormhole'
 
 const theme = createMuiTheme({
   palette: {

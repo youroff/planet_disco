@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paper, Typography, Slider, Button, ButtonGroup } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import CitySelector from '../common/city_selector'
 
