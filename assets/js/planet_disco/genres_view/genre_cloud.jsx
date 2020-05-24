@@ -5,9 +5,8 @@ import { Vector3 } from 'three/src/math/Vector3'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Color } from 'three/src/math/Color'
 import { InstancedBufferAttribute } from 'three/src/core/InstancedBufferAttribute'
-import { NormalBlending, DynamicDrawUsage } from 'three/src/constants'
+import { DynamicDrawUsage } from 'three/src/constants'
 import { scalePow } from 'd3-scale'
-import { vertexShader, fragmentShader } from '../shaders/genres_advanced'
 
 const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
@@ -19,8 +18,8 @@ export default ({ genres, colorMap, selectedCluster }) => {
       let emissive = new Color(0, 0, 0)
       let alpha = 1.0
       if (selectedCluster && masterGenreId !== selectedCluster) {
-        color = new Color(0.9, 0.9, 0.9)
-        alpha = 0.3
+        color = new Color(0.3, 0.3, 0.3)
+        alpha = 0.9
       }
       if (selectedCluster && masterGenreId === selectedCluster) {
         emissive = new Color(colorMap[masterGenreId])
@@ -94,7 +93,7 @@ export default ({ genres, colorMap, selectedCluster }) => {
           ].join('\n')
         ).replace(
           'vec3 totalEmissiveRadiance = emissive;',
-          'vec3 totalEmissiveRadiance = vEmissiveColor * 0.8;'
+          'vec3 totalEmissiveRadiance = vEmissiveColor * 1.0;'
         );
 
 

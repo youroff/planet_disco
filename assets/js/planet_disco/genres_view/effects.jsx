@@ -22,9 +22,9 @@ export default function Effects() {
 
   const bloom = {
     resolution: aspect,
-    strength: 0.6,
+    strength: 0.04,
     radius: 0.1,
-    threshold: 0.4,
+    threshold: 0.9,
   }
 
   return (

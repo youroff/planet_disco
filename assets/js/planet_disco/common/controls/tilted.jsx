@@ -8,7 +8,6 @@ import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
 import { useSpring, animated } from '@react-spring/three'
 import { MathUtils } from 'three/src/math/MathUtils'
-import { PhotoSizeSelectActual } from '@material-ui/icons'
 
 const maxSpeed = 20
 

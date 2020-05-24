@@ -11,6 +11,7 @@ import GenreSelector from '../common/panel/genre_selector'
 import Controls from '../common/controls/basic'
 import GenreCloud from './genre_cloud'
 import Effects from './effects'
+import TrackingLight from './tracking_light'
 
 const GENRES = gql`{
   clusteredGenres {
@@ -95,16 +96,10 @@ export default () => {
       { ...clusterId ? computeDirection(centroids[clusterId]) : initDirection}
       distance={clusterId ? 20 : 80}
     />
-    <ambientLight intensity={0.3} />
-    <spotLight
-      intensity={1}
-      lookAt={[0, 0, 0]}
-      position={[50, 50, 30]}
-    />
-    <spotLight
-      intensity={0.5}
-      lookAt={[0, 0, 0]}
-      position={[-50, -50, -50]}
+    <ambientLight intensity={1} />
+    <TrackingLight
+      { ...clusterId ? centroids[clusterId] : initCoord }
+      color={clusterId ? colorMap[clusterId] : '#000000'}
     />
     {data && <GenreCloud
       genres={data.clusteredGenres}
