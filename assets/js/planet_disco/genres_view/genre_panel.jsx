@@ -2,6 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Paper, Typography, IconButton } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
+import TopArtists from '../common/top_artists'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +27,6 @@ export default ({ genre, selectCluster }) => {
         </IconButton>
       </Typography>            
     </div>
-    {/* <TopArtists city={city} />  */}
+    <TopArtists genre={genre} /> 
   </Paper>
 }

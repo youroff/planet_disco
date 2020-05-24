@@ -29,8 +29,15 @@ export default ({ colorMap = {}, selectGenre }) => {
       {data && data.masterGenres.map((genre, i) => <Chip
         key={i}
         variant="outlined"
-        onClick={selectGenre && (() => selectGenre(genre, data.masterGenres))}
-        style={{backgroundColor: colorMap[genre.id]}}
+        onClick={selectGenre && ((e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          selectGenre(genre, data.masterGenres)
+        })}
+        style={{
+          backgroundColor: colorMap[genre.id],
+          textShadow: colorMap[genre.id] ? '0px 0px 2px #000' : ''
+        }}
         className={classes.genreButton}
         label={genre.name}
       />)}

@@ -39,7 +39,7 @@ export default ({ onCitySelect }) => {
 
   return <Paper className={classes.panel}>
     <Typography variant="h4" component="h1">
-      Disco Planet
+      Planet Disco
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">
@@ -54,12 +54,6 @@ export default ({ onCitySelect }) => {
       </Button>
     </ButtonGroup>
 
-    {/* <div className={classes.scrollable}> */}
     <WormholeBase name='panel' className={classes.scrollable} />
-    {/* </div> */}
-
-    {/* <div className={classes.scrollable}>
-      <WormholeBase name='panel' />
-    </div> */}
   </Paper>
 }

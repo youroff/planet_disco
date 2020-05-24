@@ -5,9 +5,10 @@ import { Skeleton } from '@material-ui/lab'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { processScroll } from './utils'
+import invariant from 'invariant'
 
-const TOP_ARTISTS = gql`query TopArtists($cityId: ID, $cursor: String) {
-  artists(byCity: $cityId, cursor: $cursor, limit: 20, sortBy: "score") {
+const TOP_ARTISTS = gql`query TopArtists($byType: String!, $byId: ID!, $cursor: String) {
+  topArtists(byType: $byType, byId: $byId, cursor: $cursor, limit: 20) {
     entries {
       name
       genres {
@@ -33,16 +34,17 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default ({ city, genre }) => {
+  invariant(!!city ^ !!genre, 'Either city or genre should be passed into TopArtists component')
   const classes = useStyles()
-  
-  const variables = { cityId: city.id }
+
+  const variables = city ? { byType: 'city', byId: city.id } : { byType: 'genre', byId: genre.genreId }
   const { loading, data, fetchMore } = useQuery(TOP_ARTISTS, {variables, fetchPolicy: "cache-and-network"})
 
   return <List
     className={classes.root}
-    onScroll={processScroll(variables, 600, 'artists', { loading, data, fetchMore })}
+    onScroll={processScroll(variables, 600, 'topArtists', { loading, data, fetchMore })}
   >
-    {data && data.artists.entries.map((artist, i) => (<Fragment key={i}>
+    {data && data.topArtists.entries.map((artist, i) => (<Fragment key={i}>
       <ListItem alignItems="flex-start">
         {artist.images[0] && <ListItemAvatar>
           <Avatar alt={artist.name} src={artist.images[0].path} />

@@ -13,6 +13,8 @@ const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
 export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, selectGenre, currentGenre }) => {
 
+  // This helluva nightmare is only to tell click from drag and drop cluster
+  // on click on space or spheres from other clusters 
   const { gl: { domElement: canvas }, raycaster, scene } = useThree()
   useEffect(() => {
     let drag = false
@@ -86,7 +88,7 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
     onClick={(e) => {
       const genre = genres[e.instanceId]
       if (selectedCluster) {
-        selectGenre(genre)
+        if (selectedCluster === genre.masterGenreId) selectGenre(genre)
       } else {
         selectCluster(genre.masterGenreId)
       }
