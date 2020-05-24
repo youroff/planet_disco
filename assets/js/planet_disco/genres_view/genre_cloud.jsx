@@ -52,12 +52,8 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
       if (selectedCluster && masterGenreId === selectedCluster) {
         emissive = new Color(colorMap[masterGenreId])
       }
-      mesh.current.geometry.attributes.color.array[i * 3] = color.r
-      mesh.current.geometry.attributes.color.array[i * 3 + 1] = color.g
-      mesh.current.geometry.attributes.color.array[i * 3 + 2] = color.b
-      mesh.current.geometry.attributes.emissiveColor.array[i * 3] = emissive.r
-      mesh.current.geometry.attributes.emissiveColor.array[i * 3 + 1] = emissive.g
-      mesh.current.geometry.attributes.emissiveColor.array[i * 3 + 2] = emissive.b
+      color.toArray(mesh.current.geometry.attributes.color.array, i * 3)
+      emissive.toArray(mesh.current.geometry.attributes.emissiveColor.array, i * 3)
       mesh.current.geometry.attributes.instanceAlpha.array[i] = alpha
       mesh.current.geometry.attributes.color.needsUpdate = true
       mesh.current.geometry.attributes.emissiveColor.needsUpdate = true

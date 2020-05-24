@@ -38,9 +38,7 @@ export default ({ cities, weights }) => {
       let color = weights[id] ? new Color(weights[id][0]) : new Color(210, 210, 210)
       let height = weights[id] ? weights[id][1] : 0.001
       mesh.current.geometry.attributes.instanceHeight.array[i] = height * 200
-      mesh.current.geometry.attributes.instanceColor.array[i * 3] = color.r
-      mesh.current.geometry.attributes.instanceColor.array[i * 3 + 1] = color.g
-      mesh.current.geometry.attributes.instanceColor.array[i * 3 + 2] = color.b
+      color.toArray(mesh.current.geometry.attributes.instanceColor.array, i * 3)
       mesh.current.geometry.attributes.instanceHeight.needsUpdate = true
       mesh.current.geometry.attributes.instanceColor.needsUpdate = true
     })
@@ -50,8 +48,8 @@ export default ({ cities, weights }) => {
     <boxBufferGeometry attach="geometry" args={[0.005, 0.005, 0.005]} />
     <shaderMaterial
       attach="material"
-      color="#ececec"
-      opacity={1}
+      // color="#ececec"
+      // opacity={1}
       {...material}
     />
   </instancedMesh>

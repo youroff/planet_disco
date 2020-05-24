@@ -11,7 +11,7 @@ module.exports = (env, options) => ({
     mainFiles: ['index'],
     extensions: [".js", ".jsx"]
   },
-  mode: 'development',
+  // mode: 'production',
   optimization: {
     // usedExports: true,
     // minimize: true,
@@ -33,7 +33,10 @@ module.exports = (env, options) => ({
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          // options: {
+          //   presets: ["es2015"]
+          // }
         }
       },
       {
@@ -42,7 +45,7 @@ module.exports = (env, options) => ({
       }
     ]
   },
-  // devtool: "source-map",
+  devtool: "source-map",
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
     new CopyWebpackPlugin([{ from: 'static/', to: '../' }])//,
