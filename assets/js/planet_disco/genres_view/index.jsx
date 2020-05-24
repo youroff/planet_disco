@@ -10,6 +10,7 @@ import { computeDirection } from '../common/utils'
 import GenreSelector from '../common/panel/genre_selector'
 import Controls from '../common/controls/basic'
 import GenreCloud from './genre_cloud'
+import Effects from './effects'
 
 const GENRES = gql`{
   clusteredGenres {
@@ -70,8 +71,9 @@ export default () => {
   }, [data])
 
   return <scene>
-    {panel && <ContextWormhole to={panel}>
+    <Effects />
 
+    {panel && <ContextWormhole to={panel}>
       <Typography variant="subtitle1">
         Genre clusters
       </Typography>
@@ -99,11 +101,11 @@ export default () => {
       lookAt={[0, 0, 0]}
       position={[50, 50, 30]}
     />
-    {/* <spotLight
+    <spotLight
       intensity={0.5}
       lookAt={[0, 0, 0]}
       position={[-50, -50, -50]}
-    /> */}
+    />
     {data && <GenreCloud
       genres={data.clusteredGenres}
       selectedCluster={clusterId}

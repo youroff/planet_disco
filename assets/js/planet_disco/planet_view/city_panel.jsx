@@ -59,6 +59,6 @@ export default ({ city, similarCities }) => {
         </Button>
       </ButtonGroup>            
     </div>
-    {selector == 'artists' ? <TopArtists city={city} /> : <TopGenres city={city} />}    
+    {/* {selector == 'artists' ? <TopArtists city={city} /> : <TopGenres city={city} />}     */}
   </Paper>
 }

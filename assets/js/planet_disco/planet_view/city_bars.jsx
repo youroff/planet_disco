@@ -19,7 +19,7 @@ export default ({ cities, weights }) => {
   }))
 
   const mesh = useUpdate((mesh) => {
-    const instanceColors = new Array(cities.length * 3).fill(210)
+    const instanceColors = new Array(cities.length * 3).fill(0.5)
     const instanceHeights = new Array(cities.length).fill(0.001)
     mesh.geometry.setAttribute('instanceColor', new InstancedBufferAttribute(new Float32Array(instanceColors), 3, true))
     mesh.geometry.setAttribute('instanceHeight', new InstancedBufferAttribute(new Float32Array(instanceHeights), 1, true))
