@@ -72,7 +72,7 @@ export default () => {
   }, [data])
 
   return <scene>
-    <Effects />
+    {/* <Effects /> */}
 
     {panel && <ContextWormhole to={panel}>
       <Typography variant="subtitle1">

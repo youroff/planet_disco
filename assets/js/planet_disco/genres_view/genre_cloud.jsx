@@ -93,7 +93,7 @@ export default ({ genres, colorMap, selectedCluster }) => {
           ].join('\n')
         ).replace(
           'vec3 totalEmissiveRadiance = emissive;',
-          'vec3 totalEmissiveRadiance = vEmissiveColor * 1.0;'
+          'vec3 totalEmissiveRadiance = vEmissiveColor * 0.1;'
         );
 
 
