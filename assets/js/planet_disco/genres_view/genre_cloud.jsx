@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useUpdate, Dom } from 'react-three-fiber'
+import React, { useEffect } from 'react'
+import { useUpdate, Dom, useThree} from 'react-three-fiber'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { Vector3 } from 'three/src/math/Vector3'
 import { Matrix4 } from 'three/src/math/Matrix4'
@@ -12,6 +12,12 @@ import { shaderPatch } from '../shaders/genres'
 const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
 export default ({ genres, centroids, colorMap, selectedCluster, selectCluster }) => {
+
+  const t = useThree()
+  useEffect(() => {
+    t
+    console.log(t)
+  }, [])
 
   useEffect(() => {
     genres.forEach(({ masterGenreId }, i) => {
@@ -75,6 +81,18 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
       onBeforeCompile={shaderPatch}
     />
 
+    {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
+      if (selectedCluster === masterGenreId) {
+        return <Dom
+          key={i}
+          position={[x, y, z]}
+          className={genreId === masterGenreId ? 'genre-title' : 'genre-subtitle'}
+        >
+          {name}
+        </Dom>
+      }
+    })}
+
     {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
       if (genreId === masterGenreId) {
         const { x, y, z } = centroids[masterGenreId]
@@ -88,16 +106,5 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
       }
     })}
 
-    {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
-      if (selectedCluster === masterGenreId) {
-        return <Dom
-          key={i}
-          position={[x, y, z]}
-          className={genreId === masterGenreId ? 'genre-title' : 'genre-subtitle'}
-        >
-          {name}
-        </Dom>
-      }
-    })}
   </instancedMesh>
 }

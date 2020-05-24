@@ -40,9 +40,12 @@ main {
 }
 
 .genre-title {
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  /* border-top: 1px solid rgba(255, 255, 255, 0.3);
   border-left: 1px solid rgba(255, 255, 255, 0.3);
-  padding-left: 4px;
+  padding-left: 4px; */
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  padding: 2px 4px;
   color: white;
   font-family: Helvetica;
   font-size: 1.1em;
@@ -53,6 +56,7 @@ main {
 
 .genre-subtitle {
   color: white;
+  z-index: 99;
   font-family: Helvetica;
   font-weight: 400;
   font-size: 0.8em;
