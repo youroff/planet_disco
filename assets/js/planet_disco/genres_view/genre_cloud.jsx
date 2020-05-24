@@ -13,10 +13,11 @@ const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
 export default ({ genres, centroids, colorMap, selectedCluster, selectCluster }) => {
 
-  const t = useThree()
+  const { gl: { domElement: canvas } } = useThree()
   useEffect(() => {
-    t
-    console.log(t)
+    const listener = () => { selectCluster() }
+    canvas.addEventListener('click', listener)
+    return () => { canvas.removeEventListener('click', listener) }
   }, [])
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
     ref={mesh}
     args={[null, null, genres.length]}
     onClick={(e) => {
+      e.stopPropagation()
       const genre = genres[e.instanceId]
       if (selectedCluster) {
 
@@ -82,16 +84,30 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
     />
 
     {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
-      if (selectedCluster === masterGenreId) {
+      if (selectedCluster === masterGenreId && selectedCluster !== genreId) {
         return <Dom
           key={i}
           position={[x, y, z]}
-          className={genreId === masterGenreId ? 'genre-title' : 'genre-subtitle'}
+          className='genre-subtitle'
         >
           {name}
         </Dom>
       }
     })}
+
+    {/* Bloody hack cause z-index is unavailable in absence of access to portals */}
+    {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
+      if (selectedCluster === genreId) {
+        return <Dom
+          key={i}
+          position={[x, y, z]}
+          className='genre-title'
+        >
+          {name}
+        </Dom>
+      }
+    })}
+
 
     {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
       if (genreId === masterGenreId) {

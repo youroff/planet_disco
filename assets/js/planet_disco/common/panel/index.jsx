@@ -39,7 +39,7 @@ export default ({ onCitySelect }) => {
 
   return <Paper className={classes.panel}>
     <Typography variant="h4" component="h1">
-      Spotify Tracker
+      Disco Planet
     </Typography>
 
     <ButtonGroup className={classes.switch} fullWidth size="large">
