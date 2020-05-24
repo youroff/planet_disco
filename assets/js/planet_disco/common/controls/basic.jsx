@@ -34,7 +34,7 @@ export default ({
   }))
 
   const bind = useGesture({
-    onDrag: ({ dragging, velocities: [xV, yV] }) => {
+    onDrag: ({ dragging, velocities: [xV, yV], event }) => {
       if (dragging) {
         const [distance, phi, theta, x, y, z] = props.get()
         const k = Math.sqrt(distance + 100) / speed
@@ -42,6 +42,7 @@ export default ({
         // Handle wrapping somehow
         const t = theta - xV / k
         set({ props: [distance, p, t, x, y, z] })
+        event.stopPropagation()
       }
     },
     onWheel: ({ velocities: [_, yV] }) => {
@@ -50,7 +51,12 @@ export default ({
       const d = MathUtils.clamp(k * distance, minDistance, maxDistance)
       set({ props: [d, phi, theta, x, y, z] })
     }
-  }, { domTarget: gl.domElement })
+  }, {
+    drag: {
+      capture: true
+    },
+    domTarget: gl.domElement
+  })
   useEffect(bind, [bind])
 
   useEffect(() => void setDefaultCamera(camera.current), [])

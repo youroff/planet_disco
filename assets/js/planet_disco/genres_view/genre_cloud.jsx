@@ -11,14 +11,32 @@ import { shaderPatch } from '../shaders/genres'
 
 const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
-export default ({ genres, centroids, colorMap, selectedCluster, selectCluster }) => {
+export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, selectGenre, currentGenre }) => {
 
-  const { gl: { domElement: canvas } } = useThree()
+  const { gl: { domElement: canvas }, raycaster, scene } = useThree()
   useEffect(() => {
-    const listener = () => { selectCluster() }
-    canvas.addEventListener('click', listener)
-    return () => { canvas.removeEventListener('click', listener) }
-  }, [])
+    let drag = false
+    const dragFalse = () => drag = false
+    const dragTrue = () => drag = true
+    const listener = () => {
+      if(!drag && selectedCluster) {
+        const inCluster = raycaster.intersectObject(mesh.current).some(o => {
+          const genre = genres[o.instanceId]
+          return genre.masterGenreId === selectedCluster
+        })
+
+        if (!inCluster) { selectCluster() }
+      }
+    } 
+    canvas.addEventListener('mousedown', dragFalse)
+    canvas.addEventListener('mousemove', dragTrue)
+    canvas.addEventListener('mouseup', listener)
+    return () => {
+      canvas.removeEventListener('mousedown', dragFalse)
+      canvas.removeEventListener('mousemove', dragTrue)
+      canvas.removeEventListener('mouseup', listener)
+    }
+  }, [selectedCluster])
 
   useEffect(() => {
     genres.forEach(({ masterGenreId }, i) => {
@@ -66,10 +84,9 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
     ref={mesh}
     args={[null, null, genres.length]}
     onClick={(e) => {
-      e.stopPropagation()
       const genre = genres[e.instanceId]
       if (selectedCluster) {
-
+        selectGenre(genre)
       } else {
         selectCluster(genre.masterGenreId)
       }
@@ -88,7 +105,7 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
         return <Dom
           key={i}
           position={[x, y, z]}
-          className='genre-subtitle'
+          className={`genre-subtitle ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
         >
           {name}
         </Dom>
@@ -101,13 +118,12 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster })
         return <Dom
           key={i}
           position={[x, y, z]}
-          className='genre-title'
+          className={`genre-title ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
         >
           {name}
         </Dom>
       }
     })}
-
 
     {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
       if (genreId === masterGenreId) {

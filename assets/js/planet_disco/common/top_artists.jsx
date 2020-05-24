@@ -32,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({city}) => {
+export default ({ city, genre }) => {
   const classes = useStyles()
   
-  const variables = {cityId: city.id}
+  const variables = { cityId: city.id }
   const { loading, data, fetchMore } = useQuery(TOP_ARTISTS, {variables, fetchPolicy: "cache-and-network"})
 
   return <List

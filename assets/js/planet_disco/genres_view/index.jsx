@@ -12,6 +12,7 @@ import Controls from '../common/controls/basic'
 import GenreCloud from './genre_cloud'
 import Effects from './effects'
 import TrackingLight from './tracking_light'
+import GenrePanel from './genre_panel'
 
 const GENRES = gql`{
   clusteredGenres {
@@ -35,8 +36,14 @@ const initDirection = { phi: Math.PI / 2, theta: 2 * Math.PI }
 export default () => {
   const classes = useStyles()
   const { data } = useQuery(GENRES)
-  const { state: { wormholes: { panel, sidebar } }, dispatch } = useContext(StoreContext)
+  const { state: { wormholes: { panel, sidebar } } } = useContext(StoreContext)
   const [clusterId, setClusterId] = useState()
+  const [currentGenre, setCurrentGenre] = useState()
+
+  const setCluster = (genreId) => {
+    setCurrentGenre()
+    setClusterId(genreId)
+  }
 
   const centroids = useMemo(() => {
     const cs = {}
@@ -86,8 +93,12 @@ export default () => {
 
       <GenreSelector
         colorMap={clusterId ? { [clusterId]: colorMap[clusterId] } : {}}
-        selectGenre={(g) => setClusterId(clusterId == g.id ? undefined : g.id)}
+        selectGenre={(g) => setCluster(clusterId == g.id ? undefined : g.id)}
       />
+    </ContextWormhole>}
+
+    {sidebar && <ContextWormhole to={sidebar}>
+      {currentGenre && <GenrePanel genre={currentGenre} selectCluster={setCluster} /> || <div></div>}
     </ContextWormhole>}
 
     <Controls
@@ -98,6 +109,11 @@ export default () => {
       distance={clusterId ? 20 : 80}
     />
     <ambientLight intensity={1} />
+    <spotLight
+      intensity={0.4}
+      lookAt={[0, 0, 0]}
+      position={[50, 50, 500]}
+    />
     <TrackingLight
       { ...clusterId ? centroids[clusterId] : initCoord }
       color={clusterId ? colorMap[clusterId] : '#000000'}
@@ -107,7 +123,9 @@ export default () => {
       genres={data.clusteredGenres}
       selectedCluster={clusterId}
       colorMap={colorMap}
-      selectCluster={setClusterId}
+      selectCluster={setCluster}
+      selectGenre={setCurrentGenre}
+      currentGenre={currentGenre}
     />}
   </scene>
 }
