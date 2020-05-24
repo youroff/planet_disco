@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { useUpdate } from 'react-three-fiber'
+import React, { useEffect, useState } from 'react'
+import { useUpdate, Dom } from 'react-three-fiber'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { Vector3 } from 'three/src/math/Vector3'
 import { Matrix4 } from 'three/src/math/Matrix4'
@@ -7,10 +7,11 @@ import { Color } from 'three/src/math/Color'
 import { InstancedBufferAttribute } from 'three/src/core/InstancedBufferAttribute'
 import { DynamicDrawUsage } from 'three/src/constants'
 import { scalePow } from 'd3-scale'
+import { shaderPatch } from '../shaders/genres'
 
 const radScale = scalePow().domain([0.0001, 0.007]).range([0.2, 1.5])
 
-export default ({ genres, colorMap, selectedCluster }) => {
+export default ({ genres, centroids, colorMap, selectedCluster, selectCluster }) => {
 
   useEffect(() => {
     genres.forEach(({ masterGenreId }, i) => {
@@ -18,8 +19,8 @@ export default ({ genres, colorMap, selectedCluster }) => {
       let emissive = new Color(0, 0, 0)
       let alpha = 1.0
       if (selectedCluster && masterGenreId !== selectedCluster) {
-        color = new Color(0.3, 0.3, 0.3)
-        alpha = 0.9
+        color = new Color(0.2, 0.2, 0.2)
+        alpha = 0.8
       }
       if (selectedCluster && masterGenreId === selectedCluster) {
         emissive = new Color(colorMap[masterGenreId])
@@ -54,52 +55,49 @@ export default ({ genres, colorMap, selectedCluster }) => {
     mesh.instanceMatrix.setUsage(DynamicDrawUsage)
   }, [])
 
-  return <instancedMesh ref={mesh} args={[null, null, genres.length]} castShadow>
+  return <instancedMesh
+    ref={mesh}
+    args={[null, null, genres.length]}
+    onClick={(e) => {
+      const genre = genres[e.instanceId]
+      if (selectedCluster) {
+
+      } else {
+        selectCluster(genre.masterGenreId)
+      }
+    }}
+  >
     <sphereBufferGeometry attach="geometry" args={[1, 32, 32]} />
     <meshPhysicalMaterial
       attach="material"
-
-      // ref={material}
       transparent={true}
-      emissive='white'
-      emissiveIntensity={0.3}
-      // transparency={0.3}
       vertexColors
-      onBeforeCompile={(shader) => {
-        shader.vertexShader = [
-          'attribute float instanceAlpha;',
-          'varying float vInstanceAlpha;',
-          'attribute vec3 emissiveColor;',
-          'varying vec3 vEmissiveColor;',
-          shader.vertexShader
-        ].join('\n').replace(
-          '#include <begin_vertex>',
-          [
-            '#include <begin_vertex>;',
-            'vInstanceAlpha = instanceAlpha;',
-            'vEmissiveColor = emissiveColor;'
-          ].join('\n')
-        )
-        
-        shader.fragmentShader = [
-          'varying float vInstanceAlpha;',
-          'varying vec3 vEmissiveColor;',
-          shader.fragmentShader
-        ].join('\n').replace(
-          'gl_FragColor = vec4( outgoingLight, diffuseColor.a );',
-          [
-            'diffuseColor.a *= saturate( vInstanceAlpha + linearToRelativeLuminance( reflectedLight.directSpecular + reflectedLight.indirectSpecular ) );',
-            'gl_FragColor = vec4( outgoingLight, diffuseColor.a );'
-          ].join('\n')
-        ).replace(
-          'vec3 totalEmissiveRadiance = emissive;',
-          'vec3 totalEmissiveRadiance = vEmissiveColor * 0.1;'
-        );
-
-
-        console.log(shader)
-      }}
-      // {...material}
+      onBeforeCompile={shaderPatch}
     />
+
+    {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
+      if (genreId === masterGenreId) {
+        const { x, y, z } = centroids[masterGenreId]
+        return <Dom
+          key={i}
+          position={[x, y, z]}
+          className='genre-title'
+        >
+          {name}
+        </Dom>
+      }
+    })}
+
+    {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
+      if (selectedCluster === masterGenreId) {
+        return <Dom
+          key={i}
+          position={[x, y, z]}
+          className={genreId === masterGenreId ? 'genre-title' : 'genre-subtitle'}
+        >
+          {name}
+        </Dom>
+      }
+    })}
   </instancedMesh>
 }

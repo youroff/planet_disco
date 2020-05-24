@@ -34,22 +34,22 @@ export default ({
   }))
 
   const bind = useGesture({
-    // onDrag: ({ dragging, velocities: [x, y] }) => {
-    //   if (dragging) {
-    //     const [distance, phi, theta] = props.get()
-    //     const k = Math.sqrt(distance + 100) / speed
-    //     const p = MathUtils.clamp(phi - y / k, 0.1, Math.PI - 0.1)
-    //     // Handle wrapping somehow
-    //     const t = theta - x / k
-    //     set({ props: [distance, p, t] })
-    //   }
-    // },
-    // onWheel: ({ velocities: [_, y] }) => {
-    //   const [distance, phi, theta] = props.get()
-    //   const k = 1 + Math.sign(y) * Math.min(8 * Math.abs(y), maxSpeed) / (maxSpeed + 10)
-    //   const d = MathUtils.clamp(k * distance, minDistance, maxDistance)
-    //   set({ props: [d, phi, theta] })
-    // }
+    onDrag: ({ dragging, velocities: [xV, yV] }) => {
+      if (dragging) {
+        const [distance, phi, theta, x, y, z] = props.get()
+        const k = Math.sqrt(distance + 100) / speed
+        const p = MathUtils.clamp(phi - yV / k, 0.1, Math.PI - 0.1)
+        // Handle wrapping somehow
+        const t = theta - xV / k
+        set({ props: [distance, p, t, x, y, z] })
+      }
+    },
+    onWheel: ({ velocities: [_, yV] }) => {
+      const [distance, phi, theta, x, y, z] = props.get()
+      const k = 1 + Math.sign(yV) * Math.min(8 * Math.abs(yV), maxSpeed) / (maxSpeed + 10)
+      const d = MathUtils.clamp(k * distance, minDistance, maxDistance)
+      set({ props: [d, phi, theta, x, y, z] })
+    }
   }, { domTarget: gl.domElement })
   useEffect(bind, [bind])
 
@@ -57,7 +57,6 @@ export default ({
   useFrame(() => camera.current.updateMatrixWorld())
 
   const getPosition = (distance, phi, theta, x, y, z) => {
-    // console.log(distance, phi, theta, x, y, z)
     const p = new Vector3().setFromSphericalCoords(distance, phi, theta)
     const m = new Matrix4().makeTranslation(x, y, z)
     p.applyMatrix4(m)

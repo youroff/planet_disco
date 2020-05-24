@@ -33,7 +33,7 @@ defmodule SpotifyTrackerWeb.Schema do
   paginated(:genre)
 
   object :clustered_genre do
-    field :id, :id
+    field :genre_id, :id
     field :name, non_null(:string)
     field :coord, :coordinate
     field :pagerank, :float

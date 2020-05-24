@@ -15,10 +15,11 @@ import TrackingLight from './tracking_light'
 
 const GENRES = gql`{
   clusteredGenres {
+    genreId
+    masterGenreId
     name
     coord
     pagerank
-    masterGenreId
   }
 }`
 
@@ -91,7 +92,7 @@ export default () => {
 
     <Controls
       maxDistance={80}
-      minDistance={1}
+      minDistance={5}
       { ...clusterId ? centroids[clusterId] : initCoord }
       { ...clusterId ? computeDirection(centroids[clusterId]) : initDirection}
       distance={clusterId ? 20 : 80}
@@ -102,9 +103,11 @@ export default () => {
       color={clusterId ? colorMap[clusterId] : '#000000'}
     />
     {data && <GenreCloud
+      centroids={centroids}
       genres={data.clusteredGenres}
       selectedCluster={clusterId}
       colorMap={colorMap}
+      selectCluster={setClusterId}
     />}
   </scene>
 }

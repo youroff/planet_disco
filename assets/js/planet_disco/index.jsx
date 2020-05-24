@@ -27,6 +27,7 @@ export default ({ match, history }) => {
       <Overlay />
 
       <ContextForward wrapper={<Canvas
+          className='main-canvas'
           shadowMap
           updateDefaultCamera
           resize={{debounce: { scroll: 50, resize: 50 }}}
