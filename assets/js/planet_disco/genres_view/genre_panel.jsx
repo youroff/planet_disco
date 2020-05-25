@@ -15,14 +15,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ({ genre, selectCluster }) => {
+export default ({ genre, selectGenre }) => {
   const classes = useStyles()
 
   return <Paper className={classes.root}>
     <div>
       <Typography variant="h5" gutterBottom>
         {genre.name}
-        <IconButton onClick={() => selectCluster()}>
+        <IconButton onClick={() => selectGenre()}>
           <CloseIcon />
         </IconButton>
       </Typography>            

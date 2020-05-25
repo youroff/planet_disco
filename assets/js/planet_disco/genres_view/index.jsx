@@ -98,7 +98,7 @@ export default () => {
     </ContextWormhole>}
 
     {sidebar && <ContextWormhole to={sidebar}>
-      {currentGenre && <GenrePanel genre={currentGenre} selectCluster={setCluster} /> || <div></div>}
+      {currentGenre && <GenrePanel genre={currentGenre} selectGenre={setCurrentGenre} /> || <div></div>}
     </ContextWormhole>}
 
     <Controls

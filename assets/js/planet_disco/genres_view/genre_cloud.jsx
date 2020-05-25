@@ -100,24 +100,13 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
     />
 
     {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
-      if (selectedCluster === masterGenreId && selectedCluster !== genreId) {
+      if (selectedCluster === masterGenreId) {
+        const title = selectedCluster == genreId ? 'genre-title' : 'genre-subtitle'
+        const selected = currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''
         return <HTML
           key={i}
           position={[x, y, z]}
-          className={`genre-subtitle ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
-        >
-          {name}
-        </HTML>
-      }
-    })}
-
-    {/* Bloody hack cause z-index is unavailable in absence of access to portals */}
-    {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
-      if (selectedCluster === genreId) {
-        return <HTML
-          key={i}
-          position={[x, y, z]}
-          className={`genre-title ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
+          className={`${title} ${selected}`}
         >
           {name}
         </HTML>
