@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Dom } from 'react-three-fiber'
+import { HTML } from 'drei'
 import { StoreContext } from './store'
 import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
 import { ThemeProvider, useTheme } from '@material-ui/core/styles'
@@ -36,9 +36,9 @@ export const WormholeBase = ({ name, ...props }) => {
 }
 
 export const Wormhole = ({ to, children }) => {
-  return <Dom>
+  return <HTML>
     {createPortal(children, to)}
-  </Dom>
+  </HTML>
 }
 
 export const ContextWormhole = ({to, children}) => {

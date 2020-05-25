@@ -1,12 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 import { Vector3 } from 'three/src/math/Vector3'
-import { Vector2 } from 'three/src/math/Vector2'
-import { Spherical } from 'three/src/math/Spherical'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
-import { useSpring, animated } from '@react-spring/three'
+import { useSpring, animated } from '@react-spring/three/index.cjs'
 import { MathUtils } from 'three/src/math/MathUtils'
 
 const maxSpeed = 20

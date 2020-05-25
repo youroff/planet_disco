@@ -1,9 +1,10 @@
 const path = require('path');
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env, options) => ({
@@ -11,14 +12,35 @@ module.exports = (env, options) => ({
     mainFiles: ['index'],
     extensions: [".js", ".jsx"]
   },
-  // mode: 'production',
+  mode: 'production',
   optimization: {
-    // usedExports: true,
+    usedExports: true,
     // minimize: true,
-    minimizer: [
-      new TerserPlugin({ cache: true, parallel: true, sourceMap: false }),
-      new OptimizeCSSAssetsPlugin({})
-    ]
+    // minimizer: [new UglifyJsPlugin()]
+    // minimizer: [
+    //   new TerserPlugin({
+    //     cache: true,
+    //     parallel: true,
+    //     sourceMap: true,
+    //     terserOptions: {
+    //       parse: { 
+    //         // Let terser parse ecma 8 code but always output 
+    //         // ES5 compliant code for older browsers 
+    //         ecma: 8 
+    //       }, 
+    //       compress: { 
+    //         ecma: 5, 
+    //         warnings: false, 
+    //         comparisons: false 
+    //       },
+    //       module: true,
+    //       toplevel: true,
+    //       keep_fnames: true,
+    //       keep_classnames: true
+    //     }
+    //   }),
+    //   new OptimizeCSSAssetsPlugin({})
+    // ]
   },
   entry: {
     './js/app.js': glob.sync('./vendor/**/*.js').concat(['./js/app.js'])

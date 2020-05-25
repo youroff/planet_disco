@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
-import { useFrame, Dom } from 'react-three-fiber'
+import { useFrame } from 'react-three-fiber'
+import { HTML } from 'drei'
 
 export default (props) => {
   // This reference will give us direct access to the mesh
@@ -22,9 +23,9 @@ export default (props) => {
       onPointerOut={e => setHover(false)}>
       <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
       <meshStandardMaterial attach="material" color={hovered ? 'hotpink' : 'orange'} />
-      <Dom>
+      <HTML>
         ХУЙ
-      </Dom>
+      </HTML>
     </mesh>
   )
 }

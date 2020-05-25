@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { useUpdate, Dom, useThree} from 'react-three-fiber'
+import { useUpdate, useThree} from 'react-three-fiber'
+import { HTML } from 'drei'
 import { Quaternion } from 'three/src/math/Quaternion'
 import { Vector3 } from 'three/src/math/Vector3'
 import { Matrix4 } from 'three/src/math/Matrix4'
@@ -100,39 +101,39 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
 
     {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
       if (selectedCluster === masterGenreId && selectedCluster !== genreId) {
-        return <Dom
+        return <HTML
           key={i}
           position={[x, y, z]}
           className={`genre-subtitle ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
         >
           {name}
-        </Dom>
+        </HTML>
       }
     })}
 
     {/* Bloody hack cause z-index is unavailable in absence of access to portals */}
     {selectedCluster && genres.map(({ genreId, masterGenreId, name, coord: { x, y, z } }, i) => {
       if (selectedCluster === genreId) {
-        return <Dom
+        return <HTML
           key={i}
           position={[x, y, z]}
           className={`genre-title ${currentGenre && currentGenre.genreId === genreId ? 'selected-genre' : ''}`}
         >
           {name}
-        </Dom>
+        </HTML>
       }
     })}
 
     {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
       if (genreId === masterGenreId) {
         const { x, y, z } = centroids[masterGenreId]
-        return <Dom
+        return <HTML
           key={i}
           position={[x, y, z]}
           className='genre-title'
         >
           {name}
-        </Dom>
+        </HTML>
       }
     })}
 
