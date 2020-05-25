@@ -81,6 +81,15 @@ defmodule SpotifyTrackerWeb.Schema do
       resolve &Resolvers.get_artists/3
     end
 
+    @desc "Top artists by city or genre"
+    field :top_artists, :paginated_artist do
+      arg :cursor, :string
+      arg :limit, :integer
+      arg :by_type, non_null(:string)
+      arg :by_id, non_null(:id)
+      resolve &Resolvers.get_top_artists/3
+    end
+
     @desc "Cities entry point, returns list of cities"
     field :cities, :paginated_city do
       arg :cursor, :string

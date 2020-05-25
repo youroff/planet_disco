@@ -39,6 +39,23 @@ defmodule SpotifyTrackerWeb.Resolvers do
     order_by(q, [:name, :id])
   end
 
+    # ARTISTS ENDPOINT
+    def get_top_artists(_, %{by_type: type, by_id: id} = args, _) do
+      case type do
+        "city" -> from a in Artist,
+          join: ac in "artist_cities", on: a.id == ac.artist_id,
+          where: ac.city_id == type(^id, :integer),
+          order_by: [desc: ac.score, desc: a.id]
+        "genre" -> from a in Artist,
+          left_join: ag in "artist_genres", on: a.id == ag.artist_id,
+          where: ag.genre_id == type(^id, :integer),
+          order_by: [desc: a.popularity, desc: a.id]
+      end
+      |> Repo.paginate(cursor(args))
+      |> ok()
+    end
+
+
   # CITIES ENDPOINT
   def get_cities(_, args, _) do
     City
