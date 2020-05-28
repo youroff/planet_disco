@@ -19,6 +19,9 @@ SpotifyTracker.Repo.query!("COPY genres(id,name) from '#{genres}' WITH CSV HEADE
 artists = Path.absname('priv/repo/seeds/artists.csv')
 SpotifyTracker.Repo.query!("COPY artists(followers,name,popularity,spotify_id,bio,id,monthly_listeners) from '#{artists}' WITH CSV HEADER;")
 
+tracks = Path.absname('priv/repo/seeds/artist_tracks.csv')
+SpotifyTracker.Repo.query!("COPY tracks(spotify_id,name,url) from '#{tracks}' WITH CSV HEADER;")
+
 images = Path.absname('priv/repo/seeds/images.csv')
 SpotifyTracker.Repo.query!("COPY images(artist_id,height,path,width) from '#{images}' WITH CSV HEADER;")
 

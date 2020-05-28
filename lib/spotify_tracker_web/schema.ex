@@ -70,6 +70,12 @@ defmodule SpotifyTrackerWeb.Schema do
     field :popularity, :float
   end
 
+  object :track do
+    field :spotify_id, :string
+    field :name, :string
+    field :url, :string
+  end
+
   query do
     @desc "Artists entry point, returns list of artists"
     field :artists, :paginated_artist do
@@ -88,6 +94,12 @@ defmodule SpotifyTrackerWeb.Schema do
       arg :by_type, non_null(:string)
       arg :by_id, non_null(:id)
       resolve &Resolvers.get_top_artists/3
+    end
+
+    @desc "Demo tracks"
+    field :tracks, non_null(list_of(non_null(:track))) do
+      arg :spotify_id, :string
+      resolve &Resolvers.get_tracks/3
     end
 
     @desc "Cities entry point, returns list of cities"
