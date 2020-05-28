@@ -1,60 +1,53 @@
-import React, { useRef, useState, useMemo } from 'react'
-import * as THREE from 'three/src/Three'
+import React, { useMemo } from 'react'
 import { useFrame, useUpdate } from 'react-three-fiber'
-import {
-  starsVertexShader as vertexShader,
-  starsFragmentShader as fragmentShader
-} from '../common/shaders'
+import { Vector3 } from 'three/src/math/Vector3'
+import { Spherical } from 'three/src/math/Spherical'
+import { Color } from 'three/src/math/Color'
+import { TextureLoader } from 'three/src/loaders/TextureLoader'
+import { BufferAttribute } from 'three/src/core/BufferAttribute'
+import { AdditiveBlending, DynamicDrawUsage } from 'three/src/constants'
+import { vertexShader, fragmentShader } from '../shaders/stars'
 
 const genStar = (r1, r2) => {
-  return new THREE.Vector3().setFromSpherical(new THREE.Spherical(
+  return new Vector3().setFromSpherical(new Spherical(
     r1 + Math.random() * (r2 - r1),
     Math.acos(1 - Math.random() * 2),
     Math.random() * 2 * Math.PI
   ))
 }
 
-export default ({radius, particles}) => {
+export default ({ radius, particles }) => {
   const material = useMemo(() => ({
     uniforms: {
-      pointTexture: {
-        value: new THREE.TextureLoader().load("/images/spark1.png")
-      }
+      time: { value: 0.0 },
+      pointTexture: { value: new TextureLoader().load("/images/spark1.png") }
     },
     fragmentShader,
     vertexShader,
-    blending: THREE.AdditiveBlending,
+    blending: AdditiveBlending,
     depthTest: false,
     transparent: false,
     vertexColors: true  
   }))
 
   useFrame((state) => {
-    if (geometry.current) {
-      let sizes = geometry.current.attributes.size.array
-      for ( var i = 0; i < particles; i ++ ) {
-        sizes[i] = 0.4 + 0.2 * Math.sin(0.1 * i + 2 * state.clock.elapsedTime)
-      }
-      geometry.current.attributes.size.needsUpdate = true  
-    }
+    material.uniforms.time.value = state.clock.elapsedTime
   })
 
   const geometry = useUpdate(geo => {
     const positions = []
     const colors = []
-    const sizes = Array(particles).fill(0.5)
-    const color = new THREE.Color()
-
+    const sizes = Array.from({length: particles}, () => 0.5 + 0.5 * Math.random())
+    const color = new Color()
     for ( var i = 0; i < particles; i ++ ) {
       positions.push(...genStar(radius, radius + 50).toArray())
       color.setHSL(i / particles, 1.0, 0.9)
       colors.push(color.r, color.g, color.b)
     }
 
-    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3))
-    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3))
-    geo.setAttribute('size', new THREE.BufferAttribute(new Float32Array(sizes), 1).setUsage(THREE.DynamicDrawUsage))
-    geometry.current.needsUpdate = true
+    geo.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
+    geo.setAttribute('color', new BufferAttribute(new Float32Array(colors), 3))
+    geo.setAttribute('size', new BufferAttribute(new Float32Array(sizes), 1).setUsage(DynamicDrawUsage))
   }, [])
 
   return <points>

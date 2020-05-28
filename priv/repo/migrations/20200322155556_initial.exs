@@ -14,6 +14,13 @@ defmodule SpotifyTracker.Repo.Migrations.Initial do
     end
     create unique_index(:artists, :spotify_id)
 
+    create table("tracks") do
+      add :spotify_id,  :string, null: false
+      add :name,        :text, null: false
+      add :url,         :string, null: false
+    end
+    create index(:tracks, :spotify_id)
+
     create table("images") do
       add :path, :string, null: false
       add :width, :integer, null: false

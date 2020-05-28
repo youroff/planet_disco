@@ -1,55 +1,60 @@
-import React, { useRef, useEffect } from 'react'
-import { useQuery } from '@apollo/react-hooks'
+import React, { useEffect, useState } from 'react'
+import { useApolloClient, useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-import { toRad } from '../common/utils'
-import * as THREE from 'three/src/Three'
-import * as d3 from 'd3'
+import { max } from 'd3'
+import CityBars from './city_bars'
+import CityArc from './city_arc'
 
 const CITIES = gql`{
   cities(limit: 5000) {
     entries {
+      id
       city
-      population
       coord
+      humanCountry
     }
   }
 }`
 
-const min_pop = 600
-const max_pop = 31480498
-const pop_scale = d3.scaleLog([min_pop, max_pop], [2, 7])
+const CITY_GENRES = gql`query CityGenres($genreIds: [ID]) {
+  genrePopularityNormalized(genreIds: $genreIds) {
+    cityId
+    genreId
+    popularity
+  }
+}`
 
-export default function({zoom}) {
-  const mesh = useRef()
+export default function({ genreColors, city, similarCities }) {
   const { data } = useQuery(CITIES)
+  const graphql = useApolloClient()
+  const [weights, setWeights] = useState({})
 
   useEffect(() => {
-    const dummy = new THREE.Object3D()
-    if (data && mesh.current) {
-      data.cities.entries.forEach(({coord: {lat, lng}, population}, i) => {
-        mesh.current.getMatrixAt(i, dummy.matrix)
-        dummy.position.setFromSphericalCoords(1, toRad(lat - 90), toRad(lng - 90))
-        dummy.lookAt(0, 0, 0)
-        if (population > pop_scale.invert(zoom)) {
-          dummy.scale.set(zoom / 10, zoom / 10, zoom / 10)
-        } else {
-          dummy.scale.set(0, 0, 0)
-        }
-        dummy.updateMatrix()
-        mesh.current.setMatrixAt(i, dummy.matrix)
-      })
-      mesh.current.instanceMatrix.needsUpdate = true
+    if (Object.keys(genreColors).length > 0) {
+      graphql.query({query: CITY_GENRES, variables: { genreIds: Object.keys(genreColors) }})
+        .then(({ data: { genrePopularityNormalized: popularities } }) => {
+        const cityMap = {}
+        const top = max(popularities.map(g => g.popularity))
+        popularities.forEach(({ cityId, genreId, popularity }) => {
+          cityMap[cityId] = [genreColors[genreId], popularity / top]
+        })
+        setWeights(cityMap)
+      })  
+    } else {
+      setWeights({})
     }
-  }, [data, zoom])
+  }, [genreColors])
 
   return (<>
-    {data && <instancedMesh
-      ref={mesh}
-      args={[null, null, data.cities.entries.length]}
-      castShadow
-    >
-      <boxBufferGeometry attach="geometry" args={[0.02, 0.02, 0.002]} />
-      <meshStandardMaterial attach="material" emissive="#ff0000" color="#ff3333" opacity={0.5} />
-    </instancedMesh>}
+    {data && <CityBars
+      cities={data.cities.entries}
+      weights={weights}
+    />}
+    
+    {city && similarCities && similarCities.map((toCity, i) => <CityArc
+      from={city}
+      to={toCity}
+      key={i}
+    />)}
   </>)
 }

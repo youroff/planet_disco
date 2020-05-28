@@ -68,7 +68,9 @@ File.mkdir_p!("priv/repo/seeds")
     do
       [%{artist_id: artist_id, genre_id: genre_id} | acc2]
     else
-      _ -> acc2
+      _ ->
+        IO.inspect([genre, Map.fetch(genres_cache, genre), id, Map.fetch(artists_cache, id)])
+        acc2
     end
   end)
 end, [], artists)

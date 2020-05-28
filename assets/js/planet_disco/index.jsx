@@ -1,66 +1,45 @@
-import React, { useState } from 'react'
-import { ApolloConsumer, ApolloProvider } from '@apollo/react-hooks'
+import React from 'react'
+import { Router } from 'react-router'
+import { Switch, Route } from 'react-router-dom'
 import { Canvas } from 'react-three-fiber'
-import PlanetView from './planet_view/scene'
-import Overlay from './common/overlay'
-import CitySimilarities from './city_similarities/city_similarities'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-import { views } from './common/views'
-import CssBaseline from '@material-ui/core/CssBaseline';
-
+import { indigo } from '@material-ui/core/colors'
+import { StoreContextProvider } from './common/store'
+import { ContextForward } from './common/wormhole'
+import PlanetView from './planet_view'
+import GenresView from './genres_view'
+import CitiesView from './cities_view'
+import Overlay from './common/overlay'
 
 const theme = createMuiTheme({
   palette: {
+    primary: indigo,
     type: 'dark',
-    primary: {
-      main: '#df616d',
-    },
-    secondary: {
-      main: '#433e60',
-    },
     background: {
-      default: "#091324",
-      paper: 'rgba(71, 80, 98, 0.8)', // 'rgba(89, 100, 117, 0.6)' //'rgba(66, 66, 66, 0.6)'
-    },
-  },
-  typography: {
-    fontFamily: [
-      'Roboto, Helvetica Neue, sans-serif',
-    ].join(','),
-  },
+      paper: 'rgba(66, 66, 66, 0.9)'
+    }
+  }
 })
 
-export default () => {
-  const [city, setCity] = useState(null) //{id: "3277", city: "Singapore", humanCountry: "Singapore", coord: {}, __typename: "City"})
-  const [currentView, setView] = useState(views.CITY)
-
-  return <>
+export default ({ match, history }) => {
+  return <StoreContextProvider>
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Overlay view={currentView} currentCity={city} onCitySelect={setCity} onViewChange={setView} />
+      <Overlay />
 
-
-      <ApolloConsumer client>
-        {client => (
-          (() => {
-            switch (currentView) {
-              case views.PLANET:
-                return (
-                  <Canvas shadowMap>
-                    <ApolloProvider client={client}>
-                      <PlanetView currentCity={city} />
-                    </ApolloProvider>
-                  </Canvas>)
-              case views.CITY:
-                return (
-                  <CitySimilarities client={client} city={city} onCitySelect={setCity} />
-                )
-            }
-          })()
-
-        )}
-      </ApolloConsumer>
-
+      <ContextForward wrapper={<Canvas
+          className='main-canvas'
+          shadowMap
+          updateDefaultCamera
+          resize={{debounce: { scroll: 50, resize: 50 }}}
+        />}>
+        <Router history={history}>
+          <Switch>
+            <Route path={match.url + "cities"} component={CitiesView} />
+            <Route path={match.url + "genres"} component={GenresView} />
+            <Route path={match.url} component={PlanetView} />
+          </Switch>
+        </Router>
+      </ContextForward>
     </ThemeProvider>
-  </>
+  </StoreContextProvider>
 }

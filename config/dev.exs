@@ -26,7 +26,7 @@ config :spotify_tracker, SpotifyTrackerWeb.Endpoint,
     node: [
       "node_modules/webpack/bin/webpack.js",
       "--mode",
-      "development",
+      "production",
       "--watch-stdin",
       cd: Path.expand("../assets", __DIR__)
     ]

@@ -28,7 +28,7 @@ Path.wildcard(import_dir <> "/artists/**/*.json")
   |> MonEx.Result.unwrap([])
 end)
 |> Flow.map(fn artist ->
-  :ets.insert(genres, Enum.map(artist["genres"], & {&1}))
+  :ets.insert(genres, Enum.map(artist["genres"], & {String.trim(&1)}))
 end)
 |> Flow.run()
 
@@ -41,7 +41,7 @@ Path.wildcard(import_dir <> "/seed/*.json")
   |> MonEx.Result.unwrap([])
 end)
 |> Flow.map(fn artist ->
-  :ets.insert(genres, Enum.map(artist["genres"], & {&1}))
+  :ets.insert(genres, Enum.map(artist["genres"], & {String.trim(&1)}))
 end)
 |> Flow.run()
 
