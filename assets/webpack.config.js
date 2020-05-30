@@ -12,35 +12,9 @@ module.exports = (env, options) => ({
     mainFiles: ['index'],
     extensions: [".js", ".jsx"]
   },
-  mode: 'production',
+  // mode: 'production',
   optimization: {
     usedExports: true,
-    // minimize: true,
-    // minimizer: [new UglifyJsPlugin()]
-    // minimizer: [
-    //   new TerserPlugin({
-    //     cache: true,
-    //     parallel: true,
-    //     sourceMap: true,
-    //     terserOptions: {
-    //       parse: { 
-    //         // Let terser parse ecma 8 code but always output 
-    //         // ES5 compliant code for older browsers 
-    //         ecma: 8 
-    //       }, 
-    //       compress: { 
-    //         ecma: 5, 
-    //         warnings: false, 
-    //         comparisons: false 
-    //       },
-    //       module: true,
-    //       toplevel: true,
-    //       keep_fnames: true,
-    //       keep_classnames: true
-    //     }
-    //   }),
-    //   new OptimizeCSSAssetsPlugin({})
-    // ]
   },
   entry: {
     './js/app.js': glob.sync('./vendor/**/*.js').concat(['./js/app.js'])
@@ -55,10 +29,7 @@ module.exports = (env, options) => ({
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          // options: {
-          //   presets: ["es2015"]
-          // }
+          loader: 'babel-loader'
         }
       },
       {
@@ -71,6 +42,5 @@ module.exports = (env, options) => ({
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
     new CopyWebpackPlugin([{ from: 'static/', to: '../' }])//,
-    // new BundleAnalyzerPlugin()
   ]
 });

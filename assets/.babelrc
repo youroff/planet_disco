@@ -3,20 +3,19 @@
         ["@babel/preset-env", {
             "targets": "> 5%"
         }],
-        "@babel/preset-react",
-        ["minify", {
-            "builtIns": false,
-            "evaluate": true,
-            "mangle": true
-        }]
+        "@babel/preset-react"
     ],
     "plugins": [
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-proposal-object-rest-spread"
-    ]//,
-    // "env": {
-    //     "production": {
-    //         "presets": ["minify"]
-    //     }
-    // }
+    ],
+    "env": {
+        "production": {
+            "presets": ["minify", {
+                "builtIns": false,
+                "evaluate": true,
+                "mangle": true
+            }]
+        }
+    }
 }
