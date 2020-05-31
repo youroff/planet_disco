@@ -1,4 +1,5 @@
 import React, { Suspense, useContext, useState, useMemo, useEffect } from 'react'
+import { useThree } from 'react-three-fiber'
 import Stars from './stars'
 import Earth from './earth'
 import Cities from './cities'
@@ -76,7 +77,7 @@ export default () => {
       shadow-mapSize-width={2048}
       shadow-mapSize-height={2048}
     />
-    <Stars radius={5} particles={30000} />
+    <Stars radius={5} depth={30} particles={10000} />
     <Suspense fallback={null}>
       <Earth />
       <Cities genreColors={genreColors} { ...citySync } />

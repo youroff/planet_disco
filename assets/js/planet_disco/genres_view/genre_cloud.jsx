@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react'
 import { useUpdate, useThree} from 'react-three-fiber'
 import { HTML } from 'drei'
-import { Quaternion } from 'three/src/math/Quaternion'
-import { Vector3 } from 'three/src/math/Vector3'
-import { Matrix4 } from 'three/src/math/Matrix4'
-import { Color } from 'three/src/math/Color'
-import { InstancedBufferAttribute } from 'three/src/core/InstancedBufferAttribute'
-import { DynamicDrawUsage } from 'three/src/constants'
+import { Vector3, Matrix4, Color, Quaternion, InstancedBufferAttribute, DynamicDrawUsage } from 'three'
 import { scalePow } from 'd3-scale'
 import { shaderPatch } from '../shaders/genres'
 
@@ -16,19 +11,25 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
 
   // This helluva nightmare is only to tell click from drag and drop cluster
   // on click on space or spheres from other clusters 
-  const { gl: { domElement: canvas }, raycaster, scene } = useThree()
+  const { gl: { domElement: canvas }, raycaster } = useThree()
   useEffect(() => {
     let drag = false
     const dragFalse = () => drag = false
     const dragTrue = () => drag = true
     const listener = () => {
-      if(!drag && selectedCluster) {
-        const inCluster = raycaster.intersectObject(mesh.current).some(o => {
-          const genre = genres[o.instanceId]
-          return genre.masterGenreId === selectedCluster
-        })
-
-        if (!inCluster) { selectCluster() }
+      if (!drag) {
+        const intersect = raycaster.intersectObject(mesh.current)
+        if (intersect.length === 0) {
+          selectCluster()
+        } else {
+          const [sphere] = intersect
+          const genre = genres[sphere.instanceId]
+          if (genre.masterGenreId === selectedCluster) {
+            selectGenre(genre)
+          } else {
+            selectCluster(genre.masterGenreId)
+          }
+        }
       }
     } 
     canvas.addEventListener('mousedown', dragFalse)
@@ -82,14 +83,6 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
   return <instancedMesh
     ref={mesh}
     args={[null, null, genres.length]}
-    onClick={(e) => {
-      const genre = genres[e.instanceId]
-      if (selectedCluster) {
-        if (selectedCluster === genre.masterGenreId) selectGenre(genre)
-      } else {
-        selectCluster(genre.masterGenreId)
-      }
-    }}
   >
     <sphereBufferGeometry attach="geometry" args={[1, 32, 32]} />
     <meshPhysicalMaterial
@@ -111,9 +104,7 @@ export default ({ genres, centroids, colorMap, selectedCluster, selectCluster, s
           {name}
         </HTML>
       }
-    })}
-
-    {!selectedCluster && genres.map(({ genreId, masterGenreId, name }, i) => {
+    }) || genres.map(({ genreId, masterGenreId, name }, i) => {
       if (genreId === masterGenreId) {
         const { x, y, z } = centroids[masterGenreId]
         return <HTML

@@ -15,7 +15,13 @@ export const fragmentShader = `
   uniform sampler2D pointTexture;
   varying vec3 vColor;
   void main() {
-    gl_FragColor = vec4(vColor, 1.0);
-    gl_FragColor *= texture2D(pointTexture, gl_PointCoord);
+
+    // Distance from 0.0 to 0.5 from the center of the point
+    float d = distance(gl_PointCoord, vec2(0.5, 0.5));
+
+    // Applying sigmoid to smoothen the border
+    float opacity = 1.0 / (1.0 + exp(16.0 * (d - 0.25)));
+
+    gl_FragColor = vec4(vColor, opacity);
   }
 `

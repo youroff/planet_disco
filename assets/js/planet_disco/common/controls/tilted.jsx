@@ -1,13 +1,8 @@
 import React, { useRef, useEffect } from 'react'
-import { Vector3 } from 'three/src/math/Vector3'
-import { Vector2 } from 'three/src/math/Vector2'
-import { Spherical } from 'three/src/math/Spherical'
-import { Matrix4 } from 'three/src/math/Matrix4'
-import { Quaternion } from 'three/src/math/Quaternion'
+import { Vector3, Vector2, Spherical, Matrix4, Quaternion, MathUtils } from 'three'
 import { useThree, useFrame } from 'react-three-fiber'
 import { useGesture } from 'react-use-gesture'
 import { useSpring, animated } from '@react-spring/three/index.cjs'
-import { MathUtils } from 'three/src/math/MathUtils'
 
 const maxSpeed = 20
 
@@ -43,6 +38,13 @@ export default ({
         const t = theta - x / k
         set({ props: [distance, p, t] })
       }
+    },
+    onPinch: ({ movement: [y] }) => {
+      // ipad zooming works pretty bad so far
+      const [distance, phi, theta] = props.get()
+      const k = 1 + Math.sign(y) * Math.min(8 * Math.abs(y), maxSpeed) / (maxSpeed + 10)
+      const d = MathUtils.clamp(k * distance, minDistance, maxDistance)
+      set({ props: [d, phi, theta] })
     },
     onWheel: ({ velocities: [_, y] }) => {
       const [distance, phi, theta] = props.get()

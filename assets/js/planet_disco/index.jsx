@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Router } from 'react-router'
 import { Switch, Route } from 'react-router-dom'
-import { Canvas } from 'react-three-fiber'
+import { Canvas, useThree } from 'react-three-fiber'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { indigo } from '@material-ui/core/colors'
 import { StoreContextProvider } from './common/store'
@@ -28,7 +28,6 @@ export default ({ match, history }) => {
 
       <ContextForward wrapper={<Canvas
           className='main-canvas'
-          shadowMap
           updateDefaultCamera
           resize={{debounce: { scroll: 50, resize: 50 }}}
         />}>

@@ -45,11 +45,9 @@ export default ({ cities, weights }) => {
   }, [weights])
 
   return <instancedMesh ref={mesh} args={[null, null, cities.length]} castShadow>
-    <boxBufferGeometry attach="geometry" args={[0.005, 0.005, 0.005]} />
+    <boxBufferGeometry attach="geometry" args={[0.008, 0.008, 0.008]} />
     <shaderMaterial
       attach="material"
-      // color="#ececec"
-      // opacity={1}
       {...material}
     />
   </instancedMesh>

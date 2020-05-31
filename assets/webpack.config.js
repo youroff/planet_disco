@@ -1,21 +1,18 @@
 const path = require('path');
 const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env, options) => ({
   resolve: {
     mainFiles: ['index'],
     extensions: [".js", ".jsx"]
   },
-  // mode: 'production',
-  optimization: {
-    usedExports: true,
-  },
+  // mode: 'development',
+  // optimization: {
+  //   usedExports: true,
+  // },
   entry: {
     './js/app.js': glob.sync('./vendor/**/*.js').concat(['./js/app.js'])
   },
